@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // Use JUnit test framework.
-    testImplementation(libs.junit)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 
     // This dependency is used by the application.
     implementation(libs.guava)
