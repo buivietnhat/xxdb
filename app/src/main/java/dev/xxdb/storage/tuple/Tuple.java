@@ -3,8 +3,7 @@ package dev.xxdb.storage.tuple;
 import java.util.Arrays;
 import java.util.Objects;
 
-class TupleHeader {
-}
+class TupleHeader {}
 
 public class Tuple {
   private final char[] data;
@@ -16,6 +15,11 @@ public class Tuple {
   /** Get bytes representation of this tuple */
   public char[] getData() {
     return Arrays.copyOf(data, data.length);
+  }
+
+  /** Return size of this tuple in bytes */
+  public short getSize() {
+    return (short) (data.length * 2);
   }
 
   @Override
