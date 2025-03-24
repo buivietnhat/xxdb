@@ -1,4 +1,4 @@
-package dev.xxdb.storage.tuple;
+package dev.xxdb.storage.tuple.exception;
 
 import dev.xxdb.storage.StorageException;
 
