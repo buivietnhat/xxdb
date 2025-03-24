@@ -1,6 +1,6 @@
 package dev.xxdb.server;
 
-public class XxdbException extends RuntimeException {
+public class XxdbException extends Exception {
   public XxdbException() {
     super();
   }

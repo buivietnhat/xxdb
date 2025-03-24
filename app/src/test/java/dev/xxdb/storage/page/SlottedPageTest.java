@@ -39,7 +39,7 @@ public class SlottedPageTest {
 
     // cover this Page has data, but doesn't contain the one to find (the record indicates it is in this page)
     @Test
-    void testHasDataNotFoundTheOneSamePage() {
+    void testHasDataNotFoundTheOneSamePage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
       RID rid1 = page.addTuple(new Tuple(new char[] { 'a', 'b', 'c' }));
       RID rid2 = page.addTuple(new Tuple(new char[] { 'a', 'c', 'a' }));
@@ -49,14 +49,12 @@ public class SlottedPageTest {
       RID findingRid = new RID(0,rid1.slotNumber() + rid2.slotNumber() + rid3.slotNumber());
       assertThrows(
           TupleException.class,
-          () -> {
-            page.getTuple(findingRid);
-          });
+          () -> page.getTuple(findingRid));
     }
 
     // cover this Page has data, but doesn't contain the one to find (the record indicates it is in different page)
     @Test
-    void testHasDataNotFoundTheOneDifferentPage() {
+    void testHasDataNotFoundTheOneDifferentPage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
       page.addTuple(new Tuple(new char[] { 'a', 'b', 'c' }));
       page.addTuple(new Tuple(new char[] { 'a', 'c', 'a' }));
@@ -72,7 +70,7 @@ public class SlottedPageTest {
 
     // cover this has data and contains the record
     @Test
-    void testHasDataHasTheRecord() {
+    void testHasDataHasTheRecord() throws TupleException {
       SlottedPage page = new SlottedPage(0);
       String data = "hello";
       Tuple theTuple = new Tuple(data.toCharArray());
