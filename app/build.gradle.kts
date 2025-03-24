@@ -6,31 +6,31 @@
  */
 
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
-    application
+  // Apply the application plugin to add support for building a CLI application in Java.
+  application
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
+  // Use Maven Central for resolving dependencies.
+  mavenCentral()
 }
 
 dependencies {
-    // Use JUnit test framework.
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+  // Use JUnit test framework.
+  testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 
-    // This dependency is used by the application.
-    implementation(libs.guava)
+  // This dependency is used by the application.
+  implementation(libs.guava)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 application {
-    // Define the main class for the application.
-    mainClass = "dev.xxdb.App"
+  // Define the main class for the application.
+  mainClass = "dev.xxdb.App"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
