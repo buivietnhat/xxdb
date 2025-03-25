@@ -63,9 +63,7 @@ public class SlottedPageTest {
       RID findingRid = new RID(1, 0);
       assertThrows(
               TupleException.class,
-              () -> {
-                page.getTuple(findingRid);
-              });
+              () -> page.getTuple(findingRid));
     }
 
     // cover this has data and contains the record

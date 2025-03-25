@@ -18,8 +18,8 @@ public class Tuple {
   }
 
   /** Return size of this tuple in bytes */
-  public short getSize() {
-    return (short) (data.length * 2);
+  public int getSize() {
+    return data.length * 2;
   }
 
   @Override

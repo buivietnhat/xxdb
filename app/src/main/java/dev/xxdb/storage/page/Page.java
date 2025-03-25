@@ -5,8 +5,8 @@ import java.util.Arrays;
 class PageHeader {}
 
 public class Page {
-  protected static final short TUPLE_HEADER_SIZE = 0; // bytes
-  public static final short PAGE_SIZE = 4096;
+  protected static final int TUPLE_HEADER_SIZE = 0; // bytes
+  public static final int PAGE_SIZE = 4096;
   public static final int INVALID_PAGE_ID = -1;
   protected final char[] data = new char[PAGE_SIZE];
   protected final int pageId;
