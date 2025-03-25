@@ -33,20 +33,21 @@ public class SlottedPage extends Page {
   //
   // Rep invariant:
   // + slots.length() == numSlotUsed
+  // + slots[numSlotsUse-1].offset <= TUPLE_HEADER_SIZE + numSlotsUsed * TUPLE_INFO_SIZE
   //
   // Safety from rep exposure: all fields are private and not exposed to outside
   // world
 
   // Check that the rep invariant is true
   private void checkRep() {
-    assert slots.size() == numSlotsUsed;
+    assert slots.size() == numSlotsUsed && currentAvailableSpace() >= 0;
   }
 
   public SlottedPage(final int pageId) {
     super(pageId);
   }
 
-  public SlottedPage(final int pageId, char[] data) {
+  public SlottedPage(final int pageId, byte[] data) {
     super(pageId, data);
   }
 
@@ -71,9 +72,9 @@ public class SlottedPage extends Page {
   public Tuple getTuple(final RID rid) throws TupleException {
     guaranteeTupleExist(rid);
     TupleInfo tupleInfo = slots.get(rid.slotNumber());
-    char[] tupleData =
-        // tupleInfo.size / 2 because char is 2 bytes
-        Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size / 2);
+    byte[] tupleData =
+        Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+
     return new Tuple(tupleData);
   }
 
@@ -134,7 +135,7 @@ public class SlottedPage extends Page {
     slots.addLast(info);
     numSlotsUsed += 1;
 
-    char[] tupleData = tuple.getData();
+    byte[] tupleData = tuple.getData();
     System.arraycopy(tupleData, 0, data, tupleOffset, tupleData.length);
 
     checkRep();

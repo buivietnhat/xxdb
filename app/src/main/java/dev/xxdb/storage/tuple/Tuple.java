@@ -6,20 +6,20 @@ import java.util.Objects;
 class TupleHeader {}
 
 public class Tuple {
-  private final char[] data;
+  private final byte[] data;
 
-  public Tuple(char[] data) {
+  public Tuple(byte[] data) {
     this.data = Arrays.copyOf(data, data.length);
   }
 
   /** Get bytes representation of this tuple */
-  public char[] getData() {
+  public byte[] getData() {
     return Arrays.copyOf(data, data.length);
   }
 
   /** Return size of this tuple in bytes */
   public int getSize() {
-    return data.length * 2;
+    return data.length;
   }
 
   @Override

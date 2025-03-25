@@ -26,7 +26,7 @@ public class PageTest {
     @Test
     void testEmptyPage() {
       Page p = new Page(0);
-      char[] data = p.getSerializedData();
+      byte[] data = p.getSerializedData();
       assertEquals(Page.PAGE_SIZE, data.length);
     }
 
@@ -34,13 +34,13 @@ public class PageTest {
     @Test
     void testDataPage() {
       String hello = "Hello";
-      char[] charHello = hello.toCharArray();
+      byte[] charHello = hello.getBytes();
       Page p = new Page(0, charHello);
 
-      char[] data = p.getSerializedData();
+      byte[] data = p.getSerializedData();
       assertEquals(Page.PAGE_SIZE, data.length);
 
-      char[] usefulData = Arrays.copyOfRange(data, 0, hello.length());
+      byte[] usefulData = Arrays.copyOfRange(data, 0, hello.length());
       assertArrayEquals(charHello, usefulData);
     }
   }

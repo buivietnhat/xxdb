@@ -17,8 +17,8 @@ public class TupleTest {
 
   @Test
   public void testEquals() {
-    Tuple t1 = new Tuple(new char[] {'a', 'b', 'c', 'd'});
-    Tuple t2 = new Tuple(new char[] {'a', 'b', 'c', 'd'});
+    Tuple t1 = new Tuple(new byte[] {'a', 'b', 'c', 'd'});
+    Tuple t2 = new Tuple(new byte[] {'a', 'b', 'c', 'd'});
     assertEquals(t1, t2);
   }
 }

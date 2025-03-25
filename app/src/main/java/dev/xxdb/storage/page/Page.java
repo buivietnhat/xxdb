@@ -8,7 +8,7 @@ public class Page {
   protected static final int TUPLE_HEADER_SIZE = 0; // bytes
   public static final int PAGE_SIZE = 4096;
   public static final int INVALID_PAGE_ID = -1;
-  protected final char[] data = new char[PAGE_SIZE];
+  protected final byte[] data = new byte[PAGE_SIZE];
   protected final int pageId;
 
   // Abstraction function:
@@ -42,14 +42,14 @@ public class Page {
    * @param pageId: id of this Page
    * @param data: requires length <= PAGE_SIZE
    */
-  public Page(final int pageId, final char[] data) {
+  public Page(final int pageId, final byte[] data) {
     this.pageId = pageId;
     System.arraycopy(this.data, 0, data, 0, data.length);
     checkRep();
   }
 
   /** Get serialization data of this Page */
-  public char[] getSerializedData() {
+  public byte[] getSerializedData() {
     return Arrays.copyOf(data, PAGE_SIZE);
   }
 

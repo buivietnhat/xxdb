@@ -41,9 +41,9 @@ public class SlottedPageTest {
     @Test
     void testHasDataNotFoundTheOneSamePage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
-      RID rid1 = page.addTuple(new Tuple(new char[] { 'a', 'b', 'c' }));
-      RID rid2 = page.addTuple(new Tuple(new char[] { 'a', 'c', 'a' }));
-      RID rid3 = page.addTuple( new Tuple(new char[] { 'c', 'b', 'a' }));
+      RID rid1 = page.addTuple(new Tuple(new byte[] { 'a', 'b', 'c' }));
+      RID rid2 = page.addTuple(new Tuple(new byte[] { 'a', 'c', 'a' }));
+      RID rid3 = page.addTuple( new Tuple(new byte[] { 'c', 'b', 'a' }));
 
       // same page, but non existed slot number
       RID findingRid = new RID(0,rid1.slotNumber() + rid2.slotNumber() + rid3.slotNumber());
@@ -56,8 +56,8 @@ public class SlottedPageTest {
     @Test
     void testHasDataNotFoundTheOneDifferentPage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
-      page.addTuple(new Tuple(new char[] { 'a', 'b', 'c' }));
-      page.addTuple(new Tuple(new char[] { 'a', 'c', 'a' }));
+      page.addTuple(new Tuple(new byte[] { 'a', 'b', 'c' }));
+      page.addTuple(new Tuple(new byte[] { 'a', 'c', 'a' }));
 
       // different pageID
       RID findingRid = new RID(1, 0);
@@ -71,10 +71,10 @@ public class SlottedPageTest {
     void testHasDataHasTheRecord() throws TupleException {
       SlottedPage page = new SlottedPage(0);
       String data = "hello";
-      Tuple theTuple = new Tuple(data.toCharArray());
+      Tuple theTuple = new Tuple(data.getBytes());
 
       RID theRid = page.addTuple(theTuple);
-      page.addTuple(new Tuple(new char[] { 'd', 'u' }));
+      page.addTuple(new Tuple(new byte[] { 'd', 'u' }));
 
       Tuple theOneFound = page.getTuple(theRid);
       assertEquals(theTuple, theOneFound);
