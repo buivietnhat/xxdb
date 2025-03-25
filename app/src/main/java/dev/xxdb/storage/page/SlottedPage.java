@@ -3,26 +3,33 @@ package dev.xxdb.storage.page;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SlottedPage extends Page {
   class TupleInfo {
-    public short offset; // 2 bytes
-    public short size; // 2 bytes
+    public int offset; // 4 bytes
+    // size of the tuple, in bytes
+    public int size; // 4 bytes
     boolean isDeleted; // 1 byte
+
+    public TupleInfo(int offset, int size, boolean isDeleted) {
+      this.offset = offset;
+      this.size = size;
+      this.isDeleted = isDeleted;
+    }
   }
 
-  private static final short TUPLE_INFO_SIZE = 5; // bytes
+  private static final short TUPLE_INFO_SIZE = 9; // bytes
 
   // How many slots are currently in used
   private int numSlotsUsed = 0;
   private final List<TupleInfo> slots = new ArrayList<>();
 
   // Abstraction function: AF(numSlotUsed, slots, data) = A slotted page structure
-  // to store tuple
-  // datas
+  // to store tuple data
   //
   // Rep invariant:
   // + slots.length() == numSlotUsed
@@ -65,14 +72,15 @@ public class SlottedPage extends Page {
     guaranteeTupleExist(rid);
     TupleInfo tupleInfo = slots.get(rid.slotNumber());
     char[] tupleData =
-        Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+        // tupleInfo.size / 2 because char is 2 bytes
+        Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size / 2);
     return new Tuple(tupleData);
   }
 
   /**
    * Update a tuple in this Page
    *
-   * @param rid: record ID of the tuple, requires to be valid
+   * @param rid:   record ID of the tuple, requires to be valid
    * @param tuple: tuple data to add
    * @throws TupleException if cannot update
    */
@@ -81,7 +89,7 @@ public class SlottedPage extends Page {
   }
 
   // Return the offset of the starting location for a newly created tuple
-  private short nextAvailableStartingOffset() {
+  private int nextAvailableStartingOffset() {
     if (numSlotsUsed == 0) {
       return PAGE_SIZE;
     }
@@ -90,11 +98,11 @@ public class SlottedPage extends Page {
   }
 
   // How many bytes current available?
-  private short currentAvailableSpace() {
-    return (short)
-        (nextAvailableStartingOffset()
-            - TUPLE_HEADER_SIZE
-            - (short) slots.size() * TUPLE_INFO_SIZE);
+  private int currentAvailableSpace() {
+    return nextAvailableStartingOffset()
+        - TUPLE_HEADER_SIZE
+        - slots.size() * TUPLE_INFO_SIZE;
+
   }
 
   // Check if we have enough room for storing the tuple
@@ -120,12 +128,18 @@ public class SlottedPage extends Page {
       throw new TupleException("Cannot add new tuple due to out of space");
     }
 
-    short tupleOffset = nextAvailableStartingOffset() + tuple.getSize();
+    int tupleOffset = nextAvailableStartingOffset() - tuple.getSize();
     TupleInfo info = new TupleInfo(tupleOffset, tuple.getSize(), false);
+
     slots.addLast(info);
-    System.arraycopy(tuple.getData(), data, tupleOffset, tuple.getSize());
+    numSlotsUsed += 1;
+
+    char[] tupleData = tuple.getData();
+    System.arraycopy(tupleData, 0, data, tupleOffset, tupleData.length);
 
     checkRep();
+
+    return new RID(pageId, numSlotsUsed - 1);
   }
 
   /**
