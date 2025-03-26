@@ -3,7 +3,6 @@ package dev.xxdb.storage.page;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,8 @@ public class SlottedPage extends Page {
   //
   // Rep invariant:
   // + slots.length() == numSlotUsed
-  // + slots[numSlotsUse-1].offset <= TUPLE_HEADER_SIZE + numSlotsUsed * TUPLE_INFO_SIZE
+  // + slots[numSlotsUse-1].offset <= TUPLE_HEADER_SIZE + numSlotsUsed *
+  // TUPLE_INFO_SIZE
   //
   // Safety from rep exposure: all fields are private and not exposed to outside
   // world
@@ -51,14 +51,21 @@ public class SlottedPage extends Page {
     super(pageId, data);
   }
 
-  // Make sure we have the tuple
-  private void guaranteeTupleExist(final RID rid) throws TupleException {
+  // Do we have the tuple in this Page?
+  private boolean tupleExists(final RID rid) {
     if (rid.pageId() != getPageId()) {
-      throw new TupleException("The rid is in a different page");
+      return false;
     }
-
     if (rid.slotNumber() >= numSlotsUsed) {
-      throw new TupleException("This rid is out range of slots");
+      return false;
+    }
+    return true;
+  }
+
+  // Make sure we have the tuple
+  private void guaranteeTupleExists(final RID rid) throws TupleException {
+    if (!tupleExists(rid)) {
+      throw new TupleException("This page doesn't have the tuple");
     }
   }
 
@@ -70,10 +77,13 @@ public class SlottedPage extends Page {
    * @throws TupleException if the record not found
    */
   public Tuple getTuple(final RID rid) throws TupleException {
-    guaranteeTupleExist(rid);
+    guaranteeTupleExists(rid);
     TupleInfo tupleInfo = slots.get(rid.slotNumber());
-    byte[] tupleData =
-        Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+    if (tupleInfo.isDeleted) {
+      throw new TupleException("The tuple was deleted");
+    }
+
+    byte[] tupleData = Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
 
     return new Tuple(tupleData);
   }
@@ -100,10 +110,7 @@ public class SlottedPage extends Page {
 
   // How many bytes current available?
   private int currentAvailableSpace() {
-    return nextAvailableStartingOffset()
-        - TUPLE_HEADER_SIZE
-        - slots.size() * TUPLE_INFO_SIZE;
-
+    return nextAvailableStartingOffset() - TUPLE_HEADER_SIZE - slots.size() * TUPLE_INFO_SIZE;
   }
 
   // Check if we have enough room for storing the tuple
@@ -147,9 +154,16 @@ public class SlottedPage extends Page {
    * Delete a tuple in this Page
    *
    * @param rid: record ID of the tuple, requires to be valid
-   * @throws TupleException if the tuple is there but cannot delete
+   * @return true if the tuple exists and delete successfully, false otherwise
    */
-  public void deleteTuple(final RID rid) throws TupleException {
-    throw new RuntimeException("unimlemented");
+  public boolean deleteTuple(final RID rid) {
+    if (!tupleExists(rid)) {
+      return false;
+    }
+
+    TupleInfo tupleInfo = slots.get(rid.slotNumber());
+    tupleInfo.isDeleted = true;
+    // TODO: shift the elements to save space
+    return true;
   }
 }
