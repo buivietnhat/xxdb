@@ -1,21 +1,22 @@
 package dev.xxdb.storage.page;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 class PageHeader {}
 
 public class Page {
-  protected static final int TUPLE_HEADER_SIZE = 0; // bytes
   public static final int PAGE_SIZE = 4096;
   public static final int INVALID_PAGE_ID = -1;
-  protected final byte[] data = new byte[PAGE_SIZE];
-  protected final int pageId;
+  private static final int PAGE_ID_OFFSET = 0;
+  protected static final int PAGE_HEADER_SIZE = 4; // bytes (includes pageId)
+  protected final ByteBuffer buffer;
 
   // Abstraction function:
-  // - AF(data, pageId) = an memory representation of a data page
+  // - AF(buffer, pageId) = an memory representation of a data page
   //
   // Rep invariant:
-  // - data.length = PAGE_SIZE
+  // - buffer.array().length = PAGE_SIZE
   //
   // Safety from rep exposure
   // - all fields are private and final
@@ -23,7 +24,7 @@ public class Page {
 
   // Check that the rep invariant is true
   private void checkRep() {
-    assert data.length == PAGE_SIZE && pageId != INVALID_PAGE_ID;
+    assert buffer.array().length == PAGE_SIZE && getPageId() != INVALID_PAGE_ID;
   }
 
   /**
@@ -32,7 +33,9 @@ public class Page {
    * @param pageId: id of this Page
    */
   public Page(final int pageId) {
-    this.pageId = pageId;
+    byte[] backedArray = new byte[PAGE_SIZE];
+    this.buffer = ByteBuffer.wrap(backedArray);
+    setPageId(pageId);
     checkRep();
   }
 
@@ -43,18 +46,24 @@ public class Page {
    * @param data: requires length <= PAGE_SIZE
    */
   public Page(final int pageId, final byte[] data) {
-    this.pageId = pageId;
-    System.arraycopy(this.data, 0, data, 0, data.length);
+    byte[] backedArray = new byte[PAGE_SIZE];
+    System.arraycopy(backedArray, 0, data, 0, data.length);
+    this.buffer = ByteBuffer.wrap(backedArray);
+    setPageId(pageId);
     checkRep();
   }
 
   /** Get serialization data of this Page */
   public byte[] getSerializedData() {
-    return Arrays.copyOf(data, PAGE_SIZE);
+    return Arrays.copyOf(buffer.array(), PAGE_SIZE);
   }
 
   /** Get PageId (globally unique) of this Page */
-  int getPageId() {
-    return pageId;
+  public int getPageId() {
+    return buffer.getInt(PAGE_ID_OFFSET);
+  }
+
+  private void setPageId(int pageId) {
+    buffer.putInt(PAGE_ID_OFFSET, pageId);
   }
 }
