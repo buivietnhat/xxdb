@@ -52,19 +52,19 @@ public class SlottedPage extends Page {
   }
 
   // Do we have the tuple in this Page?
-  private boolean tupleExists(final RID rid) {
+  private boolean tupleNotExists(final RID rid) {
     if (rid.pageId() != getPageId()) {
-      return false;
+      return true;
     }
     if (rid.slotNumber() >= numSlotsUsed) {
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   // Make sure we have the tuple
   private void guaranteeTupleExists(final RID rid) throws TupleException {
-    if (!tupleExists(rid)) {
+    if (tupleNotExists(rid)) {
       throw new TupleException("This page doesn't have the tuple");
     }
   }
@@ -84,6 +84,8 @@ public class SlottedPage extends Page {
     }
 
     byte[] tupleData = Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+
+    checkRep();
 
     return new Tuple(tupleData);
   }
@@ -157,13 +159,14 @@ public class SlottedPage extends Page {
    * @return true if the tuple exists and delete successfully, false otherwise
    */
   public boolean deleteTuple(final RID rid) {
-    if (!tupleExists(rid)) {
+    if (tupleNotExists(rid)) {
       return false;
     }
 
     TupleInfo tupleInfo = slots.get(rid.slotNumber());
     tupleInfo.isDeleted = true;
     // TODO: shift the elements to save space
+    checkRep();
     return true;
   }
 }
