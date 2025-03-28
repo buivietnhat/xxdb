@@ -83,7 +83,7 @@ public class SlottedPage extends Page {
       throw new TupleException("The tuple was deleted");
     }
 
-    byte[] tupleData = Arrays.copyOfRange(data, tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+    byte[] tupleData = Arrays.copyOfRange(buffer.array(), tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
 
     checkRep();
 
@@ -112,7 +112,7 @@ public class SlottedPage extends Page {
 
   // How many bytes current available?
   private int currentAvailableSpace() {
-    return nextAvailableStartingOffset() - TUPLE_HEADER_SIZE - slots.size() * TUPLE_INFO_SIZE;
+    return nextAvailableStartingOffset() - PAGE_HEADER_SIZE - slots.size() * TUPLE_INFO_SIZE;
   }
 
   // Check if we have enough room for storing the tuple
@@ -145,11 +145,11 @@ public class SlottedPage extends Page {
     numSlotsUsed += 1;
 
     byte[] tupleData = tuple.getData();
-    System.arraycopy(tupleData, 0, data, tupleOffset, tupleData.length);
+    System.arraycopy(tupleData, 0, buffer.array(), tupleOffset, tupleData.length);
 
     checkRep();
 
-    return new RID(pageId, numSlotsUsed - 1);
+    return new RID(getPageId(), numSlotsUsed - 1);
   }
 
   /**
