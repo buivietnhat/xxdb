@@ -17,7 +17,13 @@ repositories {
 
 dependencies {
   // Use JUnit test framework.
-  testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+
+  // Mockito Core
+  testImplementation("org.mockito:mockito-core:5.11.0")
+
+  // Mockito + JUnit5 integration
+  testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
 
   // This dependency is used by the application.
   implementation(libs.guava)
@@ -31,6 +37,10 @@ application {
   mainClass = "dev.xxdb.App"
 }
 
+tasks.test { useJUnitPlatform() }
+tasks.test { useJUnitPlatform() }
 tasks.test {
+    jvmArgs("-XX:+EnableDynamicAgentLoading", "-XX:-UseSharedSpaces")
     useJUnitPlatform()
 }
+
