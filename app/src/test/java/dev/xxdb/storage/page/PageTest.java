@@ -2,6 +2,7 @@ package dev.xxdb.storage.page;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.junit.jupiter.api.*;
 
@@ -34,14 +35,21 @@ public class PageTest {
     @Test
     void testDataPage() {
       String hello = "Hello";
+      int cap = Page.PAGE_HEADER_SIZE + hello.length();
+      ByteBuffer buffer = ByteBuffer.allocate(cap);
       byte[] charHello = hello.getBytes();
-      Page p = new Page(0, charHello);
+      buffer.putInt(1);
+      buffer.put(charHello);
+      Page p = new Page(buffer.array());
 
       byte[] data = p.getSerializedData();
       assertEquals(Page.PAGE_SIZE, data.length);
 
-      byte[] usefulData = Arrays.copyOfRange(data, 0, hello.length());
-      assertArrayEquals(charHello, usefulData);
+      byte[] usefulData = Arrays.copyOfRange(data, 0, cap);
+      ByteBuffer getBackBuffer = ByteBuffer.wrap(usefulData);
+      int pid = getBackBuffer.getInt(0);
+      assertEquals(1, pid);
+      assertArrayEquals(charHello, Arrays.copyOfRange(usefulData, Page.PAGE_HEADER_SIZE, usefulData.length));
     }
   }
 }

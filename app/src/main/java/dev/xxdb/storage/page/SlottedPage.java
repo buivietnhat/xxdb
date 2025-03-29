@@ -47,8 +47,8 @@ public class SlottedPage extends Page {
     super(pageId);
   }
 
-  public SlottedPage(final int pageId, byte[] data) {
-    super(pageId, data);
+  public SlottedPage(byte[] data) {
+    super(data);
   }
 
   // Do we have the tuple in this Page?
