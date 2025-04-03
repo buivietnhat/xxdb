@@ -10,7 +10,10 @@ import dev.xxdb.storage.page.Page;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+
+import dev.xxdb.storage.page.SlottedPage;
 import org.junit.jupiter.api.*;
+import org.mockito.ArgumentCaptor;
 
 public class HeapFileTest {
   @Test()
@@ -55,19 +58,27 @@ public class HeapFileTest {
     // cover this has some data, and has the page
     @Test
     void hasDataHasPage() throws IOException {
-      Page p1 = heapFile.newPage();
-      Page p2 = heapFile.newPage();
-      Page p3 = heapFile.newPage();
+      SlottedPage p1 = heapFile.newPage();
+      SlottedPage p2 = heapFile.newPage();
+      SlottedPage p3 = heapFile.newPage();
+
+      byte[] actualP2Data = p2.getSerializedData();
+      byte[] fakeP2ReturnData = Arrays.copyOf(actualP2Data, actualP2Data.length);
 
       // flush p2 to the disk
-      doNothing().when(diskManager).writeSync(anyInt(), any());
+      ArgumentCaptor<byte[]> dataCaptor = ArgumentCaptor.forClass(byte[].class);
+      doNothing().when(diskManager).writeSync(anyInt(), dataCaptor.capture());
+
       heapFile.savePage(p2);
+      verify(diskManager).writeSync(eq(p2.getPageId() * Page.PAGE_SIZE), any());
+      byte[] savedData = dataCaptor.getValue();
+      // Assert that the saved data matches p2's data
+      assertArrayEquals(actualP2Data, savedData, "Saved data should match the actual page data");
 
       // read p2 back
-      byte[] actualP2Data = p2.getSerializedData();
-      byte[] fakeP2ReturnData = Arrays.copyOf(actualP2Data, actualP2Data.length); 
-      when(diskManager.read(eq(p2.getPageId() * Page.PAGE_SIZE), eq(Page.PAGE_SIZE))).thenReturn(fakeP2ReturnData);
-      Optional<Page> p2Back = heapFile.getPage(p2.getPageId());
+      when(diskManager.read(eq(p2.getPageId() * Page.PAGE_SIZE), eq(Page.PAGE_SIZE)))
+          .thenReturn(fakeP2ReturnData);
+      Optional<SlottedPage> p2Back = heapFile.getPage(p2.getPageId());
       assertTrue(p2Back.isPresent());
       assertEquals(p2, p2Back.get());
     }
