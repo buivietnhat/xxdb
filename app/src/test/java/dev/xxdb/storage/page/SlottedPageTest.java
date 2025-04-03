@@ -114,7 +114,7 @@ public class SlottedPageTest {
       assertEquals(theTuple, getBackTuple);
     }
 
-    // cover this Page has some data, not full but cannotstill not has room for the
+    // cover this Page has some data, not full but still not has room for the
     // tuple
     @Test
     void testPageHasDataButNoRoom() throws TupleException {
@@ -130,8 +130,8 @@ public class SlottedPageTest {
   @Nested
   class DeleteTupleTest {
     // Testing strategy
-    // + partion on this: fresh page, has data
-    // + partion on existence of the tuple: page has the tuple, page doesn't have
+    // + partition on this: fresh page, has data
+    // + partition on existence of the tuple: page has the tuple, page doesn't have
     // the tuple
 
     // cover this is a fresh Page, doesn't have the tuple

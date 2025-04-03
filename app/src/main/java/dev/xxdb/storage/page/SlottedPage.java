@@ -111,7 +111,7 @@ public class SlottedPage extends Page {
   }
 
   // How many bytes current available?
-  private int currentAvailableSpace() {
+  public int currentAvailableSpace() {
     return nextAvailableStartingOffset() - PAGE_HEADER_SIZE - slots.size() * TUPLE_INFO_SIZE;
   }
 
