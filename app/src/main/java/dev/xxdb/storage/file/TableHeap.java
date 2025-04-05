@@ -6,22 +6,23 @@ import dev.xxdb.storage.page.SlottedPageRepository;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * This class is responsible for managing all tuples in/out for a table
- */
+/** This class is responsible for managing all tuples in/out for a table */
 public class TableHeap {
   private final SlottedPageRepository pageRepository;
   // keep track of list of pageIds of this table
   private final Set<Integer> pageIdList = new HashSet<>();
   private int currentPageId = -1;
-  // Abstraction function: AF(pageRepository, pageIdList, currentPageId) = A DB Table consisting a list of Pages, with currentPageId is the Page being in used
+
+  // Abstraction function: AF(pageRepository, pageIdList, currentPageId) = A DB
+  // Table consisting a
+  // list of Pages, with currentPageId is the Page being in used
   // Rep Invariant: True
-  // Safety from rep exposure: all fields are final and private, not exposed to outside
+  // Safety from rep exposure: all fields are final and private, not exposed to
+  // outside
 
   /**
    * Construct new TableHeap
@@ -57,7 +58,9 @@ public class TableHeap {
    *
    * @param tuple: tuple data
    * @return record id of the added tuple
-   * @throws TupleException if the tuple size > (Page.PAGE_SIZE - PAGE_HEADER_SIZE) or cannot add the tuple
+   * @throws TupleException if the tuple size > (Page.PAGE_SIZE -
+   *                        PAGE_HEADER_SIZE) or cannot add
+   *                        the tuple
    */
   public RID addTuple(final Tuple tuple) throws TupleException {
     if (tuple.getSize() >= (Page.PAGE_SIZE - Page.PAGE_HEADER_SIZE)) {
@@ -75,13 +78,11 @@ public class TableHeap {
       }
     }
 
-    System.out.println("pid: " + page.getPageId()+ ", current aval: " + page.currentAvailableSpace());
     if (page.currentAvailableSpace() < tuple.getSize()) {
       page = allocateNewPage();
     }
 
     RID rid = page.addTuple(tuple);
-//    System.out.println("pid: " + page.getPageId()+ ",after current aval: " + page.currentAvailableSpace());
     try {
       pageRepository.updatePage(page);
     } catch (IOException e) {
@@ -105,6 +106,19 @@ public class TableHeap {
    * @return true if the tuple exists and delete successfully
    */
   public boolean deleteTuple(final RID rid) {
-    throw new RuntimeException("unimplemented");
+    if (!pageIdList.contains(rid.pageId())) {
+      return false;
+    }
+
+    try {
+      SlottedPage page = pageRepository.getPage(rid.pageId()).get();
+      boolean deleted = page.deleteTuple(rid);
+      if (deleted) {
+        pageRepository.updatePage(page);
+      }
+      return deleted;
+    } catch (IOException e) {
+      return false;
+    }
   }
 }

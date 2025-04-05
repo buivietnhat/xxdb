@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.*;
 
 public class SlottedPageTest {
@@ -162,6 +165,38 @@ public class SlottedPageTest {
 
       // now we can no longer find the tuple
       assertThrows(TupleException.class, () -> page.getTuple(theRId));
+    }
+  }
+
+  @Nested
+  class GetSerializedDataTest {
+    // Testing strategy
+    // + partition on this: fresh page, has tuples data
+
+    // cover this Page has tuple datas
+    @Test
+    void hasTupleData() throws TupleException {
+      Random random = new Random();
+      SlottedPage page = new SlottedPage(5);
+      final int numTuples = 3;
+      List<RID> rids = new ArrayList<>();
+      List<Tuple> tuples = new ArrayList<>();
+      for (int i = 0; i < numTuples; i++) {
+        byte[] randomBytes = new byte[100];
+        random.nextBytes(randomBytes);
+        Tuple tuple = new Tuple(randomBytes);
+        tuples.addLast(tuple);
+        rids.addLast(page.addTuple(tuple));
+      }
+      final int curentAvaliableSpace = page.currentAvailableSpace();
+
+      byte[] data = page.getSerializedData();
+      SlottedPage deserializedPage = new SlottedPage(data);
+      assertEquals(5, deserializedPage.getPageId());
+      assertEquals(curentAvaliableSpace, deserializedPage.currentAvailableSpace());
+      for (int i = 0; i < numTuples; i++) {
+        assertEquals(tuples.get(i), deserializedPage.getTuple(rids.get(i)));
+      }
     }
   }
 }
