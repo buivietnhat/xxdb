@@ -1,15 +1,12 @@
 package dev.xxdb.storage.file;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import dev.xxdb.storage.disk.DiskManager;
 import dev.xxdb.storage.page.Page;
 import dev.xxdb.storage.page.SlottedPageRepository;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-import dev.xxdb.storage.tuple.exception.TupleNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -33,14 +30,13 @@ class TableHeapTest {
   }
 
   private DiskManager diskManager;
-  private SlottedPageRepository pageRepository;
   private TableHeap tableHeap;
   private static final String FILE_PATH = "dump.db";
 
   @BeforeEach
   void setup() throws IOException {
     diskManager = new DiskManager(FILE_PATH);
-    pageRepository = new HeapFile(diskManager);
+    SlottedPageRepository pageRepository = new HeapFile(diskManager);
     tableHeap = new TableHeap(pageRepository);
   }
 
@@ -117,5 +113,35 @@ class TableHeapTest {
   class DeleteTupleTest {
     // Testing strategy
     // + partition on existence of the tuple on this: has the tuple, does not have
+    // + partition on this: fresh table, has data
+
+    // cover this is a fresh table, doesn't have the tuple
+    @Test
+    void freshTable() {
+      assertFalse(tableHeap.deleteTuple(new RID(1,1)));
+    }
+
+    // cover this has data, has the tuple
+    @Test
+    void hasDataHasTuple() throws TupleException {
+      List<RID> rids = new ArrayList<>();
+      List<Tuple> tuples = new ArrayList<>();
+      Random random = new Random();
+      // add a bunch of dummy tuples
+      for(int i = 0; i < 100; i++) {
+        byte[] randomBytes = new byte[1000];
+        random.nextBytes(randomBytes);
+        Tuple tuple = new Tuple(randomBytes);
+        tuples.addLast(tuple);
+        rids.addLast(tableHeap.addTuple(tuple));
+        tableHeap.addTuple(tuple);
+      }
+
+      int randomIdx = random.nextInt(100);
+      assertTrue(tableHeap.deleteTuple(rids.get(randomIdx)));
+
+      // now we should not be able to read it back
+      assertThrows(TupleException.class, () -> tableHeap.getTuple(rids.get(randomIdx)));
+    }
   }
 }

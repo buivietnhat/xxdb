@@ -49,6 +49,8 @@ public class SlottedPage extends Page {
 
   public SlottedPage(byte[] data) {
     super(data);
+    deserializedHeader();
+    checkRep();
   }
 
   // Do we have the tuple in this Page?
@@ -168,5 +170,35 @@ public class SlottedPage extends Page {
     // TODO: shift the elements to save space
     checkRep();
     return true;
+  }
+
+  private void serializedHeader() {
+    buffer.position(PAGE_HEADER_SIZE); // skip the page header
+    buffer.putInt(numSlotsUsed);
+    for (TupleInfo info : slots) {
+      buffer.putInt(info.offset);
+      buffer.putInt(info.size);
+      buffer.put((byte) (info.isDeleted ? 1 : 0));
+    }
+  }
+
+  private void deserializedHeader() {
+    buffer.position(PAGE_HEADER_SIZE); // Skip to where slot info starts
+
+    numSlotsUsed = buffer.getInt();
+    slots.clear();
+
+    for (int i = 0; i < numSlotsUsed; i++) {
+      int offset = buffer.getInt();
+      int size = buffer.getInt();
+      boolean isDeleted = buffer.get() != 0;
+      slots.add(new TupleInfo(offset, size, isDeleted));
+    }
+  }
+
+  @Override
+  public byte[] getSerializedData() {
+    serializedHeader();
+    return super.getSerializedData();
   }
 }
