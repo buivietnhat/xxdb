@@ -8,6 +8,7 @@
 plugins {
   // Apply the application plugin to add support for building a CLI application in Java.
   application
+  antlr
 }
 
 repositories {
@@ -27,6 +28,8 @@ dependencies {
 
   // This dependency is used by the application.
   implementation(libs.guava)
+
+  antlr("org.antlr:antlr4:4.13.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
