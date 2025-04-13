@@ -4,16 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import dev.xxdb.parser.antlr.SqlLexer;
 import dev.xxdb.parser.antlr.SqlParser;
-import dev.xxdb.parser.ast.LogicalPlan;
+import dev.xxdb.parser.ast.expression.AntlrToExpressionVisitor;
+import dev.xxdb.parser.ast.expression.Expression;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class AntlrToLogicalPlanVisitorTest {
-  private final AntlrToLogicalPlanVisitor planVisitor = new AntlrToLogicalPlanVisitor();
+class AntlrToExpressionVisitorTest {
+  private final AntlrToExpressionVisitor planVisitor = new AntlrToExpressionVisitor();
 
   private ParseTree parseSql(final String query) {
     SqlLexer lexer = new SqlLexer(CharStreams.fromString(query));
@@ -30,7 +30,7 @@ class AntlrToLogicalPlanVisitorTest {
     void validSqlQuery() {
       String query = "CREATE TABLE foo (intColumn INT, stringColumn VARCHAR);";
       ParseTree parseTree = parseSql(query);
-      LogicalPlan plan = planVisitor.visit(parseTree);
+      Expression plan = planVisitor.visit(parseTree);
       assertEquals("CreateTableNode tableName:foo (intColumn:INT) (stringColumn:VARCHAR) ", plan.toString());
     }
 

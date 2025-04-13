@@ -1,6 +1,6 @@
-package dev.xxdb.parser.ast;
+package dev.xxdb.parser.ast.expression;
 
-public class ColumnDefinitionNode implements LogicalPlan {
+public class ColumnDefinitionNode implements Expression {
   private final String columnName;
   private final String dataType;
 
@@ -12,5 +12,10 @@ public class ColumnDefinitionNode implements LogicalPlan {
   @Override
   public String toString() {
     return "(" + columnName + ":" + dataType + ")";
+  }
+
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visitColumnDefinitionNode(this);
   }
 }

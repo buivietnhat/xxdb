@@ -1,4 +1,4 @@
-package dev.xxdb.parser.ast;
+package dev.xxdb.parser.ast.expression;
 
 public class IntValue implements ValueNode {
   public final int value;
@@ -10,5 +10,10 @@ public class IntValue implements ValueNode {
   @Override
   public String toString() {
     return "IntValue: " + value;
+  }
+
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visitIntValueNode(this);
   }
 }
