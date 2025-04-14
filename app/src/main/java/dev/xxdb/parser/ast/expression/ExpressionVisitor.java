@@ -9,7 +9,11 @@ public interface ExpressionVisitor {
 
   void visitColumnListNode(ColumnList node);
 
+  void visitValueListNode(ValueList node);
+
   void visitCreateTableNode(CreateTable node);
 
   void visitIntValueNode(IntValue node);
+
+  void visitStringValueNode(StringValue node);
 }

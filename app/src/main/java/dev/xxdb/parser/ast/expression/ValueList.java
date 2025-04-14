@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class ValueList implements Expression {
-  private final List<Value> values;
+  private final List<Expression> values;
 
-  public ValueList(List<Value> values) {
+  public ValueList(List<Expression> values) {
     this.values = values;
   }
 
-  public List<Value> getValues() {
+  public List<Expression> getValues() {
     return Collections.unmodifiableList(values);
   }
 
@@ -28,6 +28,6 @@ public class ValueList implements Expression {
 
   @Override
   public void accept(ExpressionVisitor visitor) {
-    throw new RuntimeException("unimplemented");
+    visitor.visitValueListNode(this);
   }
 }

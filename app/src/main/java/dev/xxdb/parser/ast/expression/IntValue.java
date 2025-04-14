@@ -3,13 +3,17 @@ package dev.xxdb.parser.ast.expression;
 public class IntValue implements Value {
   public final int value;
 
+  public int getValue() {
+    return value;
+  }
+
   public IntValue(int value) {
     this.value = value;
   }
 
   @Override
   public String toString() {
-    return "IntValue: " + value;
+    return "Int: " + value;
   }
 
   @Override

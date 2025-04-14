@@ -4,10 +4,22 @@ import java.util.List;
 
 public class Insert implements Expression {
   private final String tableName;
-  private final List<String> columns;
-  private final List<Value> values;
+  private final Expression columns;
+  private final Expression values;
 
-  public Insert(String tableName, List<String> columns, List<Value> values) {
+  public String getTableName() {
+    return tableName;
+  }
+
+  public Expression getColumns() {
+    return columns;
+  }
+
+  public Expression getValues() {
+    return values;
+  }
+
+  public Insert(String tableName, Expression columns, Expression values) {
     this.tableName = tableName;
     this.columns = columns;
     this.values = values;
@@ -15,7 +27,10 @@ public class Insert implements Expression {
 
   @Override
   public String toString() {
-    throw new RuntimeException("unimplemented");
+    StringBuilder rep = new StringBuilder("Insert ");
+    rep.append(columns.toString()).append(" ");
+    rep.append(values.toString());
+    return rep.toString();
   }
 
   @Override

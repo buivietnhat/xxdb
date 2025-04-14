@@ -4,17 +4,21 @@ public class StringValue implements Value {
   public final String value;
 
   public StringValue(String value) {
-    this.value = value;
+    // remove the double ' at the beginning and the end
+    this.value = value.substring(1, value.length() - 1);
+  }
+
+  public String getValue() {
+    return value;
   }
 
   @Override
   public String toString() {
-    return "StringValue: " + value;
+    return "String: " + value;
   }
 
   @Override
   public void accept(ExpressionVisitor visitor) {
-    throw new RuntimeException("unimplemented");
-//    visitor.visitStringValueNode(this);
+    visitor.visitStringValueNode(this);
   }
 }

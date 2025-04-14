@@ -1,11 +1,9 @@
-package dev.xxdb.parser;
+package dev.xxdb.parser.ast.expression;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.xxdb.parser.antlr.SqlLexer;
 import dev.xxdb.parser.antlr.SqlParser;
-import dev.xxdb.parser.ast.expression.AntlrToExpressionVisitor;
-import dev.xxdb.parser.ast.expression.Expression;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -43,5 +41,16 @@ class AntlrToExpressionVisitorTest {
 //        LogicalPlan plan = planVisitor.visit(parseTree);
 //      });
 //    }
+  }
+
+  @Nested
+  class InsertStatementTest {
+    @Test
+    void validSqlQuery() {
+      String query = "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3);";
+      ParseTree parseTree = parseSql(query);
+      Expression plan = planVisitor.visit(parseTree);
+      assertEquals("Insert (column1 column2 column3) (Int: 1 String: hello Int: 3)", plan.toString());
+    }
   }
 }
