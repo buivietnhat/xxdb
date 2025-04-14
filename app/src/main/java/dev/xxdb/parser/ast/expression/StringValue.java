@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.expression;
 
-public class StringValue implements ValueNode {
+public class StringValue implements Value {
   public final String value;
 
   public StringValue(String value) {

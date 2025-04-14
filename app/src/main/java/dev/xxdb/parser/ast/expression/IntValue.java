@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.expression;
 
-public class IntValue implements ValueNode {
+public class IntValue implements Value {
   public final int value;
 
   public IntValue(int value) {

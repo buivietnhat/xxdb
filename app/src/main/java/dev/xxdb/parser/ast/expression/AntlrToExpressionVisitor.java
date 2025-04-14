@@ -40,7 +40,7 @@ public class AntlrToExpressionVisitor extends SqlBaseVisitor<Expression> {
   public Expression visitCreateTableStatement(SqlParser.CreateTableStatementContext ctx) {
     String tableName = ctx.getChild(2).getText();
     Expression columnList = visit(ctx.getChild(4));
-    return new CreateTableNode(tableName, columnList);
+    return new CreateTable(tableName, columnList);
   }
 
   @Override
@@ -54,14 +54,14 @@ public class AntlrToExpressionVisitor extends SqlBaseVisitor<Expression> {
       children.addLast(visit(ctx.getChild(i)));
     }
 
-    return new ColumnDefinitionListNode(children);
+    return new ColumnDefinitionList(children);
   }
 
   @Override
   public Expression visitColumnDefinition(SqlParser.ColumnDefinitionContext ctx) {
     String columnName = ctx.getChild(0).getText();
     String dataType = ctx.getChild(1).getText();
-    return new ColumnDefinitionNode(columnName, dataType);
+    return new ColumnDefinition(columnName, dataType);
   }
 
   @Override

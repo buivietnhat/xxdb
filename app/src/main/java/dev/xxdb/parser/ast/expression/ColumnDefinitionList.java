@@ -1,12 +1,17 @@
 package dev.xxdb.parser.ast.expression;
 
+import java.util.Collections;
 import java.util.List;
 
-public class ColumnDefinitionListNode implements Expression {
+public class ColumnDefinitionList implements Expression {
   private final List<Expression> columnDefinitions;
 
-  public ColumnDefinitionListNode(List<Expression> columnDefinitions) {
+  public ColumnDefinitionList(List<Expression> columnDefinitions) {
     this.columnDefinitions = columnDefinitions;
+  }
+
+  public List<Expression> getColumnDefinitions() {
+    return Collections.unmodifiableList(columnDefinitions);
   }
 
   @Override

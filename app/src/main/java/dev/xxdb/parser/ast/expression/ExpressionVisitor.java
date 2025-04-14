@@ -1,15 +1,15 @@
 package dev.xxdb.parser.ast.expression;
 
 public interface ExpressionVisitor {
-  void visitInsertNode(InsertNode node);
+  void visitInsertNode(Insert node);
 
-  void visitColumnDefinitionNode(ColumnDefinitionNode node);
+  void visitColumnDefinitionNode(ColumnDefinition node);
 
-  void visitColumnDefinitionListNode(ColumnDefinitionListNode node);
+  void visitColumnDefinitionListNode(ColumnDefinitionList node);
 
-  void visitColumnListNode(ColumnListNode node);
+  void visitColumnListNode(ColumnList node);
 
-  void visitCreateTableNode(CreateTableNode node);
+  void visitCreateTableNode(CreateTable node);
 
   void visitIntValueNode(IntValue node);
 }

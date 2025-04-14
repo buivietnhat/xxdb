@@ -3,23 +3,23 @@ package dev.xxdb.parser.ast.expression;
 import java.util.Collections;
 import java.util.List;
 
-public class ColumnListNode implements Expression {
-  private final List<String> columns;
+public class ValueList implements Expression {
+  private final List<Value> values;
 
-  public ColumnListNode(List<String> columns) {
-    this.columns = columns;
+  public ValueList(List<Value> values) {
+    this.values = values;
   }
 
-  public List<String> getColumns() {
-    return Collections.unmodifiableList(columns);
+  public List<Value> getValues() {
+    return Collections.unmodifiableList(values);
   }
 
   @Override
   public String toString() {
     StringBuilder rep = new StringBuilder();
     rep.append("(");
-    for (String column : columns) {
-      rep.append(column).append(" ");
+    for (Expression value : values) {
+      rep.append(value.toString()).append(" ");
     }
     rep.deleteCharAt(rep.length() - 1);
     rep.append(")");
@@ -28,6 +28,6 @@ public class ColumnListNode implements Expression {
 
   @Override
   public void accept(ExpressionVisitor visitor) {
-    visitor.visitColumnListNode(this);
+    throw new RuntimeException("unimplemented");
   }
 }
