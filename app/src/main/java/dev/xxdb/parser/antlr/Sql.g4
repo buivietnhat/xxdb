@@ -12,7 +12,15 @@ statement
     ;
 
 selectStatement
-    : SELECT columnList FROM tableName whereClause?
+    : SELECT columnList FROM tableName joinClause? whereClause? limitClause?
+    ;
+
+joinClause
+    : JOIN tableName ON condition
+    ;
+
+limitClause
+    : LIMIT NUMBER
     ;
 
 insertStatement
@@ -56,13 +64,19 @@ whereClause
     ;
 
 condition
-    : columnName operator value
+    : condition AND condition          # AndCondition
+    | condition OR condition           # OrCondition
+    | columnName operator value        # SimpleValueCondition
+    | columnName operator columnName   # SimpleColumnCondition
     ;
 
 operator
     : '='
     | '>'
     | '<'
+    | '<='
+    | '>='
+    | '!='
     ;
 
 dataType
@@ -71,7 +85,7 @@ dataType
     ;
 
 columnName
-    : IDENTIFIER
+    : IDENTIFIER ('.' IDENTIFIER)?
     ;
 
 tableName
@@ -93,6 +107,11 @@ UPDATE : 'UPDATE';
 SET    : 'SET';
 CREATE : 'CREATE';
 TABLE  : 'TABLE';
+JOIN   : 'JOIN';
+ON     : 'ON';
+LIMIT  : 'LIMIT';
+AND    : 'AND';
+OR     : 'OR';
 
 INT_TYPE  : 'INT';
 VARCHAR_TYPE : 'VARCHAR';

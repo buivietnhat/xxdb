@@ -1,4 +1,4 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
 public class StringValue implements Value {
   public final String value;
@@ -18,7 +18,7 @@ public class StringValue implements Value {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitStringValueNode(this);
   }
 }

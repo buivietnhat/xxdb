@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.plan;
 
-import dev.xxdb.parser.ast.expression.*;
+import dev.xxdb.parser.ast.statement.*;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ExpressionToPlanVisitorTest {
+class StatementToPlanVisitorTest {
 
 //  @BeforeEach
 //  void setUp() {
@@ -17,7 +17,7 @@ class ExpressionToPlanVisitorTest {
 //  @AfterEach
 //  void tearDown() {
 //  }
-  private ExpressionToPlanVisitor visitor = new ExpressionToPlanVisitor();
+  private StatementToPlanVisitor visitor = new StatementToPlanVisitor();
 
   @Nested
   class VisitCreateTableNodeTest {
@@ -28,9 +28,9 @@ class ExpressionToPlanVisitorTest {
     @Test
     void validCreateTableExpression() {
       String tableName = "FOO";
-      List<Expression> columnLists = List.of(new ColumnDefinition("col1", "INT"), new ColumnDefinition("col2", "VARCHAR"));
-      Expression columnDefList = new ColumnDefinitionList(columnLists);
-      Expression createTable = new CreateTable(tableName, columnDefList);
+      List<Statement> columnLists = List.of(new ColumnDefinition("col1", "INT"), new ColumnDefinition("col2", "VARCHAR"));
+      Statement columnDefList = new ColumnDefinitionList(columnLists);
+      Statement createTable = new CreateTable(tableName, columnDefList);
       createTable.accept(visitor);
       LogicalPlan plan = visitor.getPlan();
       assertEquals("CreateTable FOO ( col1 INT,col2 VARCHAR )", plan.toString());
@@ -46,8 +46,8 @@ class ExpressionToPlanVisitorTest {
     @Test
     void validInsertExpression() {
       String tableName = "FOO";
-      Expression columns = new ColumnList(List.of("col1" , "col2", "col3", "col4"));
-      Expression values = new ValueList(List.of(new IntValue(100), new StringValue("'hello'"), new IntValue(200), new StringValue("'world'")));
+      Statement columns = new ColumnList(List.of("col1" , "col2", "col3", "col4"));
+      Statement values = new ValueList(List.of(new IntValue(100), new StringValue("'hello'"), new IntValue(200), new StringValue("'world'")));
       Insert insert = new Insert(tableName, columns, values);
       insert.accept(visitor);
       LogicalPlan plan = visitor.getPlan();

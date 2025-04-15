@@ -1,4 +1,4 @@
-// Generated from /home/nhatbui/workspace/database_system/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
+// Generated from C:/workspace/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
 package dev.xxdb.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -28,6 +28,18 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSelectStatement(SqlParser.SelectStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#joinClause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinClause(SqlParser.JoinClauseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#limitClause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLimitClause(SqlParser.LimitClauseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#insertStatement}.
 	 * @param ctx the parse tree
@@ -89,11 +101,33 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWhereClause(SqlParser.WhereClauseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#condition}.
+	 * Visit a parse tree produced by the {@code SimpleColumnCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCondition(SqlParser.ConditionContext ctx);
+	T visitSimpleColumnCondition(SqlParser.SimpleColumnConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code SimpleValueCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleValueCondition(SqlParser.SimpleValueConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code OrCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrCondition(SqlParser.OrConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AndCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndCondition(SqlParser.AndConditionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#operator}.
 	 * @param ctx the parse tree

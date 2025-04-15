@@ -1,4 +1,4 @@
-// Generated from /home/nhatbui/workspace/database_system/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
+// Generated from C:/workspace/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
 package dev.xxdb.parser.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -17,40 +17,43 @@ public class SqlParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, SELECT=8, FROM=9, 
-		WHERE=10, INSERT=11, INTO=12, VALUES=13, UPDATE=14, SET=15, CREATE=16, 
-		TABLE=17, INT_TYPE=18, VARCHAR_TYPE=19, IDENTIFIER=20, NUMBER=21, STRING=22, 
-		WS=23;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, T__10=11, SELECT=12, FROM=13, WHERE=14, INSERT=15, INTO=16, VALUES=17, 
+		UPDATE=18, SET=19, CREATE=20, TABLE=21, JOIN=22, ON=23, LIMIT=24, AND=25, 
+		OR=26, INT_TYPE=27, VARCHAR_TYPE=28, IDENTIFIER=29, NUMBER=30, STRING=31, 
+		WS=32;
 	public static final int
-		RULE_sql = 0, RULE_statement = 1, RULE_selectStatement = 2, RULE_insertStatement = 3, 
-		RULE_updateStatement = 4, RULE_createTableStatement = 5, RULE_columnDefinitionList = 6, 
-		RULE_columnDefinition = 7, RULE_assignmentList = 8, RULE_assignment = 9, 
-		RULE_columnList = 10, RULE_valueList = 11, RULE_whereClause = 12, RULE_condition = 13, 
-		RULE_operator = 14, RULE_dataType = 15, RULE_columnName = 16, RULE_tableName = 17, 
-		RULE_value = 18;
+		RULE_sql = 0, RULE_statement = 1, RULE_selectStatement = 2, RULE_joinClause = 3, 
+		RULE_limitClause = 4, RULE_insertStatement = 5, RULE_updateStatement = 6, 
+		RULE_createTableStatement = 7, RULE_columnDefinitionList = 8, RULE_columnDefinition = 9, 
+		RULE_assignmentList = 10, RULE_assignment = 11, RULE_columnList = 12, 
+		RULE_valueList = 13, RULE_whereClause = 14, RULE_condition = 15, RULE_operator = 16, 
+		RULE_dataType = 17, RULE_columnName = 18, RULE_tableName = 19, RULE_value = 20;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"sql", "statement", "selectStatement", "insertStatement", "updateStatement", 
-			"createTableStatement", "columnDefinitionList", "columnDefinition", "assignmentList", 
-			"assignment", "columnList", "valueList", "whereClause", "condition", 
-			"operator", "dataType", "columnName", "tableName", "value"
+			"sql", "statement", "selectStatement", "joinClause", "limitClause", "insertStatement", 
+			"updateStatement", "createTableStatement", "columnDefinitionList", "columnDefinition", 
+			"assignmentList", "assignment", "columnList", "valueList", "whereClause", 
+			"condition", "operator", "dataType", "columnName", "tableName", "value"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "';'", "'('", "')'", "','", "'='", "'>'", "'<'", "'SELECT'", "'FROM'", 
-			"'WHERE'", "'INSERT'", "'INTO'", "'VALUES'", "'UPDATE'", "'SET'", "'CREATE'", 
-			"'TABLE'", "'INT'", "'VARCHAR'"
+			null, "';'", "'('", "')'", "','", "'='", "'>'", "'<'", "'<='", "'>='", 
+			"'!='", "'.'", "'SELECT'", "'FROM'", "'WHERE'", "'INSERT'", "'INTO'", 
+			"'VALUES'", "'UPDATE'", "'SET'", "'CREATE'", "'TABLE'", "'JOIN'", "'ON'", 
+			"'LIMIT'", "'AND'", "'OR'", "'INT'", "'VARCHAR'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, "SELECT", "FROM", "WHERE", 
-			"INSERT", "INTO", "VALUES", "UPDATE", "SET", "CREATE", "TABLE", "INT_TYPE", 
-			"VARCHAR_TYPE", "IDENTIFIER", "NUMBER", "STRING", "WS"
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			"SELECT", "FROM", "WHERE", "INSERT", "INTO", "VALUES", "UPDATE", "SET", 
+			"CREATE", "TABLE", "JOIN", "ON", "LIMIT", "AND", "OR", "INT_TYPE", "VARCHAR_TYPE", 
+			"IDENTIFIER", "NUMBER", "STRING", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -136,23 +139,23 @@ public class SqlParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(38);
+			setState(42);
 			statement();
-			setState(40); 
+			setState(44); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(39);
+				setState(43);
 				match(T__0);
 				}
 				}
-				setState(42); 
+				setState(46); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==T__0 );
-			setState(44);
+			setState(48);
 			match(EOF);
 			}
 		}
@@ -204,34 +207,34 @@ public class SqlParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_statement);
 		try {
-			setState(50);
+			setState(54);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SELECT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(46);
+				setState(50);
 				selectStatement();
 				}
 				break;
 			case INSERT:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(47);
+				setState(51);
 				insertStatement();
 				}
 				break;
 			case UPDATE:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(48);
+				setState(52);
 				updateStatement();
 				}
 				break;
 			case CREATE:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(49);
+				setState(53);
 				createTableStatement();
 				}
 				break;
@@ -260,8 +263,14 @@ public class SqlParser extends Parser {
 		public TableNameContext tableName() {
 			return getRuleContext(TableNameContext.class,0);
 		}
+		public JoinClauseContext joinClause() {
+			return getRuleContext(JoinClauseContext.class,0);
+		}
 		public WhereClauseContext whereClause() {
 			return getRuleContext(WhereClauseContext.class,0);
+		}
+		public LimitClauseContext limitClause() {
+			return getRuleContext(LimitClauseContext.class,0);
 		}
 		public SelectStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -289,24 +298,146 @@ public class SqlParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(52);
+			setState(56);
 			match(SELECT);
-			setState(53);
-			columnList();
-			setState(54);
-			match(FROM);
-			setState(55);
-			tableName();
 			setState(57);
+			columnList();
+			setState(58);
+			match(FROM);
+			setState(59);
+			tableName();
+			setState(61);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==JOIN) {
+				{
+				setState(60);
+				joinClause();
+				}
+			}
+
+			setState(64);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
-				setState(56);
+				setState(63);
 				whereClause();
 				}
 			}
 
+			setState(67);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==LIMIT) {
+				{
+				setState(66);
+				limitClause();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class JoinClauseContext extends ParserRuleContext {
+		public TerminalNode JOIN() { return getToken(SqlParser.JOIN, 0); }
+		public TableNameContext tableName() {
+			return getRuleContext(TableNameContext.class,0);
+		}
+		public TerminalNode ON() { return getToken(SqlParser.ON, 0); }
+		public ConditionContext condition() {
+			return getRuleContext(ConditionContext.class,0);
+		}
+		public JoinClauseContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_joinClause; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterJoinClause(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitJoinClause(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitJoinClause(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final JoinClauseContext joinClause() throws RecognitionException {
+		JoinClauseContext _localctx = new JoinClauseContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_joinClause);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(69);
+			match(JOIN);
+			setState(70);
+			tableName();
+			setState(71);
+			match(ON);
+			setState(72);
+			condition(0);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class LimitClauseContext extends ParserRuleContext {
+		public TerminalNode LIMIT() { return getToken(SqlParser.LIMIT, 0); }
+		public TerminalNode NUMBER() { return getToken(SqlParser.NUMBER, 0); }
+		public LimitClauseContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_limitClause; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterLimitClause(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitLimitClause(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitLimitClause(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final LimitClauseContext limitClause() throws RecognitionException {
+		LimitClauseContext _localctx = new LimitClauseContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_limitClause);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(74);
+			match(LIMIT);
+			setState(75);
+			match(NUMBER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -355,29 +486,29 @@ public class SqlParser extends Parser {
 
 	public final InsertStatementContext insertStatement() throws RecognitionException {
 		InsertStatementContext _localctx = new InsertStatementContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_insertStatement);
+		enterRule(_localctx, 10, RULE_insertStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(59);
+			setState(77);
 			match(INSERT);
-			setState(60);
+			setState(78);
 			match(INTO);
-			setState(61);
+			setState(79);
 			tableName();
-			setState(62);
+			setState(80);
 			match(T__1);
-			setState(63);
+			setState(81);
 			columnList();
-			setState(64);
+			setState(82);
 			match(T__2);
-			setState(65);
+			setState(83);
 			match(VALUES);
-			setState(66);
+			setState(84);
 			match(T__1);
-			setState(67);
+			setState(85);
 			valueList();
-			setState(68);
+			setState(86);
 			match(T__2);
 			}
 		}
@@ -426,25 +557,25 @@ public class SqlParser extends Parser {
 
 	public final UpdateStatementContext updateStatement() throws RecognitionException {
 		UpdateStatementContext _localctx = new UpdateStatementContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_updateStatement);
+		enterRule(_localctx, 12, RULE_updateStatement);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(70);
+			setState(88);
 			match(UPDATE);
-			setState(71);
+			setState(89);
 			tableName();
-			setState(72);
+			setState(90);
 			match(SET);
-			setState(73);
+			setState(91);
 			assignmentList();
-			setState(75);
+			setState(93);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
-				setState(74);
+				setState(92);
 				whereClause();
 				}
 			}
@@ -493,21 +624,21 @@ public class SqlParser extends Parser {
 
 	public final CreateTableStatementContext createTableStatement() throws RecognitionException {
 		CreateTableStatementContext _localctx = new CreateTableStatementContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_createTableStatement);
+		enterRule(_localctx, 14, RULE_createTableStatement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(95);
 			match(CREATE);
-			setState(78);
+			setState(96);
 			match(TABLE);
-			setState(79);
+			setState(97);
 			tableName();
-			setState(80);
+			setState(98);
 			match(T__1);
-			setState(81);
+			setState(99);
 			columnDefinitionList();
-			setState(82);
+			setState(100);
 			match(T__2);
 			}
 		}
@@ -551,26 +682,26 @@ public class SqlParser extends Parser {
 
 	public final ColumnDefinitionListContext columnDefinitionList() throws RecognitionException {
 		ColumnDefinitionListContext _localctx = new ColumnDefinitionListContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_columnDefinitionList);
+		enterRule(_localctx, 16, RULE_columnDefinitionList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(102);
 			columnDefinition();
-			setState(89);
+			setState(107);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(85);
+				setState(103);
 				match(T__3);
-				setState(86);
+				setState(104);
 				columnDefinition();
 				}
 				}
-				setState(91);
+				setState(109);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -616,13 +747,13 @@ public class SqlParser extends Parser {
 
 	public final ColumnDefinitionContext columnDefinition() throws RecognitionException {
 		ColumnDefinitionContext _localctx = new ColumnDefinitionContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_columnDefinition);
+		enterRule(_localctx, 18, RULE_columnDefinition);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(92);
+			setState(110);
 			columnName();
-			setState(93);
+			setState(111);
 			dataType();
 			}
 		}
@@ -666,26 +797,26 @@ public class SqlParser extends Parser {
 
 	public final AssignmentListContext assignmentList() throws RecognitionException {
 		AssignmentListContext _localctx = new AssignmentListContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_assignmentList);
+		enterRule(_localctx, 20, RULE_assignmentList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(95);
+			setState(113);
 			assignment();
-			setState(100);
+			setState(118);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(96);
+				setState(114);
 				match(T__3);
-				setState(97);
+				setState(115);
 				assignment();
 				}
 				}
-				setState(102);
+				setState(120);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -731,15 +862,15 @@ public class SqlParser extends Parser {
 
 	public final AssignmentContext assignment() throws RecognitionException {
 		AssignmentContext _localctx = new AssignmentContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_assignment);
+		enterRule(_localctx, 22, RULE_assignment);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(103);
+			setState(121);
 			columnName();
-			setState(104);
+			setState(122);
 			match(T__4);
-			setState(105);
+			setState(123);
 			value();
 			}
 		}
@@ -783,26 +914,26 @@ public class SqlParser extends Parser {
 
 	public final ColumnListContext columnList() throws RecognitionException {
 		ColumnListContext _localctx = new ColumnListContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_columnList);
+		enterRule(_localctx, 24, RULE_columnList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(107);
+			setState(125);
 			columnName();
-			setState(112);
+			setState(130);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(108);
+				setState(126);
 				match(T__3);
-				setState(109);
+				setState(127);
 				columnName();
 				}
 				}
-				setState(114);
+				setState(132);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -848,26 +979,26 @@ public class SqlParser extends Parser {
 
 	public final ValueListContext valueList() throws RecognitionException {
 		ValueListContext _localctx = new ValueListContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_valueList);
+		enterRule(_localctx, 26, RULE_valueList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(115);
+			setState(133);
 			value();
-			setState(120);
+			setState(138);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__3) {
 				{
 				{
-				setState(116);
+				setState(134);
 				match(T__3);
-				setState(117);
+				setState(135);
 				value();
 				}
 				}
-				setState(122);
+				setState(140);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -911,14 +1042,14 @@ public class SqlParser extends Parser {
 
 	public final WhereClauseContext whereClause() throws RecognitionException {
 		WhereClauseContext _localctx = new WhereClauseContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_whereClause);
+		enterRule(_localctx, 28, RULE_whereClause);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(123);
+			setState(141);
 			match(WHERE);
-			setState(124);
-			condition();
+			setState(142);
+			condition(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -934,6 +1065,44 @@ public class SqlParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ConditionContext extends ParserRuleContext {
+		public ConditionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_condition; }
+	 
+		public ConditionContext() { }
+		public void copyFrom(ConditionContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class SimpleColumnConditionContext extends ConditionContext {
+		public List<ColumnNameContext> columnName() {
+			return getRuleContexts(ColumnNameContext.class);
+		}
+		public ColumnNameContext columnName(int i) {
+			return getRuleContext(ColumnNameContext.class,i);
+		}
+		public OperatorContext operator() {
+			return getRuleContext(OperatorContext.class,0);
+		}
+		public SimpleColumnConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterSimpleColumnCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitSimpleColumnCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitSimpleColumnCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class SimpleValueConditionContext extends ConditionContext {
 		public ColumnNameContext columnName() {
 			return getRuleContext(ColumnNameContext.class,0);
 		}
@@ -943,37 +1112,159 @@ public class SqlParser extends Parser {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
-		public ConditionContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_condition; }
+		public SimpleValueConditionContext(ConditionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterCondition(this);
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterSimpleValueCondition(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitCondition(this);
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitSimpleValueCondition(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitCondition(this);
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitSimpleValueCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class OrConditionContext extends ConditionContext {
+		public List<ConditionContext> condition() {
+			return getRuleContexts(ConditionContext.class);
+		}
+		public ConditionContext condition(int i) {
+			return getRuleContext(ConditionContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(SqlParser.OR, 0); }
+		public OrConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterOrCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitOrCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitOrCondition(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class AndConditionContext extends ConditionContext {
+		public List<ConditionContext> condition() {
+			return getRuleContexts(ConditionContext.class);
+		}
+		public ConditionContext condition(int i) {
+			return getRuleContext(ConditionContext.class,i);
+		}
+		public TerminalNode AND() { return getToken(SqlParser.AND, 0); }
+		public AndConditionContext(ConditionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).enterAndCondition(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SqlListener ) ((SqlListener)listener).exitAndCondition(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SqlVisitor ) return ((SqlVisitor<? extends T>)visitor).visitAndCondition(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
 	public final ConditionContext condition() throws RecognitionException {
-		ConditionContext _localctx = new ConditionContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_condition);
+		return condition(0);
+	}
+
+	private ConditionContext condition(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		ConditionContext _localctx = new ConditionContext(_ctx, _parentState);
+		ConditionContext _prevctx = _localctx;
+		int _startState = 30;
+		enterRecursionRule(_localctx, 30, RULE_condition, _p);
 		try {
+			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(126);
-			columnName();
-			setState(127);
-			operator();
-			setState(128);
-			value();
+			setState(153);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			case 1:
+				{
+				_localctx = new SimpleValueConditionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
+				setState(145);
+				columnName();
+				setState(146);
+				operator();
+				setState(147);
+				value();
+				}
+				break;
+			case 2:
+				{
+				_localctx = new SimpleColumnConditionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(149);
+				columnName();
+				setState(150);
+				operator();
+				setState(151);
+				columnName();
+				}
+				break;
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(163);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					setState(161);
+					_errHandler.sync(this);
+					switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
+					case 1:
+						{
+						_localctx = new AndConditionContext(new ConditionContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_condition);
+						setState(155);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(156);
+						match(AND);
+						setState(157);
+						condition(5);
+						}
+						break;
+					case 2:
+						{
+						_localctx = new OrConditionContext(new ConditionContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_condition);
+						setState(158);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(159);
+						match(OR);
+						setState(160);
+						condition(4);
+						}
+						break;
+					}
+					} 
+				}
+				setState(165);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -982,7 +1273,7 @@ public class SqlParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			exitRule();
+			unrollRecursionContexts(_parentctx);
 		}
 		return _localctx;
 	}
@@ -1010,14 +1301,14 @@ public class SqlParser extends Parser {
 
 	public final OperatorContext operator() throws RecognitionException {
 		OperatorContext _localctx = new OperatorContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_operator);
+		enterRule(_localctx, 32, RULE_operator);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(130);
+			setState(166);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 224L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 2016L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1063,12 +1354,12 @@ public class SqlParser extends Parser {
 
 	public final DataTypeContext dataType() throws RecognitionException {
 		DataTypeContext _localctx = new DataTypeContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_dataType);
+		enterRule(_localctx, 34, RULE_dataType);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(132);
+			setState(168);
 			_la = _input.LA(1);
 			if ( !(_la==INT_TYPE || _la==VARCHAR_TYPE) ) {
 			_errHandler.recoverInline(this);
@@ -1093,7 +1384,10 @@ public class SqlParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ColumnNameContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(SqlParser.IDENTIFIER, 0); }
+		public List<TerminalNode> IDENTIFIER() { return getTokens(SqlParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(SqlParser.IDENTIFIER, i);
+		}
 		public ColumnNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1115,12 +1409,24 @@ public class SqlParser extends Parser {
 
 	public final ColumnNameContext columnName() throws RecognitionException {
 		ColumnNameContext _localctx = new ColumnNameContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_columnName);
+		enterRule(_localctx, 36, RULE_columnName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(134);
+			setState(170);
 			match(IDENTIFIER);
+			setState(173);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
+			case 1:
+				{
+				setState(171);
+				match(T__10);
+				setState(172);
+				match(IDENTIFIER);
+				}
+				break;
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1158,11 +1464,11 @@ public class SqlParser extends Parser {
 
 	public final TableNameContext tableName() throws RecognitionException {
 		TableNameContext _localctx = new TableNameContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_tableName);
+		enterRule(_localctx, 38, RULE_tableName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(136);
+			setState(175);
 			match(IDENTIFIER);
 			}
 		}
@@ -1202,12 +1508,12 @@ public class SqlParser extends Parser {
 
 	public final ValueContext value() throws RecognitionException {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_value);
+		enterRule(_localctx, 40, RULE_value);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(138);
+			setState(177);
 			_la = _input.LA(1);
 			if ( !(_la==NUMBER || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -1230,81 +1536,126 @@ public class SqlParser extends Parser {
 		return _localctx;
 	}
 
+	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
+		switch (ruleIndex) {
+		case 15:
+			return condition_sempred((ConditionContext)_localctx, predIndex);
+		}
+		return true;
+	}
+	private boolean condition_sempred(ConditionContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 0:
+			return precpred(_ctx, 4);
+		case 1:
+			return precpred(_ctx, 3);
+		}
+		return true;
+	}
+
 	public static final String _serializedATN =
-		"\u0004\u0001\u0017\u008d\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
-		"\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004"+
-		"\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007"+
-		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b"+
-		"\u0002\f\u0007\f\u0002\r\u0007\r\u0002\u000e\u0007\u000e\u0002\u000f\u0007"+
-		"\u000f\u0002\u0010\u0007\u0010\u0002\u0011\u0007\u0011\u0002\u0012\u0007"+
-		"\u0012\u0001\u0000\u0001\u0000\u0004\u0000)\b\u0000\u000b\u0000\f\u0000"+
-		"*\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0003\u00013\b\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002"+
-		"\u0001\u0002\u0003\u0002:\b\u0002\u0001\u0003\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
-		"\u0001\u0004\u0003\u0004L\b\u0004\u0001\u0005\u0001\u0005\u0001\u0005"+
-		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006"+
-		"\u0001\u0006\u0005\u0006X\b\u0006\n\u0006\f\u0006[\t\u0006\u0001\u0007"+
-		"\u0001\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0005\bc\b\b\n\b\f\b"+
-		"f\t\b\u0001\t\u0001\t\u0001\t\u0001\t\u0001\n\u0001\n\u0001\n\u0005\n"+
-		"o\b\n\n\n\f\nr\t\n\u0001\u000b\u0001\u000b\u0001\u000b\u0005\u000bw\b"+
-		"\u000b\n\u000b\f\u000bz\t\u000b\u0001\f\u0001\f\u0001\f\u0001\r\u0001"+
-		"\r\u0001\r\u0001\r\u0001\u000e\u0001\u000e\u0001\u000f\u0001\u000f\u0001"+
-		"\u0010\u0001\u0010\u0001\u0011\u0001\u0011\u0001\u0012\u0001\u0012\u0001"+
-		"\u0012\u0000\u0000\u0013\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
-		"\u0014\u0016\u0018\u001a\u001c\u001e \"$\u0000\u0003\u0001\u0000\u0005"+
-		"\u0007\u0001\u0000\u0012\u0013\u0001\u0000\u0015\u0016\u0083\u0000&\u0001"+
-		"\u0000\u0000\u0000\u00022\u0001\u0000\u0000\u0000\u00044\u0001\u0000\u0000"+
-		"\u0000\u0006;\u0001\u0000\u0000\u0000\bF\u0001\u0000\u0000\u0000\nM\u0001"+
-		"\u0000\u0000\u0000\fT\u0001\u0000\u0000\u0000\u000e\\\u0001\u0000\u0000"+
-		"\u0000\u0010_\u0001\u0000\u0000\u0000\u0012g\u0001\u0000\u0000\u0000\u0014"+
-		"k\u0001\u0000\u0000\u0000\u0016s\u0001\u0000\u0000\u0000\u0018{\u0001"+
-		"\u0000\u0000\u0000\u001a~\u0001\u0000\u0000\u0000\u001c\u0082\u0001\u0000"+
-		"\u0000\u0000\u001e\u0084\u0001\u0000\u0000\u0000 \u0086\u0001\u0000\u0000"+
-		"\u0000\"\u0088\u0001\u0000\u0000\u0000$\u008a\u0001\u0000\u0000\u0000"+
-		"&(\u0003\u0002\u0001\u0000\')\u0005\u0001\u0000\u0000(\'\u0001\u0000\u0000"+
-		"\u0000)*\u0001\u0000\u0000\u0000*(\u0001\u0000\u0000\u0000*+\u0001\u0000"+
-		"\u0000\u0000+,\u0001\u0000\u0000\u0000,-\u0005\u0000\u0000\u0001-\u0001"+
-		"\u0001\u0000\u0000\u0000.3\u0003\u0004\u0002\u0000/3\u0003\u0006\u0003"+
-		"\u000003\u0003\b\u0004\u000013\u0003\n\u0005\u00002.\u0001\u0000\u0000"+
-		"\u00002/\u0001\u0000\u0000\u000020\u0001\u0000\u0000\u000021\u0001\u0000"+
-		"\u0000\u00003\u0003\u0001\u0000\u0000\u000045\u0005\b\u0000\u000056\u0003"+
-		"\u0014\n\u000067\u0005\t\u0000\u000079\u0003\"\u0011\u00008:\u0003\u0018"+
-		"\f\u000098\u0001\u0000\u0000\u00009:\u0001\u0000\u0000\u0000:\u0005\u0001"+
-		"\u0000\u0000\u0000;<\u0005\u000b\u0000\u0000<=\u0005\f\u0000\u0000=>\u0003"+
-		"\"\u0011\u0000>?\u0005\u0002\u0000\u0000?@\u0003\u0014\n\u0000@A\u0005"+
-		"\u0003\u0000\u0000AB\u0005\r\u0000\u0000BC\u0005\u0002\u0000\u0000CD\u0003"+
-		"\u0016\u000b\u0000DE\u0005\u0003\u0000\u0000E\u0007\u0001\u0000\u0000"+
-		"\u0000FG\u0005\u000e\u0000\u0000GH\u0003\"\u0011\u0000HI\u0005\u000f\u0000"+
-		"\u0000IK\u0003\u0010\b\u0000JL\u0003\u0018\f\u0000KJ\u0001\u0000\u0000"+
-		"\u0000KL\u0001\u0000\u0000\u0000L\t\u0001\u0000\u0000\u0000MN\u0005\u0010"+
-		"\u0000\u0000NO\u0005\u0011\u0000\u0000OP\u0003\"\u0011\u0000PQ\u0005\u0002"+
-		"\u0000\u0000QR\u0003\f\u0006\u0000RS\u0005\u0003\u0000\u0000S\u000b\u0001"+
-		"\u0000\u0000\u0000TY\u0003\u000e\u0007\u0000UV\u0005\u0004\u0000\u0000"+
-		"VX\u0003\u000e\u0007\u0000WU\u0001\u0000\u0000\u0000X[\u0001\u0000\u0000"+
-		"\u0000YW\u0001\u0000\u0000\u0000YZ\u0001\u0000\u0000\u0000Z\r\u0001\u0000"+
-		"\u0000\u0000[Y\u0001\u0000\u0000\u0000\\]\u0003 \u0010\u0000]^\u0003\u001e"+
-		"\u000f\u0000^\u000f\u0001\u0000\u0000\u0000_d\u0003\u0012\t\u0000`a\u0005"+
-		"\u0004\u0000\u0000ac\u0003\u0012\t\u0000b`\u0001\u0000\u0000\u0000cf\u0001"+
-		"\u0000\u0000\u0000db\u0001\u0000\u0000\u0000de\u0001\u0000\u0000\u0000"+
-		"e\u0011\u0001\u0000\u0000\u0000fd\u0001\u0000\u0000\u0000gh\u0003 \u0010"+
-		"\u0000hi\u0005\u0005\u0000\u0000ij\u0003$\u0012\u0000j\u0013\u0001\u0000"+
-		"\u0000\u0000kp\u0003 \u0010\u0000lm\u0005\u0004\u0000\u0000mo\u0003 \u0010"+
-		"\u0000nl\u0001\u0000\u0000\u0000or\u0001\u0000\u0000\u0000pn\u0001\u0000"+
-		"\u0000\u0000pq\u0001\u0000\u0000\u0000q\u0015\u0001\u0000\u0000\u0000"+
-		"rp\u0001\u0000\u0000\u0000sx\u0003$\u0012\u0000tu\u0005\u0004\u0000\u0000"+
-		"uw\u0003$\u0012\u0000vt\u0001\u0000\u0000\u0000wz\u0001\u0000\u0000\u0000"+
-		"xv\u0001\u0000\u0000\u0000xy\u0001\u0000\u0000\u0000y\u0017\u0001\u0000"+
-		"\u0000\u0000zx\u0001\u0000\u0000\u0000{|\u0005\n\u0000\u0000|}\u0003\u001a"+
-		"\r\u0000}\u0019\u0001\u0000\u0000\u0000~\u007f\u0003 \u0010\u0000\u007f"+
-		"\u0080\u0003\u001c\u000e\u0000\u0080\u0081\u0003$\u0012\u0000\u0081\u001b"+
-		"\u0001\u0000\u0000\u0000\u0082\u0083\u0007\u0000\u0000\u0000\u0083\u001d"+
-		"\u0001\u0000\u0000\u0000\u0084\u0085\u0007\u0001\u0000\u0000\u0085\u001f"+
-		"\u0001\u0000\u0000\u0000\u0086\u0087\u0005\u0014\u0000\u0000\u0087!\u0001"+
-		"\u0000\u0000\u0000\u0088\u0089\u0005\u0014\u0000\u0000\u0089#\u0001\u0000"+
-		"\u0000\u0000\u008a\u008b\u0007\u0002\u0000\u0000\u008b%\u0001\u0000\u0000"+
-		"\u0000\b*29KYdpx";
+		"\u0004\u0001 \u00b4\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
+		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
+		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
+		"\f\u0007\f\u0002\r\u0007\r\u0002\u000e\u0007\u000e\u0002\u000f\u0007\u000f"+
+		"\u0002\u0010\u0007\u0010\u0002\u0011\u0007\u0011\u0002\u0012\u0007\u0012"+
+		"\u0002\u0013\u0007\u0013\u0002\u0014\u0007\u0014\u0001\u0000\u0001\u0000"+
+		"\u0004\u0000-\b\u0000\u000b\u0000\f\u0000.\u0001\u0000\u0001\u0000\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0003\u00017\b\u0001\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0003\u0002>\b"+
+		"\u0002\u0001\u0002\u0003\u0002A\b\u0002\u0001\u0002\u0003\u0002D\b\u0002"+
+		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004"+
+		"\u0001\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005"+
+		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005"+
+		"\u0001\u0005\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006"+
+		"\u0003\u0006^\b\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007"+
+		"\u0001\u0007\u0001\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0005\bj"+
+		"\b\b\n\b\f\bm\t\b\u0001\t\u0001\t\u0001\t\u0001\n\u0001\n\u0001\n\u0005"+
+		"\nu\b\n\n\n\f\nx\t\n\u0001\u000b\u0001\u000b\u0001\u000b\u0001\u000b\u0001"+
+		"\f\u0001\f\u0001\f\u0005\f\u0081\b\f\n\f\f\f\u0084\t\f\u0001\r\u0001\r"+
+		"\u0001\r\u0005\r\u0089\b\r\n\r\f\r\u008c\t\r\u0001\u000e\u0001\u000e\u0001"+
+		"\u000e\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0003\u000f\u009a\b\u000f\u0001"+
+		"\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0001\u000f\u0005"+
+		"\u000f\u00a2\b\u000f\n\u000f\f\u000f\u00a5\t\u000f\u0001\u0010\u0001\u0010"+
+		"\u0001\u0011\u0001\u0011\u0001\u0012\u0001\u0012\u0001\u0012\u0003\u0012"+
+		"\u00ae\b\u0012\u0001\u0013\u0001\u0013\u0001\u0014\u0001\u0014\u0001\u0014"+
+		"\u0000\u0001\u001e\u0015\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
+		"\u0014\u0016\u0018\u001a\u001c\u001e \"$&(\u0000\u0003\u0001\u0000\u0005"+
+		"\n\u0001\u0000\u001b\u001c\u0001\u0000\u001e\u001f\u00ae\u0000*\u0001"+
+		"\u0000\u0000\u0000\u00026\u0001\u0000\u0000\u0000\u00048\u0001\u0000\u0000"+
+		"\u0000\u0006E\u0001\u0000\u0000\u0000\bJ\u0001\u0000\u0000\u0000\nM\u0001"+
+		"\u0000\u0000\u0000\fX\u0001\u0000\u0000\u0000\u000e_\u0001\u0000\u0000"+
+		"\u0000\u0010f\u0001\u0000\u0000\u0000\u0012n\u0001\u0000\u0000\u0000\u0014"+
+		"q\u0001\u0000\u0000\u0000\u0016y\u0001\u0000\u0000\u0000\u0018}\u0001"+
+		"\u0000\u0000\u0000\u001a\u0085\u0001\u0000\u0000\u0000\u001c\u008d\u0001"+
+		"\u0000\u0000\u0000\u001e\u0099\u0001\u0000\u0000\u0000 \u00a6\u0001\u0000"+
+		"\u0000\u0000\"\u00a8\u0001\u0000\u0000\u0000$\u00aa\u0001\u0000\u0000"+
+		"\u0000&\u00af\u0001\u0000\u0000\u0000(\u00b1\u0001\u0000\u0000\u0000*"+
+		",\u0003\u0002\u0001\u0000+-\u0005\u0001\u0000\u0000,+\u0001\u0000\u0000"+
+		"\u0000-.\u0001\u0000\u0000\u0000.,\u0001\u0000\u0000\u0000./\u0001\u0000"+
+		"\u0000\u0000/0\u0001\u0000\u0000\u000001\u0005\u0000\u0000\u00011\u0001"+
+		"\u0001\u0000\u0000\u000027\u0003\u0004\u0002\u000037\u0003\n\u0005\u0000"+
+		"47\u0003\f\u0006\u000057\u0003\u000e\u0007\u000062\u0001\u0000\u0000\u0000"+
+		"63\u0001\u0000\u0000\u000064\u0001\u0000\u0000\u000065\u0001\u0000\u0000"+
+		"\u00007\u0003\u0001\u0000\u0000\u000089\u0005\f\u0000\u00009:\u0003\u0018"+
+		"\f\u0000:;\u0005\r\u0000\u0000;=\u0003&\u0013\u0000<>\u0003\u0006\u0003"+
+		"\u0000=<\u0001\u0000\u0000\u0000=>\u0001\u0000\u0000\u0000>@\u0001\u0000"+
+		"\u0000\u0000?A\u0003\u001c\u000e\u0000@?\u0001\u0000\u0000\u0000@A\u0001"+
+		"\u0000\u0000\u0000AC\u0001\u0000\u0000\u0000BD\u0003\b\u0004\u0000CB\u0001"+
+		"\u0000\u0000\u0000CD\u0001\u0000\u0000\u0000D\u0005\u0001\u0000\u0000"+
+		"\u0000EF\u0005\u0016\u0000\u0000FG\u0003&\u0013\u0000GH\u0005\u0017\u0000"+
+		"\u0000HI\u0003\u001e\u000f\u0000I\u0007\u0001\u0000\u0000\u0000JK\u0005"+
+		"\u0018\u0000\u0000KL\u0005\u001e\u0000\u0000L\t\u0001\u0000\u0000\u0000"+
+		"MN\u0005\u000f\u0000\u0000NO\u0005\u0010\u0000\u0000OP\u0003&\u0013\u0000"+
+		"PQ\u0005\u0002\u0000\u0000QR\u0003\u0018\f\u0000RS\u0005\u0003\u0000\u0000"+
+		"ST\u0005\u0011\u0000\u0000TU\u0005\u0002\u0000\u0000UV\u0003\u001a\r\u0000"+
+		"VW\u0005\u0003\u0000\u0000W\u000b\u0001\u0000\u0000\u0000XY\u0005\u0012"+
+		"\u0000\u0000YZ\u0003&\u0013\u0000Z[\u0005\u0013\u0000\u0000[]\u0003\u0014"+
+		"\n\u0000\\^\u0003\u001c\u000e\u0000]\\\u0001\u0000\u0000\u0000]^\u0001"+
+		"\u0000\u0000\u0000^\r\u0001\u0000\u0000\u0000_`\u0005\u0014\u0000\u0000"+
+		"`a\u0005\u0015\u0000\u0000ab\u0003&\u0013\u0000bc\u0005\u0002\u0000\u0000"+
+		"cd\u0003\u0010\b\u0000de\u0005\u0003\u0000\u0000e\u000f\u0001\u0000\u0000"+
+		"\u0000fk\u0003\u0012\t\u0000gh\u0005\u0004\u0000\u0000hj\u0003\u0012\t"+
+		"\u0000ig\u0001\u0000\u0000\u0000jm\u0001\u0000\u0000\u0000ki\u0001\u0000"+
+		"\u0000\u0000kl\u0001\u0000\u0000\u0000l\u0011\u0001\u0000\u0000\u0000"+
+		"mk\u0001\u0000\u0000\u0000no\u0003$\u0012\u0000op\u0003\"\u0011\u0000"+
+		"p\u0013\u0001\u0000\u0000\u0000qv\u0003\u0016\u000b\u0000rs\u0005\u0004"+
+		"\u0000\u0000su\u0003\u0016\u000b\u0000tr\u0001\u0000\u0000\u0000ux\u0001"+
+		"\u0000\u0000\u0000vt\u0001\u0000\u0000\u0000vw\u0001\u0000\u0000\u0000"+
+		"w\u0015\u0001\u0000\u0000\u0000xv\u0001\u0000\u0000\u0000yz\u0003$\u0012"+
+		"\u0000z{\u0005\u0005\u0000\u0000{|\u0003(\u0014\u0000|\u0017\u0001\u0000"+
+		"\u0000\u0000}\u0082\u0003$\u0012\u0000~\u007f\u0005\u0004\u0000\u0000"+
+		"\u007f\u0081\u0003$\u0012\u0000\u0080~\u0001\u0000\u0000\u0000\u0081\u0084"+
+		"\u0001\u0000\u0000\u0000\u0082\u0080\u0001\u0000\u0000\u0000\u0082\u0083"+
+		"\u0001\u0000\u0000\u0000\u0083\u0019\u0001\u0000\u0000\u0000\u0084\u0082"+
+		"\u0001\u0000\u0000\u0000\u0085\u008a\u0003(\u0014\u0000\u0086\u0087\u0005"+
+		"\u0004\u0000\u0000\u0087\u0089\u0003(\u0014\u0000\u0088\u0086\u0001\u0000"+
+		"\u0000\u0000\u0089\u008c\u0001\u0000\u0000\u0000\u008a\u0088\u0001\u0000"+
+		"\u0000\u0000\u008a\u008b\u0001\u0000\u0000\u0000\u008b\u001b\u0001\u0000"+
+		"\u0000\u0000\u008c\u008a\u0001\u0000\u0000\u0000\u008d\u008e\u0005\u000e"+
+		"\u0000\u0000\u008e\u008f\u0003\u001e\u000f\u0000\u008f\u001d\u0001\u0000"+
+		"\u0000\u0000\u0090\u0091\u0006\u000f\uffff\uffff\u0000\u0091\u0092\u0003"+
+		"$\u0012\u0000\u0092\u0093\u0003 \u0010\u0000\u0093\u0094\u0003(\u0014"+
+		"\u0000\u0094\u009a\u0001\u0000\u0000\u0000\u0095\u0096\u0003$\u0012\u0000"+
+		"\u0096\u0097\u0003 \u0010\u0000\u0097\u0098\u0003$\u0012\u0000\u0098\u009a"+
+		"\u0001\u0000\u0000\u0000\u0099\u0090\u0001\u0000\u0000\u0000\u0099\u0095"+
+		"\u0001\u0000\u0000\u0000\u009a\u00a3\u0001\u0000\u0000\u0000\u009b\u009c"+
+		"\n\u0004\u0000\u0000\u009c\u009d\u0005\u0019\u0000\u0000\u009d\u00a2\u0003"+
+		"\u001e\u000f\u0005\u009e\u009f\n\u0003\u0000\u0000\u009f\u00a0\u0005\u001a"+
+		"\u0000\u0000\u00a0\u00a2\u0003\u001e\u000f\u0004\u00a1\u009b\u0001\u0000"+
+		"\u0000\u0000\u00a1\u009e\u0001\u0000\u0000\u0000\u00a2\u00a5\u0001\u0000"+
+		"\u0000\u0000\u00a3\u00a1\u0001\u0000\u0000\u0000\u00a3\u00a4\u0001\u0000"+
+		"\u0000\u0000\u00a4\u001f\u0001\u0000\u0000\u0000\u00a5\u00a3\u0001\u0000"+
+		"\u0000\u0000\u00a6\u00a7\u0007\u0000\u0000\u0000\u00a7!\u0001\u0000\u0000"+
+		"\u0000\u00a8\u00a9\u0007\u0001\u0000\u0000\u00a9#\u0001\u0000\u0000\u0000"+
+		"\u00aa\u00ad\u0005\u001d\u0000\u0000\u00ab\u00ac\u0005\u000b\u0000\u0000"+
+		"\u00ac\u00ae\u0005\u001d\u0000\u0000\u00ad\u00ab\u0001\u0000\u0000\u0000"+
+		"\u00ad\u00ae\u0001\u0000\u0000\u0000\u00ae%\u0001\u0000\u0000\u0000\u00af"+
+		"\u00b0\u0005\u001d\u0000\u0000\u00b0\'\u0001\u0000\u0000\u0000\u00b1\u00b2"+
+		"\u0007\u0002\u0000\u0000\u00b2)\u0001\u0000\u0000\u0000\u000e.6=@C]kv"+
+		"\u0082\u008a\u0099\u00a1\u00a3\u00ad";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -1,9 +1,9 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ColumnList implements Expression {
+public class ColumnList implements Statement {
   private final List<String> columns;
 
   public ColumnList(List<String> columns) {
@@ -27,7 +27,7 @@ public class ColumnList implements Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitColumnListNode(this);
   }
 }

@@ -1,7 +1,6 @@
 package dev.xxdb.parser.ast.plan;
 
-import dev.xxdb.storage.tuple.Value;
-import org.checkerframework.checker.units.qual.A;
+import dev.xxdb.types.Value;
 
 import java.util.ArrayList;
 import java.util.List;

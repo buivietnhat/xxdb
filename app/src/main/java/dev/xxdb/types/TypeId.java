@@ -1,4 +1,4 @@
-package dev.xxdb.storage.tuple;
+package dev.xxdb.types;
 
 public enum TypeId {
   BOOLEAN,

@@ -1,4 +1,4 @@
-// Generated from /home/nhatbui/workspace/database_system/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
+// Generated from C:/workspace/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
 package dev.xxdb.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -37,6 +37,26 @@ public interface SqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSelectStatement(SqlParser.SelectStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#joinClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinClause(SqlParser.JoinClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#joinClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinClause(SqlParser.JoinClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#limitClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterLimitClause(SqlParser.LimitClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#limitClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitLimitClause(SqlParser.LimitClauseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SqlParser#insertStatement}.
 	 * @param ctx the parse tree
@@ -138,15 +158,53 @@ public interface SqlListener extends ParseTreeListener {
 	 */
 	void exitWhereClause(SqlParser.WhereClauseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SqlParser#condition}.
+	 * Enter a parse tree produced by the {@code SimpleColumnCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void enterCondition(SqlParser.ConditionContext ctx);
+	void enterSimpleColumnCondition(SqlParser.SimpleColumnConditionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SqlParser#condition}.
+	 * Exit a parse tree produced by the {@code SimpleColumnCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void exitCondition(SqlParser.ConditionContext ctx);
+	void exitSimpleColumnCondition(SqlParser.SimpleColumnConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SimpleValueCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimpleValueCondition(SqlParser.SimpleValueConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SimpleValueCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimpleValueCondition(SqlParser.SimpleValueConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code OrCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrCondition(SqlParser.OrConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code OrCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrCondition(SqlParser.OrConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AndCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndCondition(SqlParser.AndConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AndCondition}
+	 * labeled alternative in {@link SqlParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndCondition(SqlParser.AndConditionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SqlParser#operator}.
 	 * @param ctx the parse tree

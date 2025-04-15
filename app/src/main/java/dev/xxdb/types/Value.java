@@ -1,3 +1,3 @@
-package dev.xxdb.storage.tuple;
+package dev.xxdb.types;
 
 public sealed interface Value permits StringValue, IntValue {}

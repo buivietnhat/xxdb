@@ -1,6 +1,6 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
-public class ColumnDefinition implements Expression {
+public class ColumnDefinition implements Statement {
   private final String columnName;
   private final String dataType;
 
@@ -23,7 +23,7 @@ public class ColumnDefinition implements Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitColumnDefinitionNode(this);
   }
 }

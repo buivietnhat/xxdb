@@ -1,18 +1,18 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
-public class CreateTable implements Expression {
+public class CreateTable implements Statement {
   private final String tableName;
-  private final Expression columnDefinitionList;
+  private final Statement columnDefinitionList;
 
   public String getTableName() {
     return tableName;
   }
 
-  public Expression getColumnDefinitionList() {
+  public Statement getColumnDefinitionList() {
     return columnDefinitionList;
   }
 
-  public CreateTable(String tableName, Expression columnDefinitionList) {
+  public CreateTable(String tableName, Statement columnDefinitionList) {
     this.tableName = tableName;
     this.columnDefinitionList = columnDefinitionList;
   }
@@ -26,7 +26,7 @@ public class CreateTable implements Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitCreateTableNode(this);
   }
 }

@@ -1,16 +1,16 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ValueList implements Expression {
-  private final List<Expression> values;
+public class ValueList implements Statement {
+  private final List<Statement> values;
 
-  public ValueList(List<Expression> values) {
+  public ValueList(List<Statement> values) {
     this.values = values;
   }
 
-  public List<Expression> getValues() {
+  public List<Statement> getValues() {
     return Collections.unmodifiableList(values);
   }
 
@@ -18,7 +18,7 @@ public class ValueList implements Expression {
   public String toString() {
     StringBuilder rep = new StringBuilder();
     rep.append("(");
-    for (Expression value : values) {
+    for (Statement value : values) {
       rep.append(value.toString()).append(" ");
     }
     rep.deleteCharAt(rep.length() - 1);
@@ -27,7 +27,7 @@ public class ValueList implements Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitValueListNode(this);
   }
 }

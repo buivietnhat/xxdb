@@ -1,6 +1,6 @@
 package dev.xxdb.catalog;
 
-import dev.xxdb.storage.tuple.TypeId;
+import dev.xxdb.types.TypeId;
 import java.util.List;
 
 /**

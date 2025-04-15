@@ -1,25 +1,23 @@
-package dev.xxdb.parser.ast.expression;
+package dev.xxdb.parser.ast.statement;
 
-import java.util.List;
-
-public class Insert implements Expression {
+public class Insert implements Statement {
   private final String tableName;
-  private final Expression columns;
-  private final Expression values;
+  private final Statement columns;
+  private final Statement values;
 
   public String getTableName() {
     return tableName;
   }
 
-  public Expression getColumns() {
+  public Statement getColumns() {
     return columns;
   }
 
-  public Expression getValues() {
+  public Statement getValues() {
     return values;
   }
 
-  public Insert(String tableName, Expression columns, Expression values) {
+  public Insert(String tableName, Statement columns, Statement values) {
     this.tableName = tableName;
     this.columns = columns;
     this.values = values;
@@ -34,7 +32,7 @@ public class Insert implements Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(StatementVisitor visitor) {
     visitor.visitInsertNode(this);
   }
 }
