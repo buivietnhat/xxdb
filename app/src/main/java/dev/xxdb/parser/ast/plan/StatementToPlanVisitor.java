@@ -1,6 +1,8 @@
 package dev.xxdb.parser.ast.plan;
 
+import dev.xxdb.parser.ast.relationalgebra.JoinPredicate;
 import dev.xxdb.parser.ast.statement.*;
+import dev.xxdb.types.PredicateType;
 
 public class StatementToPlanVisitor implements StatementVisitor {
   private LogicalPlan plan;
@@ -9,14 +11,11 @@ public class StatementToPlanVisitor implements StatementVisitor {
     return (CreateTablePlan) plan;
   }
 
-  private SelectPlan getSelectPlan() {
-    return (SelectPlan) plan;
-  }
-
   private InsertPlan getInsertPlan() {
     return (InsertPlan) plan;
   }
 
+  private SelectPlan.Builder selectBuilder;
   @Override
   public void visitInsertNode(Insert node) {
     assert(plan == null);
@@ -46,7 +45,7 @@ public class StatementToPlanVisitor implements StatementVisitor {
     if (insertPlan != null) {
       insertPlan.setColumns(node.getColumns());
     } else {
-      getSelectPlan().addProjection(node.getColumns());
+      selectBuilder.addProjection(node.getColumns());
     }
   }
 
@@ -69,23 +68,28 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitIntValueNode(IntValue node) {
-    InsertPlan insertPlan = getInsertPlan();
-    insertPlan.addValue(new dev.xxdb.types.IntValue(node.getValue()));
+    if (selectBuilder == null) {
+      InsertPlan insertPlan = getInsertPlan();
+      insertPlan.addValue(new dev.xxdb.types.IntValue(node.getValue()));
+    } else {
+      selectBuilder.setValueForPredicate(new dev.xxdb.types.IntValue(node.getValue()));
+    }
   }
 
   @Override
   public void visitStringValueNode(StringValue node) {
-    InsertPlan insertPlan = getInsertPlan();
-    insertPlan.addValue(new dev.xxdb.types.StringValue(node.getValue()));
+    if (selectBuilder == null) {
+      InsertPlan insertPlan = getInsertPlan();
+      insertPlan.addValue(new dev.xxdb.types.StringValue(node.getValue()));
+    } else {
+      selectBuilder.setValueForPredicate(new dev.xxdb.types.StringValue(node.getValue()));
+    }
   }
 
   @Override
   public void visitSelectNode(Select node) {
-    assert(plan == null);
-    plan = new SelectPlan();
-
-    SelectPlan selectPlan = getSelectPlan();
-    selectPlan.setTableName(node.getTableName());
+    selectBuilder = new SelectPlan.Builder();
+    selectBuilder.setLeftTableName(node.getTableName());
 
     node.getColumnList().accept(this);
 
@@ -105,49 +109,67 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitJoinNode(Join node) {
-    SelectPlan selectPlan = getSelectPlan();
-    selectPlan.addJoin(selectPlan.getTableName(), node.getTableName());
+    selectBuilder.setLeftJoinTable(selectBuilder.getLeftTableName());
+    selectBuilder.setRightJoinTable(node.getTableName());
+    selectBuilder.buildingJoin = true;
     node.getCondition().accept(this);
   }
 
   @Override
   public void visitLimitNode(Limit node) {
-    throw new RuntimeException("unimplemented");
+    selectBuilder.setLimit(node.getNumber());
   }
 
   @Override
   public void visitWhereNode(Where node) {
-    throw new RuntimeException("unimplemented");
+    node.getCondition().accept(this);
   }
 
   @Override
   public void visitAndConditionNode(AndCondition node) {
-    throw new RuntimeException("unimplemented");
+    node.getLeft().accept(this);
+    node.getRight().accept(this);
+    selectBuilder.addPredicateType(PredicateType.AND);
   }
 
   @Override
   public void visitOrConditionNode(OrCondition node) {
-    throw new RuntimeException("unimplemented");
+    node.getLeft().accept(this);
+    node.getRight().accept(this);
+    selectBuilder.addPredicateType(PredicateType.OR);
   }
 
   @Override
   public void visitSimpleValueConditionNode(SimpleValueCondition node) {
-    throw new RuntimeException("unimplemented");
+    selectBuilder.addColumnNameForPredicate(node.getColumnName());
+    node.getOperator().accept(this);
+    node.getValue().accept(this);
   }
 
   @Override
   public void visitSimpleColumnConditionNode(SimpleColumnCondition node) {
-    throw new RuntimeException("unimplemented");
+    selectBuilder.setLeftJoinColumn(node.getColumnName1());
+    selectBuilder.setRightJoinColumn(node.getColumnName2());
+    node.getOperator().accept(this);
   }
 
   @Override
   public void visitOperatorNode(Operator node) {
-    throw new RuntimeException("unimplemented");
+    if (selectBuilder != null) {
+      if (selectBuilder.buildingJoin) {
+        selectBuilder.setJoinOps(node.getOp());
+        selectBuilder.buildingJoin = false;
+      } else {
+        selectBuilder.setPredicateOp(node.getOp());
+      }
+    }
   }
 
   public LogicalPlan getPlan() {
-    LogicalPlan plan = this.plan;
-    this.plan = null;
-    return plan;
+    if (this.plan != null) {
+      return this.plan;
+    }
+
+    return selectBuilder.build();
   }
 }

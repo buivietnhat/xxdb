@@ -45,7 +45,7 @@ public class CreateTablePlan implements LogicalPlan {
   }
 
   @Override
-  public void accept(LogicalPlanVisitor visitor) {
+  public <T> T accept(LogicalPlanVisitor<T> visitor) {
     throw new RuntimeException("unimplemented");
   }
 }

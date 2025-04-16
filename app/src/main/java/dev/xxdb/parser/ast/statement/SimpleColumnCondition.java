@@ -11,6 +11,18 @@ public class SimpleColumnCondition implements Condition {
     this.operator = operator;
   }
 
+  public String getColumnName1() {
+    return columnName1;
+  }
+
+  public String getColumnName2() {
+    return columnName2;
+  }
+
+  public Statement getOperator() {
+    return operator;
+  }
+
   @Override
   public void accept(StatementVisitor visitor) {
     visitor.visitSimpleColumnConditionNode(this);

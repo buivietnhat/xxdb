@@ -9,6 +9,14 @@ public class OrCondition implements Condition{
     this.right = right;
   }
 
+  public Statement getLeft() {
+    return left;
+  }
+
+  public Statement getRight() {
+    return right;
+  }
+
   @Override
   public void accept(StatementVisitor visitor) {
     visitor.visitOrConditionNode(this);

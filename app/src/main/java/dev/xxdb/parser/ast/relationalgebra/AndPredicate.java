@@ -1,4 +1,4 @@
-package dev.xxdb.parser.ast.relational_algebra;
+package dev.xxdb.parser.ast.relationalgebra;
 
 public class AndPredicate implements Predicate {
   private final Predicate left;

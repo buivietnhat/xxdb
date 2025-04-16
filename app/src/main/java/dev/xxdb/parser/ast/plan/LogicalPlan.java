@@ -7,5 +7,5 @@ public interface LogicalPlan {
   @Override
   String toString();
 
-  void accept(LogicalPlanVisitor visitor);
+  <T> T accept(LogicalPlanVisitor<T> visitor);
 }

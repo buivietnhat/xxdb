@@ -16,6 +16,10 @@ public class Operator implements Statement {
     }
   }
 
+  public Ops getOp() {
+    return op;
+  }
+
   @Override
   public void accept(StatementVisitor visitor) {
     visitor.visitOperatorNode(this);

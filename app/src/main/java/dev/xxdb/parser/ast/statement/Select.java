@@ -5,9 +5,9 @@ import java.util.Optional;
 public class Select implements Statement {
   private String tableName;
   private Statement columnList;
-  private Optional<Statement> joinClause;
-  private Optional<Statement> whereClause;
-  private Optional<Statement> limitClause;
+  private Optional<Statement> joinClause = Optional.empty();
+  private Optional<Statement> whereClause = Optional.empty();
+  private Optional<Statement> limitClause = Optional.empty();
 
   public String getTableName() {
     return tableName;

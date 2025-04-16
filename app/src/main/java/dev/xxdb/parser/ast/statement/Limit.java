@@ -7,6 +7,10 @@ public class Limit implements Statement {
     this.number = number;
   }
 
+  public int getNumber() {
+    return number;
+  }
+
   @Override
   public void accept(StatementVisitor visitor) {
     visitor.visitLimitNode(this);

@@ -1,48 +1,155 @@
 package dev.xxdb.parser.ast.plan;
 
-import dev.xxdb.parser.ast.relational_algebra.*;
+import dev.xxdb.parser.ast.relationalgebra.*;
+import dev.xxdb.types.IntValue;
+import dev.xxdb.types.Ops;
+import dev.xxdb.types.PredicateType;
+import dev.xxdb.types.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class SelectPlan implements LogicalPlan {
+  //          Limit
+  //            |
   //        Projection
   //            |
   //      Select <Predicate> *
   //            |
   //     Join <Predicate> ?
-  private String tableName;
+
+  public static class Builder {
+    private final SelectPlan plan = new SelectPlan();
+    private final Join.Builder joinBuilder = new Join.Builder();
+    private String leftTableName;
+    public boolean buildingJoin = false;
+
+    public void setJoinOps(Ops ops) {
+      joinBuilder.setJoinOps(ops);
+    }
+
+    public void setLeftJoinColumn(String leftColumn) {
+      joinBuilder.setLeftJoinColumn(leftColumn);
+    }
+
+    public void setRightJoinColumn(String rightColumn) {
+      joinBuilder.setRightJoinColumn(rightColumn);
+    }
+
+    public void setLeftTableName(String leftTableName) {
+      this.leftTableName = leftTableName;
+      plan.setLeftTableName(leftTableName);
+    }
+
+    public String getLeftTableName() {
+      return leftTableName;
+    }
+
+    public void setLeftJoinTable(String leftTable) {
+      joinBuilder.setLeftTable(leftTable);
+    }
+
+    public void setRightJoinTable(String rightTable) {
+      joinBuilder.setRightTable(rightTable);
+    }
+
+    public void setLimit(int limit) {
+      plan.addLimit(limit);
+    }
+
+    public void addProjection(List<String> columns) {
+      plan.addProjection(columns);
+    }
+
+    public void setValueForPredicate(Value value) {
+      ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setValue(value);
+    }
+
+    public void addColumnNameForPredicate(String columnName) {
+      plan.addFilter(new Select());
+      plan.getCurrentFilter().setTableName(leftTableName);
+      plan.getCurrentFilter().setPredicate(new ValuePredicate());
+      ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setColumn(columnName);
+    }
+
+    public void setPredicateOp(Ops op) {
+      ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setOp(op);
+    }
+
+    public void addPredicateType(PredicateType type) {
+      plan.addPredicateType(type);
+    }
+
+    public SelectPlan build() {
+      Join join = joinBuilder.build();
+      if (join.valid()) {
+        plan.addJoin(join);
+      }
+      return plan;
+    }
+
+  }
+
+  private String leftTableName;
   private Projection projection;
   private final List<Select> selects = new ArrayList<>();
-  private Optional<Join> join;
-
-  public void setTableName(String tableName) {
-    this.tableName = tableName;
-  }
-
-  public String getTableName() {
-    return tableName;
-  }
+  private final List<PredicateType> types = new ArrayList<>();
+  private Optional<Join> join = Optional.empty();
 
   void addProjection(List<String> columns) {
     projection = new Projection(columns);
   }
 
-  void addFilter(Predicate predicate) {
-    selects.addLast(new Select(predicate));
+  public void setLeftTableName(String leftTableName) {
+    this.leftTableName = leftTableName;
   }
 
-  void addJoin(String leftTable, String rightTable) {
-    join = Optional.of(new Join(leftTable, rightTable));
+  void addFilter(Select select) {
+    selects.addLast(select);
   }
 
-  void setJoinPredicate(Predicate predicate) {
-    join.get().setPredicate(predicate);
+  void addPredicateType(PredicateType type) {
+    types.addLast(type);
+  }
+
+  Select getCurrentFilter() {
+    return selects.getLast();
+  }
+
+  void addJoin(Join join) {
+    this.join = Optional.of(join);
+  }
+
+  void addLimit(int limit) {
+    projection.setLimit(limit);
   }
 
   @Override
-  public void accept(LogicalPlanVisitor visitor) {
+  public String toString() {
+    String rep = "SelectPlan{";
+    rep += "table: " + leftTableName;
+    rep += ", projection=" + projection;
+
+    if (!selects.isEmpty()) {
+      rep += ", predicates=[";
+      for (int i = 0; i < selects.size() - 1; i++) {
+        rep += selects.get(i) + " " + types.get(i) + " ";
+      }
+      rep += selects.get(selects.size() - 1);
+      rep += "]";
+    }
+
+    if (join.isPresent()) {
+      rep += ", join=" + join.get();
+    }
+    rep += '}';
+
+    return rep;
+  }
+
+  @Override
+  public <T> T accept(LogicalPlanVisitor<T> visitor) {
     throw new RuntimeException("unimplemented");
   }
 }

@@ -5,10 +5,10 @@ import dev.xxdb.types.Value;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertPlan implements LogicalPlan{
+public class InsertPlan implements LogicalPlan {
   private String tableName;
   private List<String> columns = new ArrayList<>();
-  private List<Value> values = new ArrayList<>();
+  private final List<Value> values = new ArrayList<>();
 
   public String getTableName() {
     return tableName;
@@ -39,8 +39,8 @@ public class InsertPlan implements LogicalPlan{
   }
 
   @Override
-  public void accept(LogicalPlanVisitor visitor) {
-    throw new RuntimeException("unimplmented");
+  public <T> T accept(LogicalPlanVisitor<T> visitor) {
+    throw new RuntimeException("unimplemented");
   }
 
   @Override

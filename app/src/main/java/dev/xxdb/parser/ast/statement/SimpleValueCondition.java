@@ -5,6 +5,18 @@ public class SimpleValueCondition implements Condition{
   private final Statement operator;
   private final Statement value;
 
+  public String getColumnName() {
+    return columnName;
+  }
+
+  public Statement getOperator() {
+    return operator;
+  }
+
+  public Statement getValue() {
+    return value;
+  }
+
   public SimpleValueCondition(String columnName, Statement operator, Statement value) {
     this.columnName = columnName;
     this.operator = operator;

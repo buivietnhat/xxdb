@@ -7,6 +7,10 @@ public class Where implements Statement {
     this.condition = condition;
   }
 
+  public Statement getCondition() {
+    return condition;
+  }
+
   @Override
   public void accept(StatementVisitor visitor) {
     visitor.visitWhereNode(this);
