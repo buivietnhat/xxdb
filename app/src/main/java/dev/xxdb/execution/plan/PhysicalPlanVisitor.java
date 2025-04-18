@@ -12,4 +12,8 @@ public interface PhysicalPlanVisitor<T> {
   T visitSequentialScanPlan(SequentialScanPlan plan);
 
   T visitValueScanPlan(ValueScanPlan plan);
+
+  T visitProjectionPlan(ProjectionPlan plan);
+
+  T visitLimitPlan(LimitPlan plan);
 }

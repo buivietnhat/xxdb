@@ -20,4 +20,13 @@ public class ValueScanPlan extends PhysicalPlan {
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
     return visitor.visitValueScanPlan(this);
   }
+
+  @Override
+  public String toString() {
+    return "ValueScanPlan{" +
+        "tableName='" + tableName + '\'' +
+        ", columns=" + columns +
+        ", values=" + values +
+        '}';
+  }
 }

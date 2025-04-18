@@ -1,23 +1,22 @@
 package dev.xxdb.parser.ast.plan;
 
 import dev.xxdb.parser.ast.relationalgebra.*;
-import dev.xxdb.types.IntValue;
-import dev.xxdb.types.Ops;
-import dev.xxdb.types.PredicateType;
-import dev.xxdb.types.Value;
+import dev.xxdb.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class SelectPlan implements LogicalPlan {
-  //          Limit
+  //           Limit
+  //            |
+  //           Sort
   //            |
   //        Projection
   //            |
-  //      Select <Predicate> *
+  //    Select <Predicate> *
   //            |
-  //     Join <Predicate> ?
+  //    Join <Predicate> ?
 
   public static class Builder {
     private final SelectPlan plan = new SelectPlan();
@@ -123,6 +122,26 @@ public class SelectPlan implements LogicalPlan {
 
   void addLimit(int limit) {
     projection.setLimit(limit);
+  }
+
+  public String getLeftTableName() {
+    return leftTableName;
+  }
+
+  public Projection getProjection() {
+    return projection;
+  }
+
+  public List<Select> getSelects() {
+    return selects;
+  }
+
+  public List<PredicateType> getTypes() {
+    return types;
+  }
+
+  public Optional<Join> getJoin() {
+    return join;
   }
 
   @Override

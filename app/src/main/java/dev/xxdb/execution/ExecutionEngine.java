@@ -41,4 +41,14 @@ public class ExecutionEngine implements PhysicalPlanVisitor<Executor> {
   public Executor visitValueScanPlan(ValueScanPlan plan) {
     throw new RuntimeException("unimplemented");
   }
+
+  @Override
+  public Executor visitProjectionPlan(ProjectionPlan plan) {
+    throw new RuntimeException("unimplemented");
+  }
+
+  @Override
+  public Executor visitLimitPlan(LimitPlan plan) {
+    throw new RuntimeException("unimplemented");
+  }
 }

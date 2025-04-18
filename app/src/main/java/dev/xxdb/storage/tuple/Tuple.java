@@ -3,6 +3,9 @@ package dev.xxdb.storage.tuple;
 import java.util.Arrays;
 import java.util.Objects;
 
+import dev.xxdb.catalog.Schema;
+import dev.xxdb.types.Value;
+
 class TupleHeader {}
 
 public class Tuple {
@@ -35,5 +38,9 @@ public class Tuple {
   @Override
   public int hashCode() {
     return Arrays.hashCode(data);
+  }
+
+  public Value getValue(Schema schema, String column) {
+    throw new RuntimeException("unimplemented");
   }
 }

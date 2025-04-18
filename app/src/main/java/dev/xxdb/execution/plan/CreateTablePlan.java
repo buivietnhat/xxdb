@@ -29,4 +29,13 @@ public class CreateTablePlan extends PhysicalPlan {
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
     throw new RuntimeException("unimplemented");
   }
+
+  @Override
+  public String toString() {
+    return "CreateTablePlan{" +
+        "tableName='" + tableName + '\'' +
+        ", columns=" + columns +
+        ", types=" + types +
+        '}';
+  }
 }

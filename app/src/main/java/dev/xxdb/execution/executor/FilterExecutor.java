@@ -2,13 +2,17 @@ package dev.xxdb.execution.executor;
 
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.FilterPlan;
-import dev.xxdb.storage.tuple.Tuple;
 
 import java.util.Optional;
 
 public class FilterExecutor extends Executor {
-  public FilterExecutor(final FilterPlan plan) {
-    throw new RuntimeException("unimplemented");
+  private final FilterPlan plan;
+  private final Executor child;
+
+  public FilterExecutor(ExecutionContext ctx, FilterPlan plan, Executor child) {
+    super(ctx);
+    this.plan = plan;
+    this.child = child;
   }
 
   public Optional<TupleResult> next() throws ExecutionException {

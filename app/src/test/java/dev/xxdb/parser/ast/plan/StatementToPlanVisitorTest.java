@@ -3,7 +3,6 @@ package dev.xxdb.parser.ast.plan;
 import dev.xxdb.parser.antlr.SqlLexer;
 import dev.xxdb.parser.antlr.SqlParser;
 import dev.xxdb.parser.ast.statement.*;
-import dev.xxdb.types.Ops;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.Nested;

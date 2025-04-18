@@ -16,4 +16,11 @@ public class InsertPlan extends PhysicalPlan {
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
     return visitor.visitInsertPlan(this);
   }
+
+  @Override
+  public String toString() {
+    return "InsertPlan{" +
+        "tableName='" + tableName + '\'' +
+        '}';
+  }
 }

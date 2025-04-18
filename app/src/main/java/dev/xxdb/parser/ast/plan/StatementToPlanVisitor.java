@@ -1,6 +1,5 @@
 package dev.xxdb.parser.ast.plan;
 
-import dev.xxdb.parser.ast.relationalgebra.JoinPredicate;
 import dev.xxdb.parser.ast.statement.*;
 import dev.xxdb.types.PredicateType;
 

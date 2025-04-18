@@ -11,6 +11,14 @@ public class Projection implements RelationalAlgebra {
     this.columns = columns;
   }
 
+  public List<String> getColumns() {
+    return columns;
+  }
+
+  public Optional<Integer> getLimit() {
+    return limit;
+  }
+
   @Override
   public String toString() {
     String rep = "Projection{";

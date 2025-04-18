@@ -5,8 +5,8 @@ import dev.xxdb.storage.tuple.Tuple;
 
 import java.util.Optional;
 
-public class AggregationExecutor extends Executor {
-  public Optional<TupleResult> next() throws ExecutionException {
-    throw new RuntimeException("unimplemented");
-  }
-}
+//public class AggregationExecutor extends Executor {
+//  public Optional<TupleResult> next() throws ExecutionException {
+//    throw new RuntimeException("unimplemented");
+//  }
+//}

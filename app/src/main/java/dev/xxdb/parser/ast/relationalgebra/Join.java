@@ -41,6 +41,18 @@ public class Join implements RelationalAlgebra {
   private String rightTable;
   private JoinPredicate predicate;
 
+  public String getLeftTable() {
+    return leftTable;
+  }
+
+  public String getRightTable() {
+    return rightTable;
+  }
+
+  public JoinPredicate getPredicate() {
+    return predicate;
+  }
+
   public boolean valid() {
     return leftTable != null && rightTable != null && predicate != null;
   }

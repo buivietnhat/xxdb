@@ -41,9 +41,16 @@ public class ValuePredicate implements Predicate {
         '}';
   }
 
-  //  public ValuePredicate(Ops op, String column, Value value) {
-//    this.op = op;
-//    this.column = column;
-//    this.value = value;
-//  }
+  @Override
+  public <T> T accept(PredicateVisitor<T> visitor) {
+    return visitor.visitValuePredicate(this);
+  }
+
+  public ValuePredicate() {}
+
+  public ValuePredicate(Ops op, String column, Value value) {
+    this.op = op;
+    this.column = column;
+    this.value = value;
+  }
 }
