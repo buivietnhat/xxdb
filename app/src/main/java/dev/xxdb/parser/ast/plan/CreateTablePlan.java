@@ -6,8 +6,16 @@ import java.util.List;
 
 public class CreateTablePlan implements LogicalPlan {
   private String tableName;
-  private final List<String> columns = new ArrayList<>();
-  private final List<String> types = new ArrayList<>();
+  private List<String> columns = new ArrayList<>();
+  private List<String> types = new ArrayList<>();
+
+  public CreateTablePlan(String tableName, List<String> columns, List<String> types) {
+    this.tableName = tableName;
+    this.columns = columns;
+    this.types = types;
+  }
+
+  public CreateTablePlan() {}
 
   public void setTableName(String table) {
     tableName = table;
@@ -46,6 +54,6 @@ public class CreateTablePlan implements LogicalPlan {
 
   @Override
   public <T> T accept(LogicalPlanVisitor<T> visitor) {
-    throw new RuntimeException("unimplemented");
+    return visitor.visitCreateTablePlan(this);
   }
 }

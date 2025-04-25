@@ -22,6 +22,7 @@ public class ProjectionPlan extends PhysicalPlan {
   public String toString() {
     return "ProjectionPlan{" +
         "columns=" + columns +
+        ", child=" + leftChild +
         '}';
   }
 }

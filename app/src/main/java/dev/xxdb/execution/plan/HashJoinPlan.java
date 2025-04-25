@@ -16,7 +16,11 @@ public class HashJoinPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    throw new RuntimeException("unimplemented");
-
+    return "HashJoinPlan{" +
+        "leftJoinKey='" + leftJoinKey + '\'' +
+        ", rightJoinKey='" + rightJoinKey + '\'' +
+        ", leftChild='" + leftChild + '\'' +
+        ", rightChild='" + rightChild + '\'' +
+        '}';
   }
 }

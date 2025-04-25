@@ -169,6 +169,6 @@ public class SelectPlan implements LogicalPlan {
 
   @Override
   public <T> T accept(LogicalPlanVisitor<T> visitor) {
-    throw new RuntimeException("unimplemented");
+    return visitor.visitSelectPlan(this);
   }
 }

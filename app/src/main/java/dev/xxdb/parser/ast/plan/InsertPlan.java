@@ -8,7 +8,7 @@ import java.util.List;
 public class InsertPlan implements LogicalPlan {
   private String tableName;
   private List<String> columns = new ArrayList<>();
-  private final List<Value> values = new ArrayList<>();
+  private List<Value> values = new ArrayList<>();
 
   public String getTableName() {
     return tableName;
@@ -38,9 +38,17 @@ public class InsertPlan implements LogicalPlan {
     this.tableName = tableName;
   }
 
+  public InsertPlan() {}
+
+  public InsertPlan(String tableName, List<String> columns, List<Value> values) {
+    this.tableName = tableName;
+    this.columns = columns;
+    this.values = values;
+  }
+
   @Override
   public <T> T accept(LogicalPlanVisitor<T> visitor) {
-    throw new RuntimeException("unimplemented");
+    return visitor.visitInsertPlan(this);
   }
 
   @Override

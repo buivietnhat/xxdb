@@ -18,6 +18,7 @@ public class FilterPlan extends PhysicalPlan {
   public String toString() {
     return "FilterPlan{" +
         "predicate=" + predicate +
+        ", child=" + leftChild +
         '}';
   }
 }

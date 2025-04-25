@@ -1,10 +1,5 @@
 package dev.xxdb.execution.plan;
 
-import dev.xxdb.types.Value;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class InsertPlan extends PhysicalPlan {
   private final String tableName;
 
@@ -21,6 +16,7 @@ public class InsertPlan extends PhysicalPlan {
   public String toString() {
     return "InsertPlan{" +
         "tableName='" + tableName + '\'' +
+        ", leftChild: " + leftChild +
         '}';
   }
 }

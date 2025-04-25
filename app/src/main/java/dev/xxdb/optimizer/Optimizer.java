@@ -111,6 +111,9 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
       hashJoinPlan.setLeftChild(leftChild);
       hashJoinPlan.setRightChild(rightChild);
       curr.setLeftChild(hashJoinPlan);
+    } else {
+      SequentialScanPlan sequentialScanPlan = new SequentialScanPlan(plan.getLeftTableName());
+      curr.setLeftChild(sequentialScanPlan);
     }
 
     return root;

@@ -16,6 +16,7 @@ public class LimitPlan extends PhysicalPlan {
   public String toString() {
     return "LimitPlan{" +
         "number=" + number +
+        ", child=" + leftChild +
         '}';
   }
 }
