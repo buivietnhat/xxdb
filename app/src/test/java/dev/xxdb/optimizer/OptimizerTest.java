@@ -55,7 +55,7 @@ class OptimizerTest {
       List<PredicateType> types = List.of(PredicateType.AND);
       dev.xxdb.types.Predicate build = builder.build(selects, types);
       assertEquals("AndPredicate{left=SimplePredicate{column='col1', value=IntValue[value=20], op=EQUALS}, " +
-                                          "right=SimplePredicate{column='col2', value=StringValue[value=20], op=GREATER_THAN}}", build.toString());
+          "right=SimplePredicate{column='col2', value=StringValue[value=20], op=GREATER_THAN}}", build.toString());
     }
   }
 
@@ -73,14 +73,20 @@ class OptimizerTest {
     // cover logical plan is insert
     @Test
     void insertTest() {
-      InsertPlan insertPlan = new InsertPlan("Table", List.of("col1", "col2", "col3"),
-          List.of(new IntValue(1), new StringValue("2"), new IntValue(3)));
+      InsertPlan insertPlan = new InsertPlan("Table", List.of("col1", "col2"),
+          List.of(
+              List.of(new IntValue(1), new StringValue("a")),
+              List.of(new IntValue(2), new StringValue("b")),
+              List.of(new IntValue(3), new StringValue("c"))
+          ));
 
       Optimizer optimizer = new Optimizer();
       PhysicalPlan physicalPlan = optimizer.run(insertPlan);
       assertEquals("InsertPlan{tableName='Table', " +
-          "leftChild: ValueScanPlan{tableName='Table', " +
-          "columns=[col1, col2, col3], values=[IntValue[value=1], StringValue[value=2], IntValue[value=3]]}}", physicalPlan.toString());
+                                "leftChild: ValueScanPlan{tableName='Table', columns=[col1, col2], " +
+                                            "values=[[IntValue[value=1], StringValue[value=a]], " +
+                                                    "[IntValue[value=2], StringValue[value=b]], " +
+                                                    "[IntValue[value=3], StringValue[value=c]]]}}", physicalPlan.toString());
 
     }
 
@@ -122,8 +128,8 @@ class OptimizerTest {
       Optimizer optimizer = new Optimizer();
       PhysicalPlan physicalPlan = optimizer.run(logicalPlan);
       assertEquals("ProjectionPlan{columns=[col1, col2, col3], " +
-                                "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{column='col1', value=IntValue[value=2], op=GREATER_THAN}, right=SimplePredicate{column='col2', value=StringValue[value=Bar], op=EQUALS}}, " +
-                                                  "child=SequentialScanPlan{table='FOO'}}}", physicalPlan.toString());
+          "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{column='col1', value=IntValue[value=2], op=GREATER_THAN}, right=SimplePredicate{column='col2', value=StringValue[value=Bar], op=EQUALS}}, " +
+          "child=SequentialScanPlan{table='FOO'}}}", physicalPlan.toString());
 
     }
 
@@ -136,11 +142,11 @@ class OptimizerTest {
       Optimizer optimizer = new Optimizer();
       PhysicalPlan physicalPlan = optimizer.run(logicalPlan);
       assertEquals("LimitPlan{number=10, " +
-                                      "child=ProjectionPlan{columns=[FOO.col1, FOO.col2, BAR.col1, BAR.col2], " +
-                                             "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{column='FOO.col1', value=IntValue[value=20], op=EQUALS}, right=SimplePredicate{column='BAR.col2', value=StringValue[value=Bar], op=EQUALS}}, " +
-                                                    "child=HashJoinPlan{leftJoinKey='FOO.id', rightJoinKey='BAR.id', " +
-                                                           "leftChild='SequentialScanPlan{table='FOO'}', " +
-                                                           "rightChild='SequentialScanPlan{table='BAR'}'}}}}", physicalPlan.toString());
+          "child=ProjectionPlan{columns=[FOO.col1, FOO.col2, BAR.col1, BAR.col2], " +
+          "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{column='FOO.col1', value=IntValue[value=20], op=EQUALS}, right=SimplePredicate{column='BAR.col2', value=StringValue[value=Bar], op=EQUALS}}, " +
+          "child=HashJoinPlan{leftJoinKey='FOO.id', rightJoinKey='BAR.id', " +
+          "leftChild='SequentialScanPlan{table='FOO'}', " +
+          "rightChild='SequentialScanPlan{table='BAR'}'}}}}", physicalPlan.toString());
     }
   }
 }

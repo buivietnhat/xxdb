@@ -1,4 +1,4 @@
-// Generated from C:/workspace/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
+// Generated from /home/nhatbui/workspace/database_system/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
 package dev.xxdb.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -88,6 +88,12 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitColumnList(SqlParser.ColumnListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#valueSetList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValueSetList(SqlParser.ValueSetListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#valueList}.
 	 * @param ctx the parse tree

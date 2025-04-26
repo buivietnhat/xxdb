@@ -24,7 +24,7 @@ limitClause
     ;
 
 insertStatement
-    : INSERT INTO tableName '(' columnList ')' VALUES '(' valueList ')'
+    : INSERT INTO tableName '(' columnList ')' VALUES valueSetList
     ;
 
 updateStatement
@@ -53,6 +53,10 @@ assignment
 
 columnList
     : columnName (',' columnName)*
+    ;
+
+valueSetList
+    : '(' valueList ')' (',' '(' valueList ')')*
     ;
 
 valueList

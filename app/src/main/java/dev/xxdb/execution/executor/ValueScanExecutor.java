@@ -1,25 +1,23 @@
 package dev.xxdb.execution.executor;
 
 import dev.xxdb.execution.ExecutionException;
-import dev.xxdb.execution.plan.FilterPlan;
+import dev.xxdb.execution.plan.ValueScanPlan;
 
 import java.util.Optional;
 
-public class FilterExecutor extends Executor {
-  private final FilterPlan plan;
-  private final Executor child;
+public class ValueScanExecutor extends Executor {
+  private final ValueScanPlan plan;
 
-  public FilterExecutor(ExecutionContext ctx, FilterPlan plan, Executor child) {
+  public ValueScanExecutor(ExecutionContext ctx, ValueScanPlan plan) {
     super(ctx);
     this.plan = plan;
-    this.child = child;
   }
 
   @Override
-  public void init() {
-
+  public void init() throws ExecutionException {
   }
 
+  @Override
   public Optional<TupleResult> next() throws ExecutionException {
     throw new RuntimeException("unimplemented");
   }

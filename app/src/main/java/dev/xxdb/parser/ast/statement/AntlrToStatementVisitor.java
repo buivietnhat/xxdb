@@ -44,10 +44,10 @@ public class AntlrToStatementVisitor extends SqlBaseVisitor<Statement> {
 
   @Override
   public Statement visitInsertStatement(SqlParser.InsertStatementContext ctx) {
-    String tableName = ctx.getChild(2).getText();
-    Statement columnList = visit(ctx.getChild(4));
-    Statement valueList = visit(ctx.getChild(8));
-    return new Insert(tableName, columnList, valueList);
+    String tableName = ctx.tableName().getText();
+    Statement columnList = visit(ctx.columnList());
+    Statement valueSetList = visit(ctx.valueSetList());
+    return new Insert(tableName, columnList, valueSetList);
   }
 
   @Override
@@ -206,5 +206,16 @@ public class AntlrToStatementVisitor extends SqlBaseVisitor<Statement> {
   public Statement visitLimitClause(SqlParser.LimitClauseContext ctx) {
     int number = Integer.parseInt(ctx.NUMBER().getText());
     return new Limit(number);
+  }
+
+  @Override
+  public Statement visitValueSetList(SqlParser.ValueSetListContext ctx) {
+    List<ValueList> valueSets = new ArrayList<>();
+    for (int i = 0; i < ctx.getChildCount(); i++) {
+      if (i % 4 == 1) { // Skip the '(' and ',' and ')'
+        valueSets.addLast((ValueList) visit(ctx.getChild(i)));
+      }
+    }
+    return new ValueSetList(valueSets);
   }
 }

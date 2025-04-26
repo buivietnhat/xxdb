@@ -14,8 +14,15 @@ public class CreateTableExecutor extends Executor {
   }
 
   @Override
+  public void init() {
+  }
+
+  @Override
   public Optional<TupleResult> next() throws ExecutionException {
-    ctx.catalog().createNewTable(plan.getTableName(), plan.getColumns(), plan.getTypes());
+    boolean created = ctx.catalog().createNewTable(plan.getTableName(), plan.getColumns(), plan.getTypes());
+    if (!created) {
+      throw new ExecutionException("The table already exist");
+    }
     return Optional.empty();
   }
 }

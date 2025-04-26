@@ -8,6 +8,7 @@ import dev.xxdb.parser.ast.relationalgebra.*;
 import dev.xxdb.types.Predicate;
 import dev.xxdb.types.PredicateType;
 import dev.xxdb.types.SimplePredicate;
+import dev.xxdb.types.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +123,7 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
   @Override
   public PhysicalPlan visitInsertPlan(InsertPlan plan) {
     dev.xxdb.execution.plan.InsertPlan insert = new dev.xxdb.execution.plan.InsertPlan(plan.getTableName());
-    ValueScanPlan valueScanPlan = new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValues());
+    ValueScanPlan valueScanPlan = new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValueSets());
     insert.setLeftChild(valueScanPlan);
     return insert;
   }

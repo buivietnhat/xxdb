@@ -14,6 +14,11 @@ public class HashJoinExecutor extends Executor {
   }
 
   @Override
+  public void init() {
+
+  }
+
+  @Override
   public Optional<TupleResult> next() throws ExecutionException {
     return Optional.empty();
   }

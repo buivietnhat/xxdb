@@ -13,14 +13,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StatementToPlanVisitorTest {
-
-  //  @BeforeEach
-//  void setUp() {
-//  }
-//
-//  @AfterEach
-//  void tearDown() {
-//  }
   private StatementToPlanVisitor visitor = new StatementToPlanVisitor();
 
   @Nested
@@ -45,18 +37,38 @@ class StatementToPlanVisitorTest {
   class VisitInsertNodeTest {
     // Testing strategy
     // + partition on the expression: valid Insert expression
+    // + partition on the value set: single value set, multiple values set
 
-    // cover the expression is a valid Insert
+    // cover the expression is a valid Insert, single value set
     @Test
     void validInsertExpression() {
       String tableName = "FOO";
       Statement columns = new ColumnList(List.of("col1", "col2", "col3", "col4"));
-      Statement values = new ValueList(List.of(new IntValue(100), new StringValue("'hello'"), new IntValue(200), new StringValue("'world'")));
+      ValueList valueList = new ValueList(List.of(new IntValue(100), new StringValue("'hello'"), new IntValue(200), new StringValue("'world'")));
+      Statement values = new ValueSetList(List.of(valueList));
       Insert insert = new Insert(tableName, columns, values);
       insert.accept(visitor);
       LogicalPlan plan = visitor.getPlan();
-      assertEquals("InsertPlan{tableName='FOO', columns=[col1, col2, col3, col4], values=[IntValue[value=100], " +
-          "StringValue[value=hello], IntValue[value=200], StringValue[value=world]]}", plan.toString());
+      assertEquals("InsertPlan{tableName='FOO', columns=[col1, col2, col3, col4], valueSets=[[IntValue[value=100], " +
+          "StringValue[value=hello], IntValue[value=200], StringValue[value=world]]]}", plan.toString());
+    }
+
+    // cover multiple value sets
+    @Test
+    void validInsertExpressionWithMultipleValueSets() {
+      String tableName = "FOO";
+      Statement columns = new ColumnList(List.of("col1", "col2"));
+      List<ValueList> valueSets = List.of(
+          new ValueList(List.of(new IntValue(1), new StringValue("'a'"))),
+          new ValueList(List.of(new IntValue(2), new StringValue("'b'"))),
+          new ValueList(List.of(new IntValue(3), new StringValue("'c'")))
+      );
+      Statement valueSetList = new ValueSetList(valueSets);
+      Insert insert = new Insert(tableName, columns, valueSetList);
+      insert.accept(visitor);
+      LogicalPlan plan = visitor.getPlan();
+      assertEquals("InsertPlan{tableName='FOO', columns=[col1, col2], valueSets=[[IntValue[value=1], StringValue[value=a]], " +
+          "[IntValue[value=2], StringValue[value=b]], [IntValue[value=3], StringValue[value=c]]]}", plan.toString());
     }
 
     @Nested
