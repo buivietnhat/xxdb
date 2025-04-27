@@ -9,6 +9,18 @@ public class ValueScanPlan extends PhysicalPlan {
   private final List<String> columns;
   private final List<List<Value>> values;
 
+  public List<String> getColumns() {
+    return columns;
+  }
+
+  public List<List<Value>> getValues() {
+    return values;
+  }
+
+  public String getTableName() {
+    return tableName;
+  }
+
   public ValueScanPlan(String tableName, List<String> columns, List<List<Value>> values) {
     this.tableName = tableName;
     this.columns = columns;
