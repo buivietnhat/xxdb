@@ -23,4 +23,11 @@ public class FilterExecutor extends Executor {
   public Optional<TupleResult> next() throws ExecutionException {
     throw new RuntimeException("unimplemented");
   }
+
+  @Override
+  public String toString() {
+    return "FilterExecutor{" +
+        "child=" + child +
+        '}';
+  }
 }

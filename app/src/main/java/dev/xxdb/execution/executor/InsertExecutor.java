@@ -23,6 +23,7 @@ public class InsertExecutor extends Executor {
   @Override
   public void init() throws ExecutionException {
     child.init();
+
     Optional<TableHeap> table = ctx.catalog().getTable(plan.getTableName());
     if (table.isEmpty()) {
       throw new ExecutionException("Trying to insert into non-existing table");
@@ -34,18 +35,16 @@ public class InsertExecutor extends Executor {
   @Override
   public Optional<TupleResult> next() throws ExecutionException {
     Optional<TupleResult> tupleResult = child.next();
-    if (tupleResult.isEmpty()) {
-      return Optional.empty();
+    while (tupleResult.isPresent()) {
+      Tuple tuple = tupleResult.get().tuple();
+      RID rid = null;
+      try {
+        rid = tableHeap.addTuple(tuple);
+      } catch (TupleException e) {
+        throw new ExecutionException(e);
+      }
+      tupleResult = child.next();
     }
-
-    Tuple tuple = tupleResult.get().tuple();
-    RID rid = null;
-    try {
-       rid = tableHeap.addTuple(tuple);
-    } catch (TupleException e) {
-      throw new ExecutionException(e);
-    }
-
-    return Optional.of(new TupleResult(tuple, rid));
+    return Optional.empty();
   }
 }
