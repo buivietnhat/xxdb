@@ -47,4 +47,11 @@ public class InsertExecutor extends Executor {
     }
     return Optional.empty();
   }
+
+  @Override
+  public String toString() {
+    return "InsertExecutor{" +
+        "child=" + child +
+        '}';
+  }
 }

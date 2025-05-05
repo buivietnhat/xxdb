@@ -80,4 +80,9 @@ public class ValueScanExecutor extends Executor {
 
     return Optional.of(new TupleResult(tuple, RID.INVALID_RID));
   }
+
+  @Override
+  public String toString() {
+    return "ValueScanExecutor{}";
+  }
 }

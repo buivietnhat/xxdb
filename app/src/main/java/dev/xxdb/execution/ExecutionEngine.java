@@ -60,6 +60,7 @@ public class ExecutionEngine implements PhysicalPlanVisitor<Executor> {
 
   @Override
   public Executor visitLimitPlan(LimitPlan plan) {
-    throw new RuntimeException("unimplemented");
+    Executor child = plan.getLeftChild().accept(this);
+    return new LimitExecutor(executionContext, plan, child);
   }
 }

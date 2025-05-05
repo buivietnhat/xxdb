@@ -27,7 +27,7 @@ public class CreateTablePlan extends PhysicalPlan {
 
   @Override
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
-    throw new RuntimeException("unimplemented");
+    return visitor.visitCreateTablePlan(this);
   }
 
   @Override
