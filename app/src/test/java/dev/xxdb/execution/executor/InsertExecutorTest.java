@@ -3,8 +3,6 @@ package dev.xxdb.execution.executor;
 import dev.xxdb.catalog.Catalog;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.InsertPlan;
-import dev.xxdb.storage.disk.DiskManager;
-import dev.xxdb.storage.file.HeapFile;
 import dev.xxdb.storage.file.TableHeap;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
@@ -12,7 +10,6 @@ import dev.xxdb.storage.tuple.exception.TupleException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 

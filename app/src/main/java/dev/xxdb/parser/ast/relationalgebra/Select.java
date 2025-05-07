@@ -10,6 +10,10 @@ public class Select implements RelationalAlgebra {
     this.tableName = tableName;
   }
 
+  public String getTableName() {
+    return tableName;
+  }
+
   public void setPredicate(Predicate predicate) {
     this.predicate = predicate;
   }

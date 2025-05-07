@@ -1,5 +1,6 @@
 package dev.xxdb.optimizer;
 
+import dev.xxdb.catalog.Catalog;
 import dev.xxdb.execution.plan.*;
 import dev.xxdb.parser.ast.plan.*;
 import dev.xxdb.parser.ast.plan.CreateTablePlan;
@@ -8,19 +9,26 @@ import dev.xxdb.parser.ast.relationalgebra.*;
 import dev.xxdb.types.Predicate;
 import dev.xxdb.types.PredicateType;
 import dev.xxdb.types.SimplePredicate;
-import dev.xxdb.types.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
   public static class PredicateBuidler implements PredicateVisitor<Predicate> {
+    private String currentTable;
+    private final Catalog catalog;
+
+    public PredicateBuidler(Catalog catalog) {
+      this.catalog = catalog;
+    }
+
     public Predicate build(List<Select> selects, List<PredicateType> types) {
       if (selects.size() > 2) {
         throw new RuntimeException("unimplemeted");
      }
       List<Predicate> predicates = new ArrayList<>();
       for (Select s : selects) {
+        currentTable = s.getTableName();
         predicates.addLast(s.getPredicate().accept(this));
       }
 
@@ -56,11 +64,17 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
     @Override
     public Predicate visitValuePredicate(ValuePredicate predicate) {
-      return new SimplePredicate(predicate.getColumn(), predicate.getValue(), predicate.getOp());
+      return new SimplePredicate(currentTable, predicate.getColumn(), predicate.getValue(), predicate.getOp(), catalog);
     }
   }
 
-  private final PredicateBuidler predicateBuilder = new PredicateBuidler();
+  private final PredicateBuidler predicateBuilder;
+  private final Catalog catalog;
+
+  public Optimizer(Catalog catalog) {
+    this.catalog = catalog;
+    this.predicateBuilder = new PredicateBuidler(catalog);
+  }
 
   /**
    * Run the optimize algorithm to generate a physical plan that can be fed to an execution engine to run

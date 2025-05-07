@@ -1,5 +1,7 @@
 package dev.xxdb.execution;
 
+import dev.xxdb.catalog.Catalog;
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.executor.ExecutionContext;
 import dev.xxdb.execution.executor.Executor;
 import dev.xxdb.execution.plan.PhysicalPlan;
@@ -15,8 +17,12 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ExecutionEngineTest {
   private static LogicalPlan queryToLogicalPlan(String query) {
@@ -31,7 +37,9 @@ class ExecutionEngineTest {
 
   private static PhysicalPlan queryToPhysicalPlan(String query) {
     LogicalPlan logicalPlan = queryToLogicalPlan(query);
-    Optimizer optimizer = new Optimizer();
+    Catalog mockCatalog = mock(Catalog.class);
+    Optimizer optimizer = new Optimizer(mockCatalog);
+    when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));
     return optimizer.run(logicalPlan);
   }
 

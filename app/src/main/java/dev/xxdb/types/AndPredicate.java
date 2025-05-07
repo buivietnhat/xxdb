@@ -1,9 +1,10 @@
 package dev.xxdb.types;
 
+import dev.xxdb.catalog.Catalog;
 import dev.xxdb.catalog.Schema;
 import dev.xxdb.storage.tuple.Tuple;
 
-public class AndPredicate implements  Predicate {
+public class AndPredicate implements Predicate {
   private final Predicate left;
   private final Predicate right;
 
@@ -13,8 +14,8 @@ public class AndPredicate implements  Predicate {
   }
 
   @Override
-  public boolean evaluate(Schema schema, Tuple tuple) {
-    return left.evaluate(schema, tuple) && right.evaluate(schema, tuple);
+  public boolean evaluate(Tuple tuple) {
+    return left.evaluate(tuple) && right.evaluate(tuple);
   }
 
   @Override

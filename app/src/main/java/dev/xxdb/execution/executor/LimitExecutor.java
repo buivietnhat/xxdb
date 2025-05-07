@@ -1,8 +1,6 @@
-package dev.xxdb.execution;
+package dev.xxdb.execution.executor;
 
-import dev.xxdb.execution.executor.ExecutionContext;
-import dev.xxdb.execution.executor.Executor;
-import dev.xxdb.execution.executor.TupleResult;
+import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.LimitPlan;
 
 import java.util.Optional;

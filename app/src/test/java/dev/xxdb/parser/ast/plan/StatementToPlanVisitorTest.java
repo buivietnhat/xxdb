@@ -189,7 +189,7 @@ class StatementToPlanVisitorTest {
         assertEquals(
             "SelectPlan{table: Orders, " +
                 "projection=Projection{limit=100, columns=[Orders.OrderID, Customers.CustomerName, Orders.OrderDate]}, " +
-                "predicates=[Select{tableName='Orders', predicate=ValuePredicate{op=EQUALS, column='Orders.CustomerID', value=IntValue[value=1000]}}], " +
+                "predicates=[Select{tableName='Orders', predicate=ValuePredicate{op=EQUALS, column='CustomerID', value=IntValue[value=1000]}}], " +
                 "join=Join{leftTable='Orders', rightTable='Customers', " +
                 "predicate=JoinPredicate{ops=EQUALS, leftColumn='Orders.CustomerID', rightColumn='Customers.CustomerID'}}}", plan.toString());
       }

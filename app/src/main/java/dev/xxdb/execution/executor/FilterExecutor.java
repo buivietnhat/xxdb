@@ -1,13 +1,16 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.FilterPlan;
+import dev.xxdb.storage.tuple.Tuple;
 
 import java.util.Optional;
 
 public class FilterExecutor extends Executor {
   private final FilterPlan plan;
   private final Executor child;
+  private Schema tableSchema;
 
   public FilterExecutor(ExecutionContext ctx, FilterPlan plan, Executor child) {
     super(ctx);
@@ -16,12 +19,22 @@ public class FilterExecutor extends Executor {
   }
 
   @Override
-  public void init() {
-
+  public void init() throws ExecutionException {
+    child.init();
   }
 
   public Optional<TupleResult> next() throws ExecutionException {
-    throw new RuntimeException("unimplemented");
+    Optional<TupleResult> tupleResult = child.next();
+    if (tupleResult.isEmpty()) {
+      return tupleResult;
+    }
+
+    Tuple tuple = tupleResult.get().tuple();
+    if (plan.getPredicate().evaluate(tuple)) {
+      return tupleResult;
+    }
+
+    return Optional.empty();
   }
 
   @Override
