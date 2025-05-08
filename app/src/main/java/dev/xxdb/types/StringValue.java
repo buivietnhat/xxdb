@@ -3,6 +3,15 @@ package dev.xxdb.types;
 import java.nio.charset.StandardCharsets;
 
 public record StringValue(String value) implements Value {
+  public static String padRight(String s, int length) {
+    if (s.length() >= length) return s.substring(0, length);
+    return s + " ".repeat(length - s.length());
+  }
+
+  public StringValue(String value) {
+    this.value = padRight(value, VARCHAR_MAX_SIZE);
+  }
+
   @Override
   public boolean compareTo(Ops op, Value other) {
     if (!(other instanceof StringValue)) {

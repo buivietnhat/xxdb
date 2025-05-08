@@ -1,12 +1,12 @@
 package dev.xxdb.storage.tuple;
 
-import java.nio.ByteBuffer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
 import dev.xxdb.catalog.Column;
 import dev.xxdb.catalog.Schema;
-import dev.xxdb.types.IntValue;
 import dev.xxdb.types.TypeId;
 import dev.xxdb.types.Value;
 
@@ -14,6 +14,39 @@ class TupleHeader {}
 
 public class Tuple {
   private final byte[] data;
+
+  public static class Builder {
+    private final ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+
+    public Builder addIntegerColumn(byte[] bytes) {
+      try {
+        byteArray.write(bytes);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      return this;
+    }
+
+    public Builder addVarcharColumn(byte[] bytes) {
+      if (bytes.length > Value.VARCHAR_MAX_SIZE) {
+        throw new RuntimeException("exceed varchar max size (" + Value.VARCHAR_MAX_SIZE + ")");
+      }
+      try {
+        byteArray.write(bytes);
+        // padding
+        byteArray.write(new byte[Value.VARCHAR_MAX_SIZE - bytes.length]);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      return this;
+    }
+
+    public Tuple build() {
+      Tuple tuple = new Tuple(byteArray.toByteArray());
+      byteArray.reset();
+      return tuple;
+    }
+  }
 
   public Tuple(byte[] data) {
     this.data = Arrays.copyOf(data, data.length);

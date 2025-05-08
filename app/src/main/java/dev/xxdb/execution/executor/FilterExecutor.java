@@ -25,13 +25,13 @@ public class FilterExecutor extends Executor {
 
   public Optional<TupleResult> next() throws ExecutionException {
     Optional<TupleResult> tupleResult = child.next();
-    if (tupleResult.isEmpty()) {
-      return tupleResult;
-    }
+    while (tupleResult.isPresent()) {
+      Tuple tuple = tupleResult.get().tuple();
+      if (plan.getPredicate().evaluate(tuple)) {
+        return tupleResult;
+      }
 
-    Tuple tuple = tupleResult.get().tuple();
-    if (plan.getPredicate().evaluate(tuple)) {
-      return tupleResult;
+      tupleResult = child.next();
     }
 
     return Optional.empty();
