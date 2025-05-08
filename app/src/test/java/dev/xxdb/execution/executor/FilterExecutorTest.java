@@ -1,10 +1,12 @@
 package dev.xxdb.execution.executor;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import dev.xxdb.catalog.Catalog;
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.FilterPlan;
 import dev.xxdb.execution.plan.PhysicalPlan;
@@ -69,6 +71,13 @@ public class FilterExecutorTest {
     void simplePredicateEqualOp() throws ExecutionException {
       ExecutionContext mockCtx = mock(ExecutionContext.class);
       Catalog mockCatalog = mock(Catalog.class);
+
+      Schema.Builder schemaBuilder = new Schema.Builder();
+      schemaBuilder.addIntColumn("col1");
+      Schema schema = schemaBuilder.build();
+
+      when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
+
       Predicate equalPred = new SimplePredicate("FOO", "col1", new IntValue(10), Ops.EQUALS, mockCatalog);
       FilterPlan plan = new FilterPlan(equalPred);
       Executor mockChild = mock(Executor.class);

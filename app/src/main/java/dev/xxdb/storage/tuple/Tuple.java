@@ -1,9 +1,13 @@
 package dev.xxdb.storage.tuple;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 
+import dev.xxdb.catalog.Column;
 import dev.xxdb.catalog.Schema;
+import dev.xxdb.types.IntValue;
+import dev.xxdb.types.TypeId;
 import dev.xxdb.types.Value;
 
 class TupleHeader {}
@@ -40,7 +44,34 @@ public class Tuple {
     return Arrays.hashCode(data);
   }
 
+  private Value getColumnValue(int offset, int length, TypeId type) {
+    byte[] cols = Arrays.copyOfRange(data, offset, offset + length);
+    switch (type) {
+      case BOOLEAN -> {
+        throw new RuntimeException("unimplemented");
+      }
+      case INTEGER -> {
+        return Value.makeInt(cols);
+      }
+      case DECIMAL -> {
+        throw new RuntimeException("unimplemented");
+      }
+      case VARCHAR -> {
+        return Value.makeVarchar(cols);
+      }
+      case DATETIME -> {
+        throw new RuntimeException("unimplemented");
+      }
+    }
+    throw new RuntimeException("Unrecognized type of column");
+  }
+
   public Value getValue(Schema schema, String column) {
-    throw new RuntimeException("unimplemented");
+    for (Column col : schema.getColumns()) {
+      if (col.name().equals(column)) {
+        return getColumnValue(col.tupleOffset(), col.length(), col.typeId());
+      }
+    }
+    throw new RuntimeException("Cannot find the column: " + column);
   }
 }
