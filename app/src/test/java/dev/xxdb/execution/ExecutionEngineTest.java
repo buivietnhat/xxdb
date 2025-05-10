@@ -39,7 +39,10 @@ class ExecutionEngineTest {
     LogicalPlan logicalPlan = queryToLogicalPlan(query);
     Catalog mockCatalog = mock(Catalog.class);
     Optimizer optimizer = new Optimizer(mockCatalog);
-    when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));
+    Schema mockSchema = mock(Schema.class);
+    when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mockSchema));
+    when(mockSchema.filter(any())).thenReturn(mock(Schema.class));
+    when(mockSchema.join(any(), any(), any())).thenReturn(mock(Schema.class));
     return optimizer.run(logicalPlan);
   }
 

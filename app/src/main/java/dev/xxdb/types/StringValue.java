@@ -2,7 +2,10 @@ package dev.xxdb.types;
 
 import java.nio.charset.StandardCharsets;
 
-public record StringValue(String value) implements Value {
+public final class StringValue implements Value {
+  private final String value;
+  private final int originalLength;
+
   public static String padRight(String s, int length) {
     if (s.length() >= length) return s.substring(0, length);
     return s + " ".repeat(length - s.length());
@@ -10,6 +13,7 @@ public record StringValue(String value) implements Value {
 
   public StringValue(String value) {
     this.value = padRight(value, VARCHAR_MAX_SIZE);
+    this.originalLength = value.length();
   }
 
   @Override
@@ -56,5 +60,12 @@ public record StringValue(String value) implements Value {
   @Override
   public byte[] getData() {
     return value.getBytes(StandardCharsets.UTF_8);
+  }
+
+  @Override
+  public String toString() {
+    return "StringValue[" +
+        "value=" + value.substring(0, originalLength) +
+        ']';
   }
 }

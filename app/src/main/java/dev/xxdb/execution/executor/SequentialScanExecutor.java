@@ -1,5 +1,6 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.SequentialScanPlan;
 
@@ -21,6 +22,11 @@ public class SequentialScanExecutor extends Executor {
   @Override
   public Optional<TupleResult> next() throws ExecutionException {
     return Optional.empty();
+  }
+
+  @Override
+  public Schema getOutputSchema() {
+    return plan.getOutputSchema();
   }
 
   @Override

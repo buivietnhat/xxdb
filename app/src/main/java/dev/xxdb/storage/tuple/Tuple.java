@@ -41,6 +41,27 @@ public class Tuple {
       return this;
     }
 
+    public Builder addColumn(TypeId typeId, byte[] bytes) {
+      switch (typeId) {
+        case BOOLEAN -> {
+          throw new RuntimeException("unimplemented");
+        }
+        case INTEGER -> {
+          return addIntegerColumn(bytes);
+        }
+        case DECIMAL -> {
+          throw new RuntimeException("unimplemented");
+        }
+        case VARCHAR -> {
+          return addVarcharColumn(bytes);
+        }
+        case DATETIME -> {
+          throw new RuntimeException("unimplemented");
+        }
+      }
+      throw new RuntimeException("unregconized type");
+    }
+
     public Tuple build() {
       Tuple tuple = new Tuple(byteArray.toByteArray());
       byteArray.reset();

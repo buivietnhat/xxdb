@@ -1,5 +1,6 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.InsertPlan;
 import dev.xxdb.storage.file.TableHeap;
@@ -46,6 +47,11 @@ public class InsertExecutor extends Executor {
       tupleResult = child.next();
     }
     return Optional.empty();
+  }
+
+  @Override
+  public Schema getOutputSchema() {
+    return plan.getOutputSchema();
   }
 
   @Override

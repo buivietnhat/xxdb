@@ -38,6 +38,11 @@ public class FilterExecutor extends Executor {
   }
 
   @Override
+  public Schema getOutputSchema() {
+    return plan.getOutputSchema();
+  }
+
+  @Override
   public String toString() {
     return "FilterExecutor{" +
         "child=" + child +

@@ -82,6 +82,11 @@ public class ValueScanExecutor extends Executor {
   }
 
   @Override
+  public Schema getOutputSchema() {
+    return plan.getOutputSchema();
+  }
+
+  @Override
   public String toString() {
     return "ValueScanExecutor{}";
   }

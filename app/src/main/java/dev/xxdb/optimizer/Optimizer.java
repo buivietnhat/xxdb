@@ -1,6 +1,7 @@
 package dev.xxdb.optimizer;
 
 import dev.xxdb.catalog.Catalog;
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.plan.*;
 import dev.xxdb.parser.ast.plan.*;
 import dev.xxdb.parser.ast.plan.CreateTablePlan;
@@ -93,45 +94,51 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
   @Override
   public PhysicalPlan visitSelectPlan(SelectPlan plan) {
-    PhysicalPlan root = null;
-    PhysicalPlan curr = null;
-
-    if (plan.getProjection().getLimit().isPresent()) {
-      root = new LimitPlan(plan.getProjection().getLimit().get());
-      curr = root;
-    }
-
-    PhysicalPlan projection = new ProjectionPlan(plan.getProjection().getColumns());
-    if (root == null) {
-      root = projection;
-      curr = root;
-    } else {
-      curr.setLeftChild(projection);
-      curr = projection;
-    }
-
-    if (!plan.getSelects().isEmpty()) {
-      Predicate predicate = predicateBuilder.build(plan.getSelects(), plan.getTypes());
-      FilterPlan filter = new FilterPlan(predicate);
-      curr.setLeftChild(filter);
-      curr = filter;
-    }
+    PhysicalPlan currentTreeNode = null;
 
     if (plan.getJoin().isPresent()) {
       // default to use HashJoin for now
       Join join = plan.getJoin().get();
       SequentialScanPlan leftChild = new SequentialScanPlan(join.getLeftTable());
+      Schema leftSchema = catalog.getTableSchema(join.getLeftTable()).get();
+      leftChild.setOutputSchema(leftSchema);
+
       SequentialScanPlan rightChild = new SequentialScanPlan(join.getRightTable());
+      Schema rightSchema = catalog.getTableSchema(join.getRightTable()).get();
+      leftChild.setOutputSchema(rightSchema);
+
       HashJoinPlan hashJoinPlan = new HashJoinPlan(join.getPredicate().getLeftColumn(), join.getPredicate().getRightColumn());
       hashJoinPlan.setLeftChild(leftChild);
       hashJoinPlan.setRightChild(rightChild);
-      curr.setLeftChild(hashJoinPlan);
+      hashJoinPlan.setOutputSchema(leftSchema.join(rightSchema, join.getLeftTable(), join.getRightTable()));
+      currentTreeNode = hashJoinPlan;
     } else {
       SequentialScanPlan sequentialScanPlan = new SequentialScanPlan(plan.getLeftTableName());
-      curr.setLeftChild(sequentialScanPlan);
+      sequentialScanPlan.setOutputSchema(catalog.getTableSchema(plan.getLeftTableName()).get());
+      currentTreeNode = sequentialScanPlan;
     }
 
-    return root;
+    if (!plan.getSelects().isEmpty()) {
+      Predicate predicate = predicateBuilder.build(plan.getSelects(), plan.getTypes());
+      FilterPlan filter = new FilterPlan(predicate);
+      filter.setLeftChild(currentTreeNode);
+      filter.setOutputSchema(currentTreeNode.getOutputSchema());
+      currentTreeNode = filter;
+    }
+
+    PhysicalPlan projection = new ProjectionPlan(plan.getProjection().getColumns());
+    projection.setLeftChild(currentTreeNode);
+    projection.setOutputSchema(currentTreeNode.getOutputSchema().filter(plan.getProjection().getColumns()));
+    currentTreeNode = projection;
+
+    if (plan.getProjection().getLimit().isPresent()) {
+      LimitPlan limitPlan = new LimitPlan(plan.getProjection().getLimit().get());
+      limitPlan.setLeftChild(currentTreeNode);
+      limitPlan.setOutputSchema(currentTreeNode.getOutputSchema());
+      currentTreeNode = limitPlan;
+    }
+
+    return currentTreeNode;
   }
 
   @Override

@@ -1,5 +1,6 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import java.util.Optional;
 
@@ -21,4 +22,9 @@ public abstract class Executor {
    * @throws ExecutionException if something went wrong
    */
   public abstract Optional<TupleResult> next() throws ExecutionException;
+
+  /**
+   * @return the schema of tuple output that this executor produces
+   */
+  public abstract Schema getOutputSchema();
 }
