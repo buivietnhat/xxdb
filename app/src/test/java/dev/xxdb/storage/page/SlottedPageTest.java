@@ -2,13 +2,14 @@ package dev.xxdb.storage.page;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import dev.xxdb.execution.executor.TupleResult;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
 import org.junit.jupiter.api.*;
 
 public class SlottedPageTest {
@@ -45,9 +46,9 @@ public class SlottedPageTest {
     @Test
     void testHasDataNotFoundTheOneSamePage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
-      RID rid1 = page.addTuple(new Tuple(new byte[] { 'a', 'b', 'c' }));
-      RID rid2 = page.addTuple(new Tuple(new byte[] { 'a', 'c', 'a' }));
-      RID rid3 = page.addTuple(new Tuple(new byte[] { 'c', 'b', 'a' }));
+      RID rid1 = page.addTuple(new Tuple(new byte[]{'a', 'b', 'c'}));
+      RID rid2 = page.addTuple(new Tuple(new byte[]{'a', 'c', 'a'}));
+      RID rid3 = page.addTuple(new Tuple(new byte[]{'c', 'b', 'a'}));
 
       // same page, but non existed slot number
       RID findingRid = new RID(0, rid1.slotNumber() + rid2.slotNumber() + rid3.slotNumber());
@@ -60,8 +61,8 @@ public class SlottedPageTest {
     @Test
     void testHasDataNotFoundTheOneDifferentPage() throws TupleException {
       SlottedPage page = new SlottedPage(0);
-      page.addTuple(new Tuple(new byte[] { 'a', 'b', 'c' }));
-      page.addTuple(new Tuple(new byte[] { 'a', 'c', 'a' }));
+      page.addTuple(new Tuple(new byte[]{'a', 'b', 'c'}));
+      page.addTuple(new Tuple(new byte[]{'a', 'c', 'a'}));
 
       // different pageID
       RID findingRid = new RID(1, 0);
@@ -76,7 +77,7 @@ public class SlottedPageTest {
       Tuple theTuple = new Tuple(data.getBytes());
 
       RID theRid = page.addTuple(theTuple);
-      page.addTuple(new Tuple(new byte[] { 'd', 'u' }));
+      page.addTuple(new Tuple(new byte[]{'d', 'u'}));
 
       Tuple theOneFound = page.getTuple(theRid);
       assertEquals(theTuple, theOneFound);
@@ -106,11 +107,11 @@ public class SlottedPageTest {
     @Test
     void testPageHasDataAndHasRoom() throws TupleException {
       SlottedPage page = new SlottedPage(0);
-      page.addTuple(new Tuple(new byte[] { 1, 2, 3 }));
-      page.addTuple(new Tuple(new byte[] { 4, 5, 6 }));
-      page.addTuple(new Tuple(new byte[] { 7, 8, 9 }));
+      page.addTuple(new Tuple(new byte[]{1, 2, 3}));
+      page.addTuple(new Tuple(new byte[]{4, 5, 6}));
+      page.addTuple(new Tuple(new byte[]{7, 8, 9}));
 
-      Tuple theTuple = new Tuple(new byte[] { 10, 10, 10, 10, 10 });
+      Tuple theTuple = new Tuple(new byte[]{10, 10, 10, 10, 10});
       RID rid = page.addTuple(theTuple);
 
       Tuple getBackTuple = page.getTuple(rid);
@@ -197,6 +198,61 @@ public class SlottedPageTest {
       for (int i = 0; i < numTuples; i++) {
         assertEquals(tuples.get(i), deserializedPage.getTuple(rids.get(i)));
       }
+    }
+  }
+
+  @Nested
+  class TupleIteratorTest {
+    // Testing strategy
+    // + partition on deleted tuples in the page: has deleted tuples, has no deleted tuples
+
+    // cover this page has not deleted any tuples
+    @Test
+    void hasNoDeletedTuple() throws TupleException {
+      SlottedPage page = new SlottedPage(0);
+      List<Tuple> tuples = List.of(new Tuple("hello".getBytes(StandardCharsets.UTF_8)),
+          new Tuple("goodbye".getBytes(StandardCharsets.UTF_8)),
+          new Tuple("hellogoodbyte".getBytes(StandardCharsets.UTF_8)));
+
+      RID rid1 = page.addTuple(tuples.get(0));
+      RID rid2 = page.addTuple(tuples.get(1));
+      RID rid3 = page.addTuple(tuples.get(2));
+
+      List<TupleResult> producedTuples = new ArrayList<>();
+      Iterator<TupleResult> tupleIterator = page.getIterator();
+      while (tupleIterator.hasNext()) {
+        producedTuples.add(tupleIterator.next());
+      }
+
+      assertEquals(tuples.size(), producedTuples.size());
+      assertTrue(producedTuples.contains(new TupleResult(tuples.get(0), rid1)));
+      assertTrue(producedTuples.contains(new TupleResult(tuples.get(1), rid2)));
+      assertTrue(producedTuples.contains(new TupleResult(tuples.get(2), rid3)));
+    }
+
+    // cover this page has not deleted any tuples
+    @Test
+    void hasDeletedTuple() throws TupleException {
+      SlottedPage page = new SlottedPage(0);
+      List<Tuple> tuples = List.of(new Tuple("hello".getBytes(StandardCharsets.UTF_8)),
+          new Tuple("goodbye".getBytes(StandardCharsets.UTF_8)),
+          new Tuple("hellogoodbyte".getBytes(StandardCharsets.UTF_8)));
+
+      RID rid1 = page.addTuple(tuples.get(0));
+      RID rid2 = page.addTuple(tuples.get(1));
+      RID rid3 = page.addTuple(tuples.get(2));
+
+      page.deleteTuple(rid2);
+      page.deleteTuple(rid3);
+
+      List<TupleResult> producedTuples = new ArrayList<>();
+      Iterator<TupleResult> tupleIterator = page.getIterator();
+      while (tupleIterator.hasNext()) {
+        producedTuples.add(tupleIterator.next());
+      }
+
+      assertEquals(1, producedTuples.size());
+      assertTrue(producedTuples.contains(new TupleResult(tuples.get(0), rid1)));
     }
   }
 }

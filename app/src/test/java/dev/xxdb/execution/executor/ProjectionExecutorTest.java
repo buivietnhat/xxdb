@@ -82,7 +82,7 @@ class ProjectionExecutorTest {
           .addVarcharColumn("col2")
           .addIntColumn("col3").build();
       when(child.getOutputSchema()).thenReturn(schema);
-      
+
       ProjectionExecutor projectionExecutor = new ProjectionExecutor(mockCtx, plan, child);
 
       projectionExecutor.init();
