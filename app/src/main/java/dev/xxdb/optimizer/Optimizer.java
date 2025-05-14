@@ -26,7 +26,7 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
     public Predicate build(List<Select> selects, List<PredicateType> types) {
       if (selects.size() > 2) {
         throw new RuntimeException("unimplemeted");
-     }
+      }
       List<Predicate> predicates = new ArrayList<>();
       for (Select s : selects) {
         currentTable = s.getTableName();
@@ -37,10 +37,10 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
       for (int i = 0; i < types.size(); i++) {
         switch (types.get(i)) {
           case AND -> {
-            currPre = new dev.xxdb.types.AndPredicate(currPre, predicates.get(i+1));
+            currPre = new dev.xxdb.types.AndPredicate(currPre, predicates.get(i + 1));
           }
           case OR -> {
-            currPre = new dev.xxdb.types.OrPredicate(currPre, predicates.get(i+1));
+            currPre = new dev.xxdb.types.OrPredicate(currPre, predicates.get(i + 1));
           }
         }
       }
@@ -92,6 +92,14 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
     return new dev.xxdb.execution.plan.CreateTablePlan(plan.getTableName(), plan.getColumnList(), plan.getColumnDefList());
   }
 
+  // decorate the table name for each column name, e.g Table.col1
+  private List<String> decorateTableName(List<String> columns, String tableName) {
+    return columns.stream()
+        .map(col -> col.contains(".") ? col : tableName + "." + col)
+        .toList();
+  }
+
+
   @Override
   public PhysicalPlan visitSelectPlan(SelectPlan plan) {
     PhysicalPlan currentTreeNode = null;
@@ -105,12 +113,21 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
       SequentialScanPlan rightChild = new SequentialScanPlan(join.getRightTable());
       Schema rightSchema = catalog.getTableSchema(join.getRightTable()).get();
-      leftChild.setOutputSchema(rightSchema);
+      rightChild.setOutputSchema(rightSchema);
 
-      HashJoinPlan hashJoinPlan = new HashJoinPlan(join.getPredicate().getLeftColumn(), join.getPredicate().getRightColumn());
+      String leftColumn = join.getPredicate().getLeftColumn();
+      String rightColumn = join.getPredicate().getRightColumn();
+      // make sure the left column belongs to the left table
+      if (!leftColumn.split("\\.")[0].equals(plan.getLeftTableName())) {
+        String temp = leftColumn;
+        leftColumn = rightColumn;
+        rightColumn = temp;
+      }
+
+      HashJoinPlan hashJoinPlan = new HashJoinPlan(leftColumn, rightColumn);
       hashJoinPlan.setLeftChild(leftChild);
       hashJoinPlan.setRightChild(rightChild);
-      hashJoinPlan.setOutputSchema(leftSchema.join(rightSchema, join.getLeftTable(), join.getRightTable()));
+      hashJoinPlan.setOutputSchema(leftSchema.join(rightSchema));
       currentTreeNode = hashJoinPlan;
     } else {
       SequentialScanPlan sequentialScanPlan = new SequentialScanPlan(plan.getLeftTableName());
@@ -126,9 +143,10 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
       currentTreeNode = filter;
     }
 
-    PhysicalPlan projection = new ProjectionPlan(plan.getProjection().getColumns());
+    List<String> columns = decorateTableName(plan.getProjection().getColumns(), plan.getLeftTableName());
+    PhysicalPlan projection = new ProjectionPlan(columns);
     projection.setLeftChild(currentTreeNode);
-    projection.setOutputSchema(currentTreeNode.getOutputSchema().filter(plan.getProjection().getColumns()));
+    projection.setOutputSchema(currentTreeNode.getOutputSchema().filter(columns));
     currentTreeNode = projection;
 
     if (plan.getProjection().getLimit().isPresent()) {

@@ -19,9 +19,16 @@ public class CreateTablePlan extends PhysicalPlan {
     return types;
   }
 
+  // decorate the table name for each column name, e.g Table.col1
+  private List<String> decorateTableName(List<String> columns) {
+    return columns.stream()
+        .map(col -> col.contains(".") ? col : this.tableName + "." + col)
+        .toList();
+  }
+
   public CreateTablePlan(String tableName, List<String> columns, List<String> types) {
     this.tableName = tableName;
-    this.columns = columns;
+    this.columns = decorateTableName(columns);
     this.types = types;
   }
 

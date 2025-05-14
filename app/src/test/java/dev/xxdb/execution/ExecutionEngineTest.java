@@ -58,7 +58,7 @@ class ExecutionEngineTest {
     Schema mockSchema = mock(Schema.class);
     when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mockSchema));
     when(mockSchema.filter(any())).thenReturn(mock(Schema.class));
-    when(mockSchema.join(any(), any(), any())).thenReturn(mock(Schema.class));
+    when(mockSchema.join(any())).thenReturn(mock(Schema.class));
     return optimizer.run(logicalPlan);
   }
 
@@ -103,10 +103,10 @@ class ExecutionEngineTest {
     // cover Physical Plan is select query, only projection and predicate
     @Test
     void selectWithPredicateAndProjection() {
-      String query = "SELECT PersonId, FirstName, LastName from People WHERE FirstName = 'Nhat';";
+      String query = "SELECT PersonId, FirstName, LastName FROM People WHERE FirstName = 'Nhat';";
       PhysicalPlan insertPlan = queryToPhysicalPlan(query);
       Executor tree = insertPlan.accept(executionEngine);
-      assertEquals("ProjectionExecutor{child=SequentialScanExecutor{}}", tree.toString());
+      assertEquals("ProjectionExecutor{child=FilterExecutor{child=SequentialScanExecutor{}}}", tree.toString());
     }
 
     // cover Physical Plan is select query, has projection, join, predicate, limit
@@ -174,7 +174,7 @@ class ExecutionEngineTest {
       assertEquals(3, tupleResults.size());
 
       Tuple.Builder tupleBuilder = new Tuple.Builder();
-      List<Tuple> expectedTuple = List.of(
+      List<Tuple> expectedTuples = List.of(
           tupleBuilder
               .addIntegerColumn(new IntValue(1).getData())
               .addVarcharColumn(new StringValue("Tom B. Erichsen").getData())
@@ -193,7 +193,62 @@ class ExecutionEngineTest {
       );
       for (TupleResult result : tupleResults) {
         assertNotEquals(RID.INVALID_RID, result.rid());
-        assertTrue(expectedTuple.contains(result.tuple()));
+        assertTrue(expectedTuples.contains(result.tuple()));
+      }
+    }
+
+    @Test
+    void joinWithLimit() throws ExecutionException {
+      // Create Persons table
+      String createPersons = "CREATE TABLE Persons (\n" +
+          "    PersonId INT,\n" +
+          "    Name VARCHAR\n" +
+          ");";
+      assertTrue(execute(createPersons).isEmpty());
+
+      // Create Address table
+      String createAddress = "CREATE TABLE Address (\n" +
+          "    PersonId INT,\n" +
+          "    City VARCHAR\n" +
+          ");";
+      assertTrue(execute(createAddress).isEmpty());
+
+      // Insert into Persons
+      String insertPersons = "INSERT INTO Persons (PersonId, Name) VALUES\n" +
+          "(1, 'Alice'),\n" +
+          "(2, 'Bob'),\n" +
+          "(3, 'Carol');";
+      assertTrue(execute(insertPersons).isEmpty());
+
+      // Insert into Address
+      String insertAddress = "INSERT INTO Address (PersonId, City) VALUES\n" +
+          "(1, 'New York'),\n" +
+          "(2, 'Los Angeles'),\n" +
+          "(3, 'Chicago');";
+      assertTrue(execute(insertAddress).isEmpty());
+
+      // Join with limit, only select Persons.Name and Address.City
+      String joinQuery = "SELECT Persons.Name, Address.City " +
+          "FROM Persons JOIN Address ON Persons.PersonId = Address.PersonId " +
+          "LIMIT 2;";
+      List<TupleResult> results = execute(joinQuery);
+      assertEquals(2, results.size());
+
+      Tuple.Builder tupleBuilder = new Tuple.Builder();
+      List<Tuple> expectedTuples = List.of(
+          tupleBuilder.addVarcharColumn(new StringValue("Alice").getData())
+              .addVarcharColumn(new StringValue("New York").getData())
+              .build(),
+          tupleBuilder.addVarcharColumn(new StringValue("Bob").getData())
+              .addVarcharColumn(new StringValue("Los Angeles").getData())
+              .build(),
+          tupleBuilder.addVarcharColumn(new StringValue("Carol").getData())
+              .addVarcharColumn(new StringValue("Chicago").getData())
+              .build()
+      );
+      for (TupleResult result : results) {
+        assertEquals(RID.INVALID_RID, result.rid());
+        assertTrue(expectedTuples.contains(result.tuple()));
       }
     }
   }

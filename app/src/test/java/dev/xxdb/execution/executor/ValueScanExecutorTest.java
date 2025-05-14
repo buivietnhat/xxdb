@@ -58,7 +58,8 @@ class ValueScanExecutorTest {
       Schema mockSchema = mock(Schema.class);
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(mockSchema));
 
-      List<Column> columns = List.of(new Column("col1", TypeId.VARCHAR, 0, 0), new Column("col2", TypeId.INTEGER, 100, 100));
+      List<Column> columns = List.of(new Column("FOO.col1", TypeId.VARCHAR, 0, 0),
+          new Column("FOO.col2", TypeId.INTEGER, 100, 100));
       when(mockSchema.getColumns()).thenReturn(columns);
 
       ValueScanExecutor valueScanExecutor = new ValueScanExecutor(mockCtx, plan);
@@ -102,7 +103,8 @@ class ValueScanExecutorTest {
       Schema mockSchema = mock(Schema.class);
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(mockSchema));
 
-      List<Column> columns = List.of(new Column("col1", TypeId.VARCHAR, 0, 0), new Column("col2", TypeId.INTEGER, 100, 100));
+      List<Column> columns = List.of(new Column("FOO.col1", TypeId.VARCHAR, 0, 0),
+          new Column("FOO.col2", TypeId.INTEGER, 100, 100));
       when(mockSchema.getColumns()).thenReturn(columns);
 
       ValueScanExecutor valueScanExecutor = new ValueScanExecutor(mockCtx, plan);
@@ -148,7 +150,8 @@ class ValueScanExecutorTest {
       Schema mockSchema = mock(Schema.class);
       when(mockCatalog.getTableSchema(eq("EMPLOYEES"))).thenReturn(Optional.of(mockSchema));
 
-      List<Column> columns = List.of(new Column("name", TypeId.VARCHAR, 0, 0), new Column("salary", TypeId.INTEGER, 100, 100));
+      List<Column> columns = List.of(new Column("EMPLOYEES.name", TypeId.VARCHAR, 0, 0),
+          new Column("EMPLOYEES.salary", TypeId.INTEGER, 100, 100));
       when(mockSchema.getColumns()).thenReturn(columns);
 
       ValueScanExecutor valueScanExecutor = new ValueScanExecutor(mockCtx, plan);
