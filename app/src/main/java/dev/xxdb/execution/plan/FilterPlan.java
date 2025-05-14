@@ -9,6 +9,10 @@ public class FilterPlan extends PhysicalPlan {
     this.predicate = predicate;
   }
 
+  public Predicate getPredicate() {
+    return predicate;
+  }
+
   @Override
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
     return visitor.visitFilterPlan(this);

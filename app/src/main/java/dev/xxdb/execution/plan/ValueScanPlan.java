@@ -2,15 +2,26 @@ package dev.xxdb.execution.plan;
 
 import dev.xxdb.types.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ValueScanPlan extends PhysicalPlan {
   private final String tableName;
   private final List<String> columns;
-  private final List<Value> values;
+  private final List<List<Value>> values;
 
-  public ValueScanPlan(String tableName, List<String> columns, List<Value> values) {
+  public List<String> getColumns() {
+    return columns;
+  }
+
+  public List<List<Value>> getValues() {
+    return values;
+  }
+
+  public String getTableName() {
+    return tableName;
+  }
+
+  public ValueScanPlan(String tableName, List<String> columns, List<List<Value>> values) {
     this.tableName = tableName;
     this.columns = columns;
     this.values = values;

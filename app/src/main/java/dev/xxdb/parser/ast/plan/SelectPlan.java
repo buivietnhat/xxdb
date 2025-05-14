@@ -67,7 +67,15 @@ public class SelectPlan implements LogicalPlan {
 
     public void addColumnNameForPredicate(String columnName) {
       plan.addFilter(new Select());
-      plan.getCurrentFilter().setTableName(leftTableName);
+      String table = leftTableName;
+      // if the columnName has a `.`, extract the table name from it
+      if (columnName.contains(".")) {
+        int dotPos = columnName.indexOf(".");
+        table = columnName.substring(0, dotPos);
+        columnName = columnName.substring(dotPos + 1, columnName.length());
+      }
+      // otherwise the column name is in the FROM clause
+      plan.getCurrentFilter().setTableName(table);
       plan.getCurrentFilter().setPredicate(new ValuePredicate());
       ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setColumn(columnName);
     }

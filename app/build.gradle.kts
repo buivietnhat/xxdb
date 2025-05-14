@@ -41,9 +41,8 @@ application {
 }
 
 tasks.test { useJUnitPlatform() }
-tasks.test { useJUnitPlatform() }
 tasks.test {
-    jvmArgs("-XX:+EnableDynamicAgentLoading", "-XX:-UseSharedSpaces")
     useJUnitPlatform()
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
 

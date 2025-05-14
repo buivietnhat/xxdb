@@ -1,8 +1,7 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
-import dev.xxdb.storage.tuple.Tuple;
-
 import java.util.Optional;
 
 public abstract class Executor {
@@ -12,5 +11,20 @@ public abstract class Executor {
     this.ctx = ctx;
   }
 
+  /**
+   * initialize the executor
+   */
+  public abstract void init() throws ExecutionException;
+
+  /**
+   * Produce once-at-a-time tuple as in Iterator Model
+   * @return TupleResult or None if there are no more tuples
+   * @throws ExecutionException if something went wrong
+   */
   public abstract Optional<TupleResult> next() throws ExecutionException;
+
+  /**
+   * @return the schema of tuple output that this executor produces
+   */
+  public abstract Schema getOutputSchema();
 }

@@ -7,6 +7,10 @@ public class InsertPlan extends PhysicalPlan {
     this.tableName = tableName;
   }
 
+  public String getTableName() {
+    return tableName;
+  }
+
   @Override
   public <T> T accept(PhysicalPlanVisitor<T> visitor) {
     return visitor.visitInsertPlan(this);

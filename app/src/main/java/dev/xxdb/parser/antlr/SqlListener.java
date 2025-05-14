@@ -1,4 +1,4 @@
-// Generated from C:/workspace/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
+// Generated from /home/nhatbui/workspace/database_system/xxdb/app/src/main/java/dev/xxdb/parser/antlr/Sql.g4 by ANTLR 4.13.2
 package dev.xxdb.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -137,6 +137,16 @@ public interface SqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitColumnList(SqlParser.ColumnListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#valueSetList}.
+	 * @param ctx the parse tree
+	 */
+	void enterValueSetList(SqlParser.ValueSetListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#valueSetList}.
+	 * @param ctx the parse tree
+	 */
+	void exitValueSetList(SqlParser.ValueSetListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SqlParser#valueList}.
 	 * @param ctx the parse tree

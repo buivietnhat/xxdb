@@ -1,10 +1,16 @@
 package dev.xxdb.execution.plan;
 
+import dev.xxdb.catalog.Schema;
+
 public class LimitPlan extends PhysicalPlan {
   private final int number;
 
   public LimitPlan(int number) {
     this.number = number;
+  }
+
+  public int getNumber() {
+    return number;
   }
 
   @Override

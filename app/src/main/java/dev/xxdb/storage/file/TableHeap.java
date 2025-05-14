@@ -1,5 +1,6 @@
 package dev.xxdb.storage.file;
 
+import dev.xxdb.execution.executor.TupleResult;
 import dev.xxdb.storage.page.Page;
 import dev.xxdb.storage.page.SlottedPage;
 import dev.xxdb.storage.page.SlottedPageRepository;
@@ -8,6 +9,8 @@ import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /** This class is responsible for managing all tuples in/out for a table */
@@ -15,7 +18,7 @@ public class TableHeap {
   private final SlottedPageRepository pageRepository;
   // keep track of list of pageIds of this table
   private final Set<Integer> pageIdList = new HashSet<>();
-  private int currentPageId = -1;
+  private int lastPageId = -1;
 
   // Abstraction function: AF(pageRepository, pageIdList, currentPageId) = A DB
   // Table consisting a
@@ -23,6 +26,61 @@ public class TableHeap {
   // Rep Invariant: True
   // Safety from rep exposure: all fields are final and private, not exposed to
   // outside
+
+  // Implement Iterator interface for traversing all the tuple in this table
+
+  /**
+   *  Get an iterator which knows how to traverse through all the tuples
+   */
+  public Iterator<TupleResult> getIterator() {
+    return new TupleIterator();
+  }
+
+  private class TupleIterator implements Iterator<TupleResult> {
+    private int currentPageIndex = 0;
+    private final List<Integer> pageIdList;
+    private Iterator<TupleResult> currentPageIterator;
+
+    public TupleIterator() {
+      this.pageIdList = TableHeap.this.pageIdList.stream().toList();
+      try {
+        SlottedPage currentPage = pageRepository.getPage(pageIdList.get(currentPageIndex)).get();
+        currentPageIterator = currentPage.getIterator();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public boolean hasNext() {
+      while (currentPageIndex < pageIdList.size()) {
+        if (currentPageIterator.hasNext()) {
+          return true;
+        }
+
+        currentPageIndex += 1;
+        if (currentPageIndex < pageIdList.size()) {
+          try {
+            currentPageIterator = pageRepository.getPage(pageIdList.get(currentPageIndex)).get().getIterator();
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
+
+      return false;
+    }
+
+    @Override
+    public TupleResult next() {
+      if (hasNext()) {
+        return currentPageIterator.next();
+      }
+
+      return null;
+    }
+  }
+
 
   /**
    * Construct new TableHeap
@@ -68,11 +126,11 @@ public class TableHeap {
     }
 
     SlottedPage page;
-    if (currentPageId == -1) {
+    if (lastPageId == -1) {
       page = allocateNewPage();
     } else {
       try {
-        page = pageRepository.getPage(currentPageId).get();
+        page = pageRepository.getPage(lastPageId).get();
       } catch (IOException e) {
         throw new TupleException(e);
       }
@@ -94,8 +152,8 @@ public class TableHeap {
 
   private SlottedPage allocateNewPage() {
     SlottedPage page = pageRepository.newPage();
-    currentPageId = page.getPageId();
-    pageIdList.add(currentPageId);
+    lastPageId = page.getPageId();
+    pageIdList.add(lastPageId);
     return page;
   }
 
@@ -121,4 +179,5 @@ public class TableHeap {
       return false;
     }
   }
+
 }

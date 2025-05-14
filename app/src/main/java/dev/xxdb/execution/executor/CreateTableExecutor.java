@@ -1,5 +1,6 @@
 package dev.xxdb.execution.executor;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.CreateTablePlan;
 
@@ -14,8 +15,25 @@ public class CreateTableExecutor extends Executor {
   }
 
   @Override
+  public void init() {
+  }
+
+  @Override
   public Optional<TupleResult> next() throws ExecutionException {
-    ctx.catalog().createNewTable(plan.getTableName(), plan.getColumns(), plan.getTypes());
+    boolean created = ctx.catalog().createNewTable(plan.getTableName(), plan.getColumns(), plan.getTypes());
+    if (!created) {
+      throw new ExecutionException("The table already exist");
+    }
     return Optional.empty();
+  }
+
+  @Override
+  public Schema getOutputSchema() {
+    return plan.getOutputSchema();
+  }
+
+  @Override
+  public String toString() {
+    return "CreateTableExecutor{}";
   }
 }

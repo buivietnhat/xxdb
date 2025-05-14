@@ -1,10 +1,13 @@
 package dev.xxdb.storage.page;
 
+import dev.xxdb.execution.executor.TupleResult;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class SlottedPage extends Page {
@@ -37,6 +40,45 @@ public class SlottedPage extends Page {
   //
   // Safety from rep exposure: all fields are private and not exposed to outside
   // world
+
+
+  // Implement Iterator<TupleResult> interface for traversing all the tuples in this Page
+  public Iterator<TupleResult> getIterator() {
+    return new TupleIterator();
+  }
+
+  private class TupleIterator implements Iterator<TupleResult> {
+    private int currentSlot = 0;
+
+    @Override
+    public boolean hasNext() {
+      while (currentSlot < numSlotsUsed) {
+        TupleInfo tupleInfo = slots.get(currentSlot);
+        if (!tupleInfo.isDeleted) {
+          return true;
+        }
+        currentSlot += 1;
+      }
+
+      return false;
+    }
+
+    @Override
+    public TupleResult next() {
+      if (hasNext()) {
+        try {
+          Tuple tuple = getTuple(currentSlot);
+          TupleResult tupleResult = new TupleResult(tuple, new RID(getPageId(), currentSlot));
+          currentSlot += 1;
+          return tupleResult;
+        } catch (TupleException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      return null;
+    }
+  }
 
   // Check that the rep invariant is true
   private void checkRep() {
@@ -80,7 +122,12 @@ public class SlottedPage extends Page {
    */
   public Tuple getTuple(final RID rid) throws TupleException {
     guaranteeTupleExists(rid);
-    TupleInfo tupleInfo = slots.get(rid.slotNumber());
+    return getTuple(rid.slotNumber());
+  }
+
+
+  private Tuple getTuple(int slotNumber) throws TupleException {
+    TupleInfo tupleInfo = slots.get(slotNumber);
     if (tupleInfo.isDeleted) {
       throw new TupleException("The tuple was deleted");
     }
@@ -109,6 +156,7 @@ public class SlottedPage extends Page {
       return PAGE_SIZE;
     }
 
+    // TODO: this will not be correct if we decide to reuse space of deleted tuples
     return slots.get(numSlotsUsed - 1).offset;
   }
 

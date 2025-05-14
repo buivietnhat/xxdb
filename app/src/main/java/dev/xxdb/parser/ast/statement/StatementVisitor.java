@@ -11,6 +11,8 @@ public interface StatementVisitor {
 
   void visitValueListNode(ValueList node);
 
+  void visitValueSetList(ValueSetList node);
+
   void visitCreateTableNode(CreateTable node);
 
   void visitIntValueNode(IntValue node);

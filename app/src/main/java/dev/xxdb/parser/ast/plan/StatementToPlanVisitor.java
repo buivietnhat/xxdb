@@ -67,8 +67,8 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitIntValueNode(IntValue node) {
-    if (selectBuilder == null) {
-      InsertPlan insertPlan = getInsertPlan();
+    InsertPlan insertPlan = getInsertPlan();
+    if (insertPlan != null) {
       insertPlan.addValue(new dev.xxdb.types.IntValue(node.getValue()));
     } else {
       selectBuilder.setValueForPredicate(new dev.xxdb.types.IntValue(node.getValue()));
@@ -77,8 +77,8 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitStringValueNode(StringValue node) {
-    if (selectBuilder == null) {
-      InsertPlan insertPlan = getInsertPlan();
+    InsertPlan insertPlan = getInsertPlan();
+    if (insertPlan != null) {
       insertPlan.addValue(new dev.xxdb.types.StringValue(node.getValue()));
     } else {
       selectBuilder.setValueForPredicate(new dev.xxdb.types.StringValue(node.getValue()));
@@ -160,6 +160,17 @@ public class StatementToPlanVisitor implements StatementVisitor {
         selectBuilder.buildingJoin = false;
       } else {
         selectBuilder.setPredicateOp(node.getOp());
+      }
+    }
+  }
+
+  @Override
+  public void visitValueSetList(ValueSetList node) {
+    InsertPlan insertPlan = getInsertPlan();
+    if (insertPlan != null) {
+      for (ValueList valueList : node.getValueSets()) {
+        valueList.accept(this);
+        insertPlan.finishValueSet();
       }
     }
   }

@@ -1,5 +1,7 @@
 package dev.xxdb.optimizer;
 
+import dev.xxdb.catalog.Catalog;
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.plan.*;
 import dev.xxdb.parser.ast.plan.*;
 import dev.xxdb.parser.ast.plan.CreateTablePlan;
@@ -14,12 +16,20 @@ import java.util.List;
 
 public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
   public static class PredicateBuidler implements PredicateVisitor<Predicate> {
+    private String currentTable;
+    private final Catalog catalog;
+
+    public PredicateBuidler(Catalog catalog) {
+      this.catalog = catalog;
+    }
+
     public Predicate build(List<Select> selects, List<PredicateType> types) {
       if (selects.size() > 2) {
         throw new RuntimeException("unimplemeted");
      }
       List<Predicate> predicates = new ArrayList<>();
       for (Select s : selects) {
+        currentTable = s.getTableName();
         predicates.addLast(s.getPredicate().accept(this));
       }
 
@@ -55,11 +65,17 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
     @Override
     public Predicate visitValuePredicate(ValuePredicate predicate) {
-      return new SimplePredicate(predicate.getColumn(), predicate.getValue(), predicate.getOp());
+      return new SimplePredicate(currentTable, predicate.getColumn(), predicate.getValue(), predicate.getOp(), catalog);
     }
   }
 
-  private final PredicateBuidler predicateBuilder = new PredicateBuidler();
+  private final PredicateBuidler predicateBuilder;
+  private final Catalog catalog;
+
+  public Optimizer(Catalog catalog) {
+    this.catalog = catalog;
+    this.predicateBuilder = new PredicateBuidler(catalog);
+  }
 
   /**
    * Run the optimize algorithm to generate a physical plan that can be fed to an execution engine to run
@@ -78,51 +94,57 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
   @Override
   public PhysicalPlan visitSelectPlan(SelectPlan plan) {
-    PhysicalPlan root = null;
-    PhysicalPlan curr = null;
-
-    if (plan.getProjection().getLimit().isPresent()) {
-      root = new LimitPlan(plan.getProjection().getLimit().get());
-      curr = root;
-    }
-
-    PhysicalPlan projection = new ProjectionPlan(plan.getProjection().getColumns());
-    if (root == null) {
-      root = projection;
-      curr = root;
-    } else {
-      curr.setLeftChild(projection);
-      curr = projection;
-    }
-
-    if (!plan.getSelects().isEmpty()) {
-      Predicate predicate = predicateBuilder.build(plan.getSelects(), plan.getTypes());
-      FilterPlan filter = new FilterPlan(predicate);
-      curr.setLeftChild(filter);
-      curr = filter;
-    }
+    PhysicalPlan currentTreeNode = null;
 
     if (plan.getJoin().isPresent()) {
       // default to use HashJoin for now
       Join join = plan.getJoin().get();
       SequentialScanPlan leftChild = new SequentialScanPlan(join.getLeftTable());
+      Schema leftSchema = catalog.getTableSchema(join.getLeftTable()).get();
+      leftChild.setOutputSchema(leftSchema);
+
       SequentialScanPlan rightChild = new SequentialScanPlan(join.getRightTable());
+      Schema rightSchema = catalog.getTableSchema(join.getRightTable()).get();
+      leftChild.setOutputSchema(rightSchema);
+
       HashJoinPlan hashJoinPlan = new HashJoinPlan(join.getPredicate().getLeftColumn(), join.getPredicate().getRightColumn());
       hashJoinPlan.setLeftChild(leftChild);
       hashJoinPlan.setRightChild(rightChild);
-      curr.setLeftChild(hashJoinPlan);
+      hashJoinPlan.setOutputSchema(leftSchema.join(rightSchema, join.getLeftTable(), join.getRightTable()));
+      currentTreeNode = hashJoinPlan;
     } else {
       SequentialScanPlan sequentialScanPlan = new SequentialScanPlan(plan.getLeftTableName());
-      curr.setLeftChild(sequentialScanPlan);
+      sequentialScanPlan.setOutputSchema(catalog.getTableSchema(plan.getLeftTableName()).get());
+      currentTreeNode = sequentialScanPlan;
     }
 
-    return root;
+    if (!plan.getSelects().isEmpty()) {
+      Predicate predicate = predicateBuilder.build(plan.getSelects(), plan.getTypes());
+      FilterPlan filter = new FilterPlan(predicate);
+      filter.setLeftChild(currentTreeNode);
+      filter.setOutputSchema(currentTreeNode.getOutputSchema());
+      currentTreeNode = filter;
+    }
+
+    PhysicalPlan projection = new ProjectionPlan(plan.getProjection().getColumns());
+    projection.setLeftChild(currentTreeNode);
+    projection.setOutputSchema(currentTreeNode.getOutputSchema().filter(plan.getProjection().getColumns()));
+    currentTreeNode = projection;
+
+    if (plan.getProjection().getLimit().isPresent()) {
+      LimitPlan limitPlan = new LimitPlan(plan.getProjection().getLimit().get());
+      limitPlan.setLeftChild(currentTreeNode);
+      limitPlan.setOutputSchema(currentTreeNode.getOutputSchema());
+      currentTreeNode = limitPlan;
+    }
+
+    return currentTreeNode;
   }
 
   @Override
   public PhysicalPlan visitInsertPlan(InsertPlan plan) {
     dev.xxdb.execution.plan.InsertPlan insert = new dev.xxdb.execution.plan.InsertPlan(plan.getTableName());
-    ValueScanPlan valueScanPlan = new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValues());
+    ValueScanPlan valueScanPlan = new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValueSets());
     insert.setLeftChild(valueScanPlan);
     return insert;
   }

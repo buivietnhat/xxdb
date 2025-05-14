@@ -31,20 +31,14 @@ class AntlrToStatementVisitorTest {
       Statement plan = planVisitor.visit(parseTree);
       assertEquals("CreateTableNode tableName:foo (intColumn:INT) (stringColumn:VARCHAR) ", plan.toString());
     }
-
-//    // cover sql is invalid (missing the ;)
-//    @Test
-//    void missingSemicon() {
-//      String query = "CREATE TABLE foo (intColumn INT, stringColumn VARCHAR)";
-//      assertThrows(RecognitionException.class, () -> {
-//        ParseTree parseTree = parseSql(query);
-//        LogicalPlan plan = planVisitor.visit(parseTree);
-//      });
-//    }
   }
 
   @Nested
   class InsertStatementTest {
+    // Testing strategy
+    // + partition on VALUES list: single value, multiple values
+
+    // cover VALUES list has single value
     @Test
     void validSqlQuery() {
       String query = "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3);";
@@ -52,8 +46,16 @@ class AntlrToStatementVisitorTest {
       Statement plan = planVisitor.visit(parseTree);
       assertEquals("Insert (column1 column2 column3) (Int: 1 String: hello Int: 3)", plan.toString());
     }
-  }
 
+    // cover VALUES list has multiple values
+    @Test
+    void validMultiValueInsert() {
+      String query = "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3), (2, 'world', 4), (3, 'test', 5);";
+      ParseTree parseTree = parseSql(query);
+      Statement plan = planVisitor.visit(parseTree);
+      assertEquals("Insert (column1 column2 column3) (Int: 1 String: hello Int: 3), (Int: 2 String: world Int: 4), (Int: 3 String: test Int: 5)", plan.toString());
+    }
+  }
 
   @Nested
   class SelectStatementTest {

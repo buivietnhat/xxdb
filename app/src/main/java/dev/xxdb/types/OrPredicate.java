@@ -1,5 +1,6 @@
 package dev.xxdb.types;
 
+import dev.xxdb.catalog.Catalog;
 import dev.xxdb.catalog.Schema;
 import dev.xxdb.storage.tuple.Tuple;
 
@@ -13,8 +14,8 @@ public class OrPredicate implements Predicate {
   }
 
   @Override
-  public boolean evaluate(Schema schema, Tuple tuple) {
-    return left.evaluate(schema, tuple) || right.evaluate(schema, tuple);
+  public boolean evaluate(Tuple tuple) {
+    return left.evaluate(tuple) || right.evaluate(tuple);
   }
 
   @Override

@@ -3,6 +3,10 @@ package dev.xxdb.execution.plan;
 public class SequentialScanPlan extends PhysicalPlan {
   private final String table;
 
+  public String getTable() {
+    return table;
+  }
+
   public SequentialScanPlan(String table) {
     this.table = table;
   }
