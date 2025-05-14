@@ -34,8 +34,15 @@ public class ValueScanExecutor extends Executor {
     List<String> columns = maybeSchema.get().getColumns().stream()
         .map(Column::name)
         .toList();
-    if (!columns.equals(plan.getColumns())) {
+
+    if (columns.size() != plan.getColumns().size()) {
       throw new ExecutionException("The column schema are not matched");
+    }
+
+    for (String colName : plan.getColumns()) {
+      if (!columns.contains(colName)) {
+        throw new ExecutionException("The column schema are not matched");
+      }
     }
 
     // verify the types

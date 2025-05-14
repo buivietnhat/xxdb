@@ -1,13 +1,35 @@
 package dev.xxdb.execution;
 
+import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.executor.*;
 import dev.xxdb.execution.plan.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class ExecutionEngine implements PhysicalPlanVisitor<Executor> {
   private final ExecutionContext executionContext;
+  private Schema outputSchema;
 
-  public void execute(PhysicalPlan plan) throws ExecutionException {
-    throw new RuntimeException("unimplemented");
+  public List<TupleResult> execute(PhysicalPlan plan) throws ExecutionException {
+    Executor executor = buildExecutorTree(plan);
+    outputSchema = executor.getOutputSchema();
+
+    List<TupleResult> results = new ArrayList<>();
+
+    executor.init();
+    Optional<TupleResult> maybeResult = executor.next();
+    while (maybeResult.isPresent()) {
+      results.add(maybeResult.get());
+      maybeResult = executor.next();
+    }
+
+    return results;
+  }
+
+  public Schema getOutputSchema() {
+    return outputSchema;
   }
 
   public ExecutionEngine(ExecutionContext executionContext) {
