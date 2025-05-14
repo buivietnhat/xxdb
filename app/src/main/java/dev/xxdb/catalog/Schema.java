@@ -119,6 +119,11 @@ public class Schema {
     return Collections.unmodifiableList(columns);
   }
 
+  public boolean containsColumn(String column) {
+     return columns.stream()
+         .anyMatch(col -> col.name().equals(column));
+  }
+
   @Override
   public String toString() {
     return "Schema{" +

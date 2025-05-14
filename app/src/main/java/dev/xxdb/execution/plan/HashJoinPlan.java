@@ -4,6 +4,14 @@ public class HashJoinPlan extends PhysicalPlan {
   private final String leftJoinKey;
   private final String rightJoinKey;
 
+  public String getLeftJoinKey() {
+    return leftJoinKey;
+  }
+
+  public String getRightJoinKey() {
+    return rightJoinKey;
+  }
+
   public HashJoinPlan(String leftJoinKey, String rightJoinKey) {
     this.leftJoinKey = leftJoinKey;
     this.rightJoinKey = rightJoinKey;

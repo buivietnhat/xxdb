@@ -128,4 +128,5 @@ public class Tuple {
     }
     throw new RuntimeException("Cannot find the column: " + column);
   }
+
 }
