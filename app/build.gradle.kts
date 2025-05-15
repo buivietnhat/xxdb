@@ -9,6 +9,7 @@ plugins {
   // Apply the application plugin to add support for building a CLI application in Java.
   application
   antlr
+  jacoco
 }
 
 repositories {
@@ -44,5 +45,14 @@ tasks.test { useJUnitPlatform() }
 tasks.test {
     useJUnitPlatform()
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(true)
+    }
 }
 
