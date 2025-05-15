@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -32,10 +34,20 @@ jobs:
         with:
           jacoco-csv-file: app/build/reports/jacoco/test/jacocoTestReport.csv
           badges-directory: .github/badges
+      - name: Commit and push coverage badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/badges/jacoco.svg
+          git commit -m "Update coverage badge [skip ci]" || echo "No changes to commit"
+          git push
       - name: Upload badge as artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-badge
           path: .github/badges
+
+  # NOTE: Make sure to set Workflow permissions to 'Read and write' in repository settings for this to work.
 
   # Optionally, you can add a job to comment the badge on PRs or push it to gh-pages for display 
