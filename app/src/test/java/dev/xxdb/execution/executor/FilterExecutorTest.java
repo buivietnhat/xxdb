@@ -69,7 +69,7 @@ public class FilterExecutorTest {
       Catalog mockCatalog = mock(Catalog.class);
 
       Schema.Builder schemaBuilder = new Schema.Builder();
-      schemaBuilder.addIntColumn("col1");
+      schemaBuilder.addIntColumn("FOO.col1");
       Schema schema = schemaBuilder.build();
 
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
@@ -115,8 +115,8 @@ public class FilterExecutorTest {
       Catalog mockCatalog = mock(Catalog.class);
 
       Schema.Builder schemaBuilder = new Schema.Builder();
-      schemaBuilder.addIntColumn("col1");
-      schemaBuilder.addVarcharColumn("col2");
+      schemaBuilder.addIntColumn("FOO.col1");
+      schemaBuilder.addVarcharColumn("FOO.col2");
       Schema schema = schemaBuilder.build();
 
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));

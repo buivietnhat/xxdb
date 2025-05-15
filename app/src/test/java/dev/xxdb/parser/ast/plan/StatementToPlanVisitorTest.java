@@ -24,7 +24,8 @@ class StatementToPlanVisitorTest {
     @Test
     void validCreateTableExpression() {
       String tableName = "FOO";
-      List<Statement> columnLists = List.of(new ColumnDefinition("col1", "INT"), new ColumnDefinition("col2", "VARCHAR"));
+      List<Statement> columnLists = List.of(new ColumnDefinition("col1", "INT"),
+          new ColumnDefinition("col2", "VARCHAR"));
       Statement columnDefList = new ColumnDefinitionList(columnLists);
       Statement createTable = new CreateTable(tableName, columnDefList);
       createTable.accept(visitor);

@@ -70,18 +70,15 @@ public class Schema {
   /**
    * Produce new Schema by joining this schema and another
    * @param other: the other Schema to join
-   * @param firstTable name of this table schema
-   * @param otherTable name of the other table schema
    * @return new schema
    */
-   public Schema join(final Schema other, String firstTable, String otherTable) {
+   public Schema join(final Schema other) {
      List<Column> clone = new ArrayList<>(columns.stream()
-         .map(col -> col.withName(firstTable + "." + col.name()))
          .toList());
 
      int currentOffset = clone.getLast().tupleOffset() + clone.getLast().length();
      for (Column col : other.getColumns()) {
-       clone.add(new Column(otherTable + "." + col.name(), col.typeId(), currentOffset, col.length()));
+       clone.add(new Column(col.name(), col.typeId(), currentOffset, col.length()));
        currentOffset += col.length();
      }
 

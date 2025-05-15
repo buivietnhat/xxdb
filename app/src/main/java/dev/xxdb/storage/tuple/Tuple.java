@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import dev.xxdb.catalog.Column;
 import dev.xxdb.catalog.Schema;
@@ -127,6 +128,14 @@ public class Tuple {
       }
     }
     throw new RuntimeException("Cannot find the column: " + column);
+  }
+
+  public void print(Schema schema) {
+    String collect = schema.getColumns().stream()
+        .map(col -> col.name() + ":" + getValue(schema, col.name()))
+        .collect(Collectors.joining(" "));
+
+    System.out.println(collect);
   }
 
 }

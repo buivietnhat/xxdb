@@ -13,7 +13,11 @@ public class SimplePredicate implements Predicate {
 
   public SimplePredicate(String table, String column, Value value, Ops op, Catalog catalog) {
     this.table = table;
-    this.column = column;
+    if (column.contains(".")) {
+      this.column = column;
+    } else {
+      this.column = table + "." + column;
+    }
     this.value = value;
     this.op = op;
     this.schema = catalog.getTableSchema(table).get();

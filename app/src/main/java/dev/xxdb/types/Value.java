@@ -32,6 +32,22 @@ public sealed interface Value permits StringValue, IntValue {
   byte[] getData();
 
   /**
+   * Convert String representation of types to the actual TypeId system
+   * @param type: String representaiton of the type
+   * @return TypeId object
+   */
+   static TypeId getTypeId(String type) {
+    switch (type) {
+      case "INT":
+        return TypeId.INTEGER;
+      case "VARCHAR":
+        return TypeId.VARCHAR;
+      default:
+        throw new RuntimeException("unregconized type");
+    }
+  }
+
+  /**
    * Factory method to create an Integer type
    * @param data serialized data for the type
    */

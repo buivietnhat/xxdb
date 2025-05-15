@@ -54,3 +54,4 @@ gradle-app.setting
 .idea
 
 app/bin/
+app/xxdb.db
