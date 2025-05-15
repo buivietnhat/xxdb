@@ -56,9 +56,7 @@ public class Select implements Statement {
 
   @Override
   public String toString() {
-    String str = "Select{" +
-        "tableName='" + tableName + '\'' +
-        ", columnList=" + columnList;
+    String str = "Select{" + "tableName='" + tableName + '\'' + ", columnList=" + columnList;
     if (joinClause.isPresent()) {
       str += ", joinClause=" + joinClause.get();
     }
@@ -73,4 +71,3 @@ public class Select implements Statement {
     return str;
   }
 }
-

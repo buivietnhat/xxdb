@@ -30,10 +30,15 @@ public class SimpleColumnCondition implements Condition {
 
   @Override
   public String toString() {
-    return "SimpleColumnCondition{" +
-        "columnName1='" + columnName1 + '\'' +
-        ", columnName2='" + columnName2 + '\'' +
-        ", operator=" + operator +
-        '}';
+    return "SimpleColumnCondition{"
+        + "columnName1='"
+        + columnName1
+        + '\''
+        + ", columnName2='"
+        + columnName2
+        + '\''
+        + ", operator="
+        + operator
+        + '}';
   }
 }

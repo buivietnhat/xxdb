@@ -11,13 +11,12 @@ public abstract class Executor {
     this.ctx = ctx;
   }
 
-  /**
-   * initialize the executor
-   */
+  /** initialize the executor */
   public abstract void init() throws ExecutionException;
 
   /**
    * Produce once-at-a-time tuple as in Iterator Model
+   *
    * @return TupleResult or None if there are no more tuples
    * @throws ExecutionException if something went wrong
    */

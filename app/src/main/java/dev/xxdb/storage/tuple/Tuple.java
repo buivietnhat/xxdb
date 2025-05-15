@@ -1,15 +1,14 @@
 package dev.xxdb.storage.tuple;
 
+import dev.xxdb.catalog.Column;
+import dev.xxdb.catalog.Schema;
+import dev.xxdb.types.TypeId;
+import dev.xxdb.types.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import dev.xxdb.catalog.Column;
-import dev.xxdb.catalog.Schema;
-import dev.xxdb.types.TypeId;
-import dev.xxdb.types.Value;
 
 class TupleHeader {}
 
@@ -131,11 +130,11 @@ public class Tuple {
   }
 
   public void print(Schema schema) {
-    String collect = schema.getColumns().stream()
-        .map(col -> col.name() + ":" + getValue(schema, col.name()))
-        .collect(Collectors.joining(" "));
+    String collect =
+        schema.getColumns().stream()
+            .map(col -> col.name() + ":" + getValue(schema, col.name()))
+            .collect(Collectors.joining(" "));
 
     System.out.println(collect);
   }
-
 }

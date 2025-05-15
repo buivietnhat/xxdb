@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.statement;
 
-public class OrCondition implements Condition{
+public class OrCondition implements Condition {
   private final Statement left;
   private final Statement right;
 
@@ -24,9 +24,6 @@ public class OrCondition implements Condition{
 
   @Override
   public String toString() {
-    return "OrCondition{" +
-        "left=" + left +
-        ", right=" + right +
-        '}';
+    return "OrCondition{" + "left=" + left + ", right=" + right + '}';
   }
 }

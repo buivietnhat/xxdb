@@ -4,7 +4,6 @@ import dev.xxdb.execution.executor.TupleResult;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -40,7 +39,6 @@ public class SlottedPage extends Page {
   //
   // Safety from rep exposure: all fields are private and not exposed to outside
   // world
-
 
   // Implement Iterator<TupleResult> interface for traversing all the tuples in this Page
   public Iterator<TupleResult> getIterator() {
@@ -125,14 +123,14 @@ public class SlottedPage extends Page {
     return getTuple(rid.slotNumber());
   }
 
-
   private Tuple getTuple(int slotNumber) throws TupleException {
     TupleInfo tupleInfo = slots.get(slotNumber);
     if (tupleInfo.isDeleted) {
       throw new TupleException("The tuple was deleted");
     }
 
-    byte[] tupleData = Arrays.copyOfRange(buffer.array(), tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
+    byte[] tupleData =
+        Arrays.copyOfRange(buffer.array(), tupleInfo.offset, tupleInfo.offset + tupleInfo.size);
 
     checkRep();
 
@@ -142,7 +140,7 @@ public class SlottedPage extends Page {
   /**
    * Update a tuple in this Page
    *
-   * @param rid:   record ID of the tuple, requires to be valid
+   * @param rid: record ID of the tuple, requires to be valid
    * @param tuple: tuple data to add
    * @throws TupleException if cannot update
    */

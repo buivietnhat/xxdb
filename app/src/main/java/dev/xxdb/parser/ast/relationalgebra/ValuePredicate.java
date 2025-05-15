@@ -34,11 +34,7 @@ public class ValuePredicate implements Predicate {
 
   @Override
   public String toString() {
-    return "ValuePredicate{" +
-        "op=" + op +
-        ", column='" + column + '\'' +
-        ", value=" + value +
-        '}';
+    return "ValuePredicate{" + "op=" + op + ", column='" + column + '\'' + ", value=" + value + '}';
   }
 
   @Override

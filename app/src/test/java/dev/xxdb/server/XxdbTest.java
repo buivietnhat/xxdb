@@ -2,13 +2,12 @@ package dev.xxdb.server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class XxdbTest {
   private Xxdb xxdb;
@@ -54,9 +53,13 @@ class XxdbTest {
   void testJoinWithLimit() throws Exception {
     xxdb.execute("CREATE TABLE Persons (PersonId INT, Name VARCHAR);");
     xxdb.execute("CREATE TABLE Address (PersonId INT, City VARCHAR);");
-    xxdb.execute("INSERT INTO Persons (PersonId, Name) VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Carol');");
-    xxdb.execute("INSERT INTO Address (PersonId, City) VALUES (1, 'New York'), (2, 'Los Angeles'), (3, 'Chicago');");
-    String output = xxdb.execute("SELECT Persons.Name, Address.City FROM Persons JOIN Address ON Persons.PersonId = Address.PersonId LIMIT 2;");
+    xxdb.execute(
+        "INSERT INTO Persons (PersonId, Name) VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Carol');");
+    xxdb.execute(
+        "INSERT INTO Address (PersonId, City) VALUES (1, 'New York'), (2, 'Los Angeles'), (3, 'Chicago');");
+    String output =
+        xxdb.execute(
+            "SELECT Persons.Name, Address.City FROM Persons JOIN Address ON Persons.PersonId = Address.PersonId LIMIT 2;");
     assertTrue(output.contains("Persons.Name | Address.City"));
     assertTrue(output.contains("Alice"));
     assertTrue(output.contains("Bob") || output.contains("Carol"));

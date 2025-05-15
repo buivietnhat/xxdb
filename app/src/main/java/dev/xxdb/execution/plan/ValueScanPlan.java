@@ -1,7 +1,6 @@
 package dev.xxdb.execution.plan;
 
 import dev.xxdb.types.Value;
-
 import java.util.List;
 
 public class ValueScanPlan extends PhysicalPlan {
@@ -28,7 +27,6 @@ public class ValueScanPlan extends PhysicalPlan {
         .toList();
   }
 
-
   public ValueScanPlan(String tableName, List<String> columns, List<List<Value>> values) {
     this.tableName = tableName;
     this.columns = decorateTableName(columns);
@@ -42,10 +40,14 @@ public class ValueScanPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "ValueScanPlan{" +
-        "tableName='" + tableName + '\'' +
-        ", columns=" + columns +
-        ", values=" + values +
-        '}';
+    return "ValueScanPlan{"
+        + "tableName='"
+        + tableName
+        + '\''
+        + ", columns="
+        + columns
+        + ", values="
+        + values
+        + '}';
   }
 }

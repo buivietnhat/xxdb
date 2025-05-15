@@ -1,5 +1,10 @@
 package dev.xxdb.execution.executor;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import dev.xxdb.catalog.Catalog;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.SequentialScanPlan;
@@ -10,10 +15,6 @@ import dev.xxdb.storage.page.SlottedPageRepository;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,11 +22,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class SequentialScanExecutorTest {
 
@@ -37,18 +35,17 @@ class SequentialScanExecutorTest {
       Catalog mockCatalog = mock(Catalog.class);
       SequentialScanPlan plan = new SequentialScanPlan("FOO");
 
-
       DiskManager diskManager = new DiskManager("dump.db");
       SlottedPageRepository pageRepository = new HeapFile(diskManager);
       TableHeap tableHeap = new TableHeap(pageRepository);
 
       List<RID> rids = new ArrayList<>();
-      List<Tuple> tuples = List.of(
-         new Tuple("tuple1".getBytes(StandardCharsets.UTF_8)),
-         new Tuple("tuple2".getBytes(StandardCharsets.UTF_8)),
-         new Tuple("tuple3".getBytes(StandardCharsets.UTF_8)),
-         new Tuple("tuple4".getBytes(StandardCharsets.UTF_8))
-      );
+      List<Tuple> tuples =
+          List.of(
+              new Tuple("tuple1".getBytes(StandardCharsets.UTF_8)),
+              new Tuple("tuple2".getBytes(StandardCharsets.UTF_8)),
+              new Tuple("tuple3".getBytes(StandardCharsets.UTF_8)),
+              new Tuple("tuple4".getBytes(StandardCharsets.UTF_8)));
 
       for (Tuple tuple : tuples) {
         rids.add(tableHeap.addTuple(tuple));
@@ -56,7 +53,6 @@ class SequentialScanExecutorTest {
 
       when(mockCtx.catalog()).thenReturn(mockCatalog);
       when(mockCatalog.getTable(eq("FOO"))).thenReturn(Optional.of(tableHeap));
-
 
       SequentialScanExecutor executor = new SequentialScanExecutor(mockCtx, plan);
       executor.init();
@@ -76,7 +72,5 @@ class SequentialScanExecutorTest {
       diskManager.close();
       Files.deleteIfExists(Paths.get("dump.db"));
     }
-
   }
-
 }

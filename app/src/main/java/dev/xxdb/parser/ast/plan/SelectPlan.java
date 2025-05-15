@@ -2,7 +2,6 @@ package dev.xxdb.parser.ast.plan;
 
 import dev.xxdb.parser.ast.relationalgebra.*;
 import dev.xxdb.types.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +94,6 @@ public class SelectPlan implements LogicalPlan {
       }
       return plan;
     }
-
   }
 
   private String leftTableName;

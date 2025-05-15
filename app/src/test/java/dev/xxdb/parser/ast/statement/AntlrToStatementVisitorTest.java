@@ -29,7 +29,8 @@ class AntlrToStatementVisitorTest {
       String query = "CREATE TABLE foo (intColumn INT, stringColumn VARCHAR);";
       ParseTree parseTree = parseSql(query);
       Statement plan = planVisitor.visit(parseTree);
-      assertEquals("CreateTableNode tableName:foo (intColumn:INT) (stringColumn:VARCHAR) ", plan.toString());
+      assertEquals(
+          "CreateTableNode tableName:foo (intColumn:INT) (stringColumn:VARCHAR) ", plan.toString());
     }
   }
 
@@ -44,16 +45,20 @@ class AntlrToStatementVisitorTest {
       String query = "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3);";
       ParseTree parseTree = parseSql(query);
       Statement plan = planVisitor.visit(parseTree);
-      assertEquals("Insert (column1 column2 column3) (Int: 1 String: hello Int: 3)", plan.toString());
+      assertEquals(
+          "Insert (column1 column2 column3) (Int: 1 String: hello Int: 3)", plan.toString());
     }
 
     // cover VALUES list has multiple values
     @Test
     void validMultiValueInsert() {
-      String query = "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3), (2, 'world', 4), (3, 'test', 5);";
+      String query =
+          "INSERT INTO table_name (column1, column2, column3) VALUES (1, 'hello', 3), (2, 'world', 4), (3, 'test', 5);";
       ParseTree parseTree = parseSql(query);
       Statement plan = planVisitor.visit(parseTree);
-      assertEquals("Insert (column1 column2 column3) (Int: 1 String: hello Int: 3), (Int: 2 String: world Int: 4), (Int: 3 String: test Int: 5)", plan.toString());
+      assertEquals(
+          "Insert (column1 column2 column3) (Int: 1 String: hello Int: 3), (Int: 2 String: world Int: 4), (Int: 3 String: test Int: 5)",
+          plan.toString());
     }
   }
 
@@ -61,17 +66,20 @@ class AntlrToStatementVisitorTest {
   class SelectStatementTest {
     @Test
     void validSqlQuery() {
-      String query = "SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate\n" +
-          "FROM Orders\n" +
-          "JOIN Customers ON Orders.CustomerID=Customers.CustomerID\n" +
-          "WHERE Orders.CustomerID = 1000 \n" +
-          "LIMIT 10;";
+      String query =
+          "SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate\n"
+              + "FROM Orders\n"
+              + "JOIN Customers ON Orders.CustomerID=Customers.CustomerID\n"
+              + "WHERE Orders.CustomerID = 1000 \n"
+              + "LIMIT 10;";
       ParseTree parseTree = parseSql(query);
       Statement plan = planVisitor.visit(parseTree);
-      assertEquals("Select{tableName='Orders', columnList=(Orders.OrderID Customers.CustomerName Orders.OrderDate), " +
-          "joinClause=Join{tableName='Customers', condition=SimpleColumnCondition{columnName1='Orders.CustomerID', columnName2='Customers.CustomerID', operator=Operator{op=EQUALS}}}, " +
-          "whereClause=Where{condition=SimpleCondition{columnName='Orders.CustomerID', operator=Operator{op=EQUALS}, value=Int: 1000}}, " +
-          "limitClause=Limit{number=10}}", plan.toString());
+      assertEquals(
+          "Select{tableName='Orders', columnList=(Orders.OrderID Customers.CustomerName Orders.OrderDate), "
+              + "joinClause=Join{tableName='Customers', condition=SimpleColumnCondition{columnName1='Orders.CustomerID', columnName2='Customers.CustomerID', operator=Operator{op=EQUALS}}}, "
+              + "whereClause=Where{condition=SimpleCondition{columnName='Orders.CustomerID', operator=Operator{op=EQUALS}, value=Int: 1000}}, "
+              + "limitClause=Limit{number=10}}",
+          plan.toString());
     }
   }
 }

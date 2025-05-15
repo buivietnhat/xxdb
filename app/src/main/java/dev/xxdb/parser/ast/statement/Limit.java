@@ -18,8 +18,6 @@ public class Limit implements Statement {
 
   @Override
   public String toString() {
-    return "Limit{" +
-        "number=" + number +
-        '}';
+    return "Limit{" + "number=" + number + '}';
   }
 }

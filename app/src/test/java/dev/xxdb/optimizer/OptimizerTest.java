@@ -1,5 +1,11 @@
 package dev.xxdb.optimizer;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import dev.xxdb.catalog.Catalog;
 import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.plan.PhysicalPlan;
@@ -18,20 +24,13 @@ import dev.xxdb.types.IntValue;
 import dev.xxdb.types.Ops;
 import dev.xxdb.types.PredicateType;
 import dev.xxdb.types.StringValue;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class OptimizerTest {
 
@@ -51,7 +50,9 @@ class OptimizerTest {
       List<Select> selects = List.of(new Select(pred, "FOO"));
       when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));
       dev.xxdb.types.Predicate build = builder.build(selects, Collections.emptyList());
-      assertEquals("SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}", build.toString());
+      assertEquals(
+          "SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}",
+          build.toString());
     }
 
     // cover selects len = 2, types len = 1
@@ -63,9 +64,10 @@ class OptimizerTest {
       List<PredicateType> types = List.of(PredicateType.AND);
       when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));
       dev.xxdb.types.Predicate build = builder.build(selects, types);
-      assertEquals("AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}, " +
-              "right=SimplePredicate{table='BAR', column='BAR.col2', value=StringValue[value=20], op=GREATER_THAN}}"
-          , build.toString());
+      assertEquals(
+          "AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}, "
+              + "right=SimplePredicate{table='BAR', column='BAR.col2', value=StringValue[value=20], op=GREATER_THAN}}",
+          build.toString());
     }
   }
 
@@ -83,30 +85,36 @@ class OptimizerTest {
     // cover logical plan is insert
     @Test
     void insertTest() {
-      InsertPlan insertPlan = new InsertPlan("Table", List.of("col1", "col2"),
-          List.of(
-              List.of(new IntValue(1), new StringValue("a")),
-              List.of(new IntValue(2), new StringValue("b")),
-              List.of(new IntValue(3), new StringValue("c"))
-          ));
+      InsertPlan insertPlan =
+          new InsertPlan(
+              "Table",
+              List.of("col1", "col2"),
+              List.of(
+                  List.of(new IntValue(1), new StringValue("a")),
+                  List.of(new IntValue(2), new StringValue("b")),
+                  List.of(new IntValue(3), new StringValue("c"))));
 
       Optimizer optimizer = new Optimizer(mock(Catalog.class));
       PhysicalPlan physicalPlan = optimizer.run(insertPlan);
-      assertEquals("InsertPlan{tableName='Table', " +
-                                "leftChild: ValueScanPlan{tableName='Table', columns=[Table.col1, Table.col2], " +
-                                            "values=[[IntValue[value=1], StringValue[value=a]], " +
-                                                    "[IntValue[value=2], StringValue[value=b]], " +
-                                                    "[IntValue[value=3], StringValue[value=c]]]}}", physicalPlan.toString());
-
+      assertEquals(
+          "InsertPlan{tableName='Table', "
+              + "leftChild: ValueScanPlan{tableName='Table', columns=[Table.col1, Table.col2], "
+              + "values=[[IntValue[value=1], StringValue[value=a]], "
+              + "[IntValue[value=2], StringValue[value=b]], "
+              + "[IntValue[value=3], StringValue[value=c]]]}}",
+          physicalPlan.toString());
     }
 
     // cover logical plan is create table
     @Test
     void createTableTest() {
-      CreateTablePlan plan = new CreateTablePlan("Foo", List.of("col1", "col2"), List.of("INT", "VARCHAR"));
+      CreateTablePlan plan =
+          new CreateTablePlan("Foo", List.of("col1", "col2"), List.of("INT", "VARCHAR"));
       Optimizer optimizer = new Optimizer(mock(Catalog.class));
       PhysicalPlan physicalPlan = optimizer.run(plan);
-      assertEquals("CreateTablePlan{tableName='Foo', columns=[Foo.col1, Foo.col2], types=[INT, VARCHAR]}", physicalPlan.toString());
+      assertEquals(
+          "CreateTablePlan{tableName='Foo', columns=[Foo.col1, Foo.col2], types=[INT, VARCHAR]}",
+          physicalPlan.toString());
     }
 
     LogicalPlan queryToLogicalPlan(String query) {
@@ -127,18 +135,23 @@ class OptimizerTest {
       Catalog mockCatalog = mock(Catalog.class);
       Optimizer optimizer = new Optimizer(mockCatalog);
       Schema.Builder schemaBuilder = new Schema.Builder();
-      Schema schema = schemaBuilder.addIntColumn("FOO.col1")
-          .addVarcharColumn("FOO.col2")
-          .addIntColumn("FOO.col3").build();
+      Schema schema =
+          schemaBuilder
+              .addIntColumn("FOO.col1")
+              .addVarcharColumn("FOO.col2")
+              .addIntColumn("FOO.col3")
+              .build();
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
       PhysicalPlan physicalPlan = optimizer.run(logicalPlan);
-      assertEquals("ProjectionPlan{columns=[FOO.col1, FOO.col2, FOO.col3], child=SequentialScanPlan{table='FOO'}}", physicalPlan.toString());
-      assertEquals("Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], " +
-              "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], " +
-              "Column[name=FOO.col3, typeId=INTEGER, tupleOffset=104, length=4]]}",
+      assertEquals(
+          "ProjectionPlan{columns=[FOO.col1, FOO.col2, FOO.col3], child=SequentialScanPlan{table='FOO'}}",
+          physicalPlan.toString());
+      assertEquals(
+          "Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], "
+              + "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], "
+              + "Column[name=FOO.col3, typeId=INTEGER, tupleOffset=104, length=4]]}",
           physicalPlan.getOutputSchema().toString());
     }
-
 
     // cover logical plan is select, has projection and predicate
     @Test
@@ -148,60 +161,71 @@ class OptimizerTest {
       Catalog mockCatalog = mock(Catalog.class);
       Optimizer optimizer = new Optimizer(mockCatalog);
       Schema.Builder schemaBuilder = new Schema.Builder();
-      Schema schema = schemaBuilder.addIntColumn("FOO.col1")
-          .addVarcharColumn("FOO.col2")
-          .addIntColumn("FOO.col3").build();
+      Schema schema =
+          schemaBuilder
+              .addIntColumn("FOO.col1")
+              .addVarcharColumn("FOO.col2")
+              .addIntColumn("FOO.col3")
+              .build();
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
       PhysicalPlan physicalPlan = optimizer.run(logicalPlan);
-      assertEquals("ProjectionPlan{columns=[FOO.col1, FOO.col2, FOO.col3], " +
-          "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=2], op=GREATER_THAN}, " +
-          "right=SimplePredicate{table='FOO', column='FOO.col2', value=StringValue[value=Bar], op=EQUALS}}, " +
-          "child=SequentialScanPlan{table='FOO'}}}", physicalPlan.toString());
+      assertEquals(
+          "ProjectionPlan{columns=[FOO.col1, FOO.col2, FOO.col3], "
+              + "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=2], op=GREATER_THAN}, "
+              + "right=SimplePredicate{table='FOO', column='FOO.col2', value=StringValue[value=Bar], op=EQUALS}}, "
+              + "child=SequentialScanPlan{table='FOO'}}}",
+          physicalPlan.toString());
 
-
-      assertEquals("Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], " +
-          "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], " +
-          "Column[name=FOO.col3, typeId=INTEGER, tupleOffset=104, length=4]]}",
+      assertEquals(
+          "Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], "
+              + "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], "
+              + "Column[name=FOO.col3, typeId=INTEGER, tupleOffset=104, length=4]]}",
           physicalPlan.getOutputSchema().toString());
-
     }
-
 
     // cover logical plan is select, has projection, predicate, join, limit
     @Test
     void selectTestProjectionAndPredicateAndJoinAndLimit() {
-      String query = "SELECT FOO.col1, FOO.col2, BAR.col1, BAR.col2 FROM FOO JOIN BAR ON FOO.id = BAR.id " +
-          "WHERE FOO.col1 = 20 AND BAR.col2 = 'Bar' LIMIT 10;";
+      String query =
+          "SELECT FOO.col1, FOO.col2, BAR.col1, BAR.col2 FROM FOO JOIN BAR ON FOO.id = BAR.id "
+              + "WHERE FOO.col1 = 20 AND BAR.col2 = 'Bar' LIMIT 10;";
       LogicalPlan logicalPlan = queryToLogicalPlan(query);
       Catalog mockCatalog = mock(Catalog.class);
       Optimizer optimizer = new Optimizer(mockCatalog);
 
       Schema.Builder schemaBuilder = new Schema.Builder();
-      Schema fooSchema = schemaBuilder.addIntColumn("FOO.id")
-          .addIntColumn("FOO.col1")
-          .addVarcharColumn("FOO.col2").build();
-      Schema barSchema = schemaBuilder
-          .addIntColumn("BAR.id")
-          .addIntColumn("BAR.col1")
-          .addVarcharColumn("BAR.col2").build();
+      Schema fooSchema =
+          schemaBuilder
+              .addIntColumn("FOO.id")
+              .addIntColumn("FOO.col1")
+              .addVarcharColumn("FOO.col2")
+              .build();
+      Schema barSchema =
+          schemaBuilder
+              .addIntColumn("BAR.id")
+              .addIntColumn("BAR.col1")
+              .addVarcharColumn("BAR.col2")
+              .build();
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(fooSchema));
       when(mockCatalog.getTableSchema(eq("BAR"))).thenReturn(Optional.of(barSchema));
 
       PhysicalPlan physicalPlan = optimizer.run(logicalPlan);
-      assertEquals("LimitPlan{number=10, " +
-          "child=ProjectionPlan{columns=[FOO.col1, FOO.col2, BAR.col1, BAR.col2], " +
-          "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}, " +
-          "right=SimplePredicate{table='BAR', column='BAR.col2', value=StringValue[value=Bar], op=EQUALS}}, " +
-          "child=HashJoinPlan{leftJoinKey='FOO.id', rightJoinKey='BAR.id', " +
-          "leftChild='SequentialScanPlan{table='FOO'}', " +
-          "rightChild='SequentialScanPlan{table='BAR'}'}}}}", physicalPlan.toString());
+      assertEquals(
+          "LimitPlan{number=10, "
+              + "child=ProjectionPlan{columns=[FOO.col1, FOO.col2, BAR.col1, BAR.col2], "
+              + "child=FilterPlan{predicate=AndPredicate{left=SimplePredicate{table='FOO', column='FOO.col1', value=IntValue[value=20], op=EQUALS}, "
+              + "right=SimplePredicate{table='BAR', column='BAR.col2', value=StringValue[value=Bar], op=EQUALS}}, "
+              + "child=HashJoinPlan{leftJoinKey='FOO.id', rightJoinKey='BAR.id', "
+              + "leftChild='SequentialScanPlan{table='FOO'}', "
+              + "rightChild='SequentialScanPlan{table='BAR'}'}}}}",
+          physicalPlan.toString());
 
-      assertEquals("Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], " +
-          "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], " +
-          "Column[name=BAR.col1, typeId=INTEGER, tupleOffset=104, length=4], " +
-          "Column[name=BAR.col2, typeId=VARCHAR, tupleOffset=108, length=100]]}",
+      assertEquals(
+          "Schema{columns=[Column[name=FOO.col1, typeId=INTEGER, tupleOffset=0, length=4], "
+              + "Column[name=FOO.col2, typeId=VARCHAR, tupleOffset=4, length=100], "
+              + "Column[name=BAR.col1, typeId=INTEGER, tupleOffset=104, length=4], "
+              + "Column[name=BAR.col2, typeId=VARCHAR, tupleOffset=108, length=100]]}",
           physicalPlan.getOutputSchema().toString());
-
     }
   }
 }

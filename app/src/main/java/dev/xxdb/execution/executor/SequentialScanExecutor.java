@@ -4,7 +4,6 @@ import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.SequentialScanPlan;
 import dev.xxdb.storage.file.TableHeap;
-
 import java.util.Iterator;
 import java.util.Optional;
 

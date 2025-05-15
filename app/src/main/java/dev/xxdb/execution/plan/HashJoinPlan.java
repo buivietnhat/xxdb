@@ -24,11 +24,19 @@ public class HashJoinPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "HashJoinPlan{" +
-        "leftJoinKey='" + leftJoinKey + '\'' +
-        ", rightJoinKey='" + rightJoinKey + '\'' +
-        ", leftChild='" + leftChild + '\'' +
-        ", rightChild='" + rightChild + '\'' +
-        '}';
+    return "HashJoinPlan{"
+        + "leftJoinKey='"
+        + leftJoinKey
+        + '\''
+        + ", rightJoinKey='"
+        + rightJoinKey
+        + '\''
+        + ", leftChild='"
+        + leftChild
+        + '\''
+        + ", rightChild='"
+        + rightChild
+        + '\''
+        + '}';
   }
 }

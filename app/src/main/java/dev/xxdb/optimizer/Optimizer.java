@@ -10,7 +10,6 @@ import dev.xxdb.parser.ast.relationalgebra.*;
 import dev.xxdb.types.Predicate;
 import dev.xxdb.types.PredicateType;
 import dev.xxdb.types.SimplePredicate;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,14 +57,15 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
     @Override
     public Predicate visitOrPredicate(OrPredicate predicate) {
       throw new RuntimeException("unimplemented");
-//      Predicate left = predicate.getLeft().accept(this);
-//      Predicate right = predicate.getRight().accept(this);
-//      return new dev.xxdb.types.AndPredicate(left, right);
+      //      Predicate left = predicate.getLeft().accept(this);
+      //      Predicate right = predicate.getRight().accept(this);
+      //      return new dev.xxdb.types.AndPredicate(left, right);
     }
 
     @Override
     public Predicate visitValuePredicate(ValuePredicate predicate) {
-      return new SimplePredicate(currentTable, predicate.getColumn(), predicate.getValue(), predicate.getOp(), catalog);
+      return new SimplePredicate(
+          currentTable, predicate.getColumn(), predicate.getValue(), predicate.getOp(), catalog);
     }
   }
 
@@ -78,7 +78,8 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
   }
 
   /**
-   * Run the optimize algorithm to generate a physical plan that can be fed to an execution engine to run
+   * Run the optimize algorithm to generate a physical plan that can be fed to an execution engine
+   * to run
    *
    * @param plan logical plan
    * @return physical plan
@@ -89,16 +90,14 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
   @Override
   public PhysicalPlan visitCreateTablePlan(CreateTablePlan plan) {
-    return new dev.xxdb.execution.plan.CreateTablePlan(plan.getTableName(), plan.getColumnList(), plan.getColumnDefList());
+    return new dev.xxdb.execution.plan.CreateTablePlan(
+        plan.getTableName(), plan.getColumnList(), plan.getColumnDefList());
   }
 
   // decorate the table name for each column name, e.g Table.col1
   private List<String> decorateTableName(List<String> columns, String tableName) {
-    return columns.stream()
-        .map(col -> col.contains(".") ? col : tableName + "." + col)
-        .toList();
+    return columns.stream().map(col -> col.contains(".") ? col : tableName + "." + col).toList();
   }
-
 
   @Override
   public PhysicalPlan visitSelectPlan(SelectPlan plan) {
@@ -143,7 +142,8 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
       currentTreeNode = filter;
     }
 
-    List<String> columns = decorateTableName(plan.getProjection().getColumns(), plan.getLeftTableName());
+    List<String> columns =
+        decorateTableName(plan.getProjection().getColumns(), plan.getLeftTableName());
     PhysicalPlan projection = new ProjectionPlan(columns);
     projection.setLeftChild(currentTreeNode);
     projection.setOutputSchema(currentTreeNode.getOutputSchema().filter(columns));
@@ -161,8 +161,10 @@ public class Optimizer implements LogicalPlanVisitor<PhysicalPlan> {
 
   @Override
   public PhysicalPlan visitInsertPlan(InsertPlan plan) {
-    dev.xxdb.execution.plan.InsertPlan insert = new dev.xxdb.execution.plan.InsertPlan(plan.getTableName());
-    ValueScanPlan valueScanPlan = new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValueSets());
+    dev.xxdb.execution.plan.InsertPlan insert =
+        new dev.xxdb.execution.plan.InsertPlan(plan.getTableName());
+    ValueScanPlan valueScanPlan =
+        new ValueScanPlan(plan.getTableName(), plan.getColumns(), plan.getValueSets());
     insert.setLeftChild(valueScanPlan);
     return insert;
   }

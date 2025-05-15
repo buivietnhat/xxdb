@@ -1,7 +1,5 @@
 package dev.xxdb.execution.plan;
 
-import dev.xxdb.catalog.Schema;
-
 public class LimitPlan extends PhysicalPlan {
   private final int number;
 
@@ -20,9 +18,6 @@ public class LimitPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "LimitPlan{" +
-        "number=" + number +
-        ", child=" + leftChild +
-        '}';
+    return "LimitPlan{" + "number=" + number + ", child=" + leftChild + '}';
   }
 }

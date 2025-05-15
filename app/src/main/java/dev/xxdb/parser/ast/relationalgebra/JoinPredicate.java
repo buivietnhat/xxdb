@@ -1,6 +1,5 @@
 package dev.xxdb.parser.ast.relationalgebra;
 
-import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.types.Ops;
 
 public class JoinPredicate implements Predicate {
@@ -42,11 +41,16 @@ public class JoinPredicate implements Predicate {
 
   @Override
   public String toString() {
-    return "JoinPredicate{" +
-        "ops=" + ops +
-        ", leftColumn='" + leftColumn + '\'' +
-        ", rightColumn='" + rightColumn + '\'' +
-        '}';
+    return "JoinPredicate{"
+        + "ops="
+        + ops
+        + ", leftColumn='"
+        + leftColumn
+        + '\''
+        + ", rightColumn='"
+        + rightColumn
+        + '\''
+        + '}';
   }
 
   @Override
@@ -54,8 +58,8 @@ public class JoinPredicate implements Predicate {
     throw new RuntimeException("unimplemented");
   }
 
-//  @Override
-//  public boolean evaluate(Tuple tuple) {
-//    return false;
-//  }
+  //  @Override
+  //  public boolean evaluate(Tuple tuple) {
+  //    return false;
+  //  }
 }

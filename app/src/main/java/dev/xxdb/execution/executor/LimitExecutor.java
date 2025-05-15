@@ -3,10 +3,9 @@ package dev.xxdb.execution.executor;
 import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.LimitPlan;
-
 import java.util.Optional;
 
-public class LimitExecutor extends Executor  {
+public class LimitExecutor extends Executor {
   private final LimitPlan plan;
   private final Executor child;
   private int numTupleProduced = 0;
@@ -42,8 +41,6 @@ public class LimitExecutor extends Executor  {
 
   @Override
   public String toString() {
-    return "LimitExecutor{" +
-        "child=" + child +
-        '}';
+    return "LimitExecutor{" + "child=" + child + '}';
   }
 }

@@ -7,7 +7,6 @@ import dev.xxdb.storage.file.TableHeap;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-
 import java.util.Optional;
 
 public class InsertExecutor extends Executor {
@@ -56,8 +55,6 @@ public class InsertExecutor extends Executor {
 
   @Override
   public String toString() {
-    return "InsertExecutor{" +
-        "child=" + child +
-        '}';
+    return "InsertExecutor{" + "child=" + child + '}';
   }
 }

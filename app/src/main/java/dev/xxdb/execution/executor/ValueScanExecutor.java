@@ -8,7 +8,6 @@ import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.types.TypeId;
 import dev.xxdb.types.Value;
-
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +30,7 @@ public class ValueScanExecutor extends Executor {
     }
 
     // verify the column names schema
-    List<String> columns = maybeSchema.get().getColumns().stream()
-        .map(Column::name)
-        .toList();
+    List<String> columns = maybeSchema.get().getColumns().stream().map(Column::name).toList();
 
     if (columns.size() != plan.getColumns().size()) {
       throw new ExecutionException("The column schema are not matched");
@@ -49,15 +46,12 @@ public class ValueScanExecutor extends Executor {
     if (plan.getValues().isEmpty()) {
       throw new ExecutionException("Value must be supplied for inserting");
     }
-    List<TypeId> schemaType = maybeSchema.get().getColumns().stream()
-        .map(Column::typeId)
-        .toList();
+    List<TypeId> schemaType = maybeSchema.get().getColumns().stream().map(Column::typeId).toList();
 
-    boolean mismatchType = plan.getValues().stream()
-        .map(
-            values -> values.stream().map(Value::getTypeId).toList()
-        )
-        .anyMatch(suppliedType -> !schemaType.equals(suppliedType));
+    boolean mismatchType =
+        plan.getValues().stream()
+            .map(values -> values.stream().map(Value::getTypeId).toList())
+            .anyMatch(suppliedType -> !schemaType.equals(suppliedType));
 
     if (mismatchType) {
       throw new ExecutionException("The supplied type is mismatch");
@@ -72,14 +66,11 @@ public class ValueScanExecutor extends Executor {
       return Optional.empty();
     }
 
-    Integer tupleSize = values.get(valueIndex).stream()
-        .map(Value::size)
-        .reduce(0, Integer::sum);
+    Integer tupleSize = values.get(valueIndex).stream().map(Value::size).reduce(0, Integer::sum);
 
     byte[] bytes = new byte[tupleSize];
     ByteBuffer buffer = ByteBuffer.wrap(bytes);
-    values.get(valueIndex)
-        .forEach(value -> buffer.put(value.getData()));
+    values.get(valueIndex).forEach(value -> buffer.put(value.getData()));
 
     Tuple tuple = new Tuple(buffer.array());
 

@@ -64,8 +64,6 @@ public final class StringValue implements Value {
 
   @Override
   public String toString() {
-    return "StringValue[" +
-        "value=" + value.substring(0, originalLength) +
-        ']';
+    return "StringValue[" + "value=" + value.substring(0, originalLength) + ']';
   }
 }

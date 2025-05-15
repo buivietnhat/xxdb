@@ -1,19 +1,18 @@
 package dev.xxdb.execution.executor;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.LimitPlan;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class LimitExecutorTest {
   @Nested
@@ -41,7 +40,6 @@ class LimitExecutorTest {
           .thenReturn(Optional.of(new TupleResult(new Tuple(new byte[400]), RID.INVALID_RID)))
           .thenReturn(Optional.empty());
 
-
       Optional<TupleResult> result = limitExecutor.next();
       List<Tuple> producedTuples = new ArrayList<>();
       while (result.isPresent()) {
@@ -52,5 +50,4 @@ class LimitExecutorTest {
       assertEquals(numLimit, producedTuples.size());
     }
   }
-
 }

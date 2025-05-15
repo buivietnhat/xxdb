@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.statement;
 
-public class SimpleValueCondition implements Condition{
+public class SimpleValueCondition implements Condition {
   private final String columnName;
   private final Statement operator;
   private final Statement value;
@@ -30,10 +30,14 @@ public class SimpleValueCondition implements Condition{
 
   @Override
   public String toString() {
-    return "SimpleCondition{" +
-        "columnName='" + columnName + '\'' +
-        ", operator=" + operator +
-        ", value=" + value +
-        '}';
+    return "SimpleCondition{"
+        + "columnName='"
+        + columnName
+        + '\''
+        + ", operator="
+        + operator
+        + ", value="
+        + value
+        + '}';
   }
 }

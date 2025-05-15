@@ -79,10 +79,15 @@ public class Join implements RelationalAlgebra {
 
   @Override
   public String toString() {
-    return "Join{" +
-        "leftTable='" + leftTable + '\'' +
-        ", rightTable='" + rightTable + '\'' +
-        ", predicate=" + predicate +
-        '}';
+    return "Join{"
+        + "leftTable='"
+        + leftTable
+        + '\''
+        + ", rightTable='"
+        + rightTable
+        + '\''
+        + ", predicate="
+        + predicate
+        + '}';
   }
 }

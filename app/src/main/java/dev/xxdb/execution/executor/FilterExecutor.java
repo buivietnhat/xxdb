@@ -4,7 +4,6 @@ import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.FilterPlan;
 import dev.xxdb.storage.tuple.Tuple;
-
 import java.util.Optional;
 
 public class FilterExecutor extends Executor {
@@ -44,8 +43,6 @@ public class FilterExecutor extends Executor {
 
   @Override
   public String toString() {
-    return "FilterExecutor{" +
-        "child=" + child +
-        '}';
+    return "FilterExecutor{" + "child=" + child + '}';
   }
 }

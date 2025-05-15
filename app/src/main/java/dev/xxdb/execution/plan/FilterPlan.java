@@ -20,9 +20,6 @@ public class FilterPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "FilterPlan{" +
-        "predicate=" + predicate +
-        ", child=" + leftChild +
-        '}';
+    return "FilterPlan{" + "predicate=" + predicate + ", child=" + leftChild + '}';
   }
 }

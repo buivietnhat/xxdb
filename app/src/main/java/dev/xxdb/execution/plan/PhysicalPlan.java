@@ -37,5 +37,5 @@ public abstract class PhysicalPlan {
   public abstract <T> T accept(PhysicalPlanVisitor<T> visitor);
 
   @Override
-  abstract public String toString();
+  public abstract String toString();
 }

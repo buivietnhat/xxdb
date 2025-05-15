@@ -39,10 +39,14 @@ public class CreateTablePlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "CreateTablePlan{" +
-        "tableName='" + tableName + '\'' +
-        ", columns=" + columns +
-        ", types=" + types +
-        '}';
+    return "CreateTablePlan{"
+        + "tableName='"
+        + tableName
+        + '\''
+        + ", columns="
+        + columns
+        + ", types="
+        + types
+        + '}';
   }
 }

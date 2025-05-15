@@ -24,9 +24,6 @@ public class Join implements Statement {
 
   @Override
   public String toString() {
-    return "Join{" +
-        "tableName='" + tableName + '\'' +
-        ", condition=" + condition +
-        '}';
+    return "Join{" + "tableName='" + tableName + '\'' + ", condition=" + condition + '}';
   }
 }

@@ -1,7 +1,7 @@
 package dev.xxdb.parser.ast.statement;
+
 import dev.xxdb.parser.antlr.SqlBaseVisitor;
 import dev.xxdb.parser.antlr.SqlParser;
-
 import java.util.ArrayList;
 import java.util.List;
 

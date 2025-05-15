@@ -1,7 +1,5 @@
 package dev.xxdb.types;
 
-import dev.xxdb.catalog.Catalog;
-import dev.xxdb.catalog.Schema;
 import dev.xxdb.storage.tuple.Tuple;
 
 public class AndPredicate implements Predicate {
@@ -20,9 +18,6 @@ public class AndPredicate implements Predicate {
 
   @Override
   public String toString() {
-    return "AndPredicate{" +
-        "left=" + left +
-        ", right=" + right +
-        '}';
+    return "AndPredicate{" + "left=" + left + ", right=" + right + '}';
   }
 }

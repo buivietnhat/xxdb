@@ -7,11 +7,10 @@ import static org.mockito.Mockito.*;
 
 import dev.xxdb.storage.disk.DiskManager;
 import dev.xxdb.storage.page.Page;
+import dev.xxdb.storage.page.SlottedPage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
-
-import dev.xxdb.storage.page.SlottedPage;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 

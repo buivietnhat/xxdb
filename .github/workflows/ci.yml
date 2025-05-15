@@ -20,6 +20,13 @@ jobs:
           java-version: '21'
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
+      # - name: Lint (Checkstyle)
+      #   run: ./gradlew -p app checkstyleMain checkstyleTest
+      # - name: Upload Checkstyle reports
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: checkstyle-reports
+      #     path: app/build/reports/checkstyle
       - name: Build with Gradle
         run: ./gradlew -p app build --no-daemon
       - name: Run tests with coverage

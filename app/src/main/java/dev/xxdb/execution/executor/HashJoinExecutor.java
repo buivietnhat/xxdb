@@ -7,7 +7,6 @@ import dev.xxdb.execution.plan.HashJoinPlan;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.types.Value;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,8 @@ public class HashJoinExecutor extends Executor {
   private final HashMap<Value, List<Tuple>> hashTable = new HashMap<>();
   private List<Tuple> cache = new ArrayList<>();
 
-  public HashJoinExecutor(ExecutionContext ctx, HashJoinPlan plan, Executor leftChild, Executor rightChild) {
+  public HashJoinExecutor(
+      ExecutionContext ctx, HashJoinPlan plan, Executor leftChild, Executor rightChild) {
     super(ctx);
     this.plan = plan;
     this.leftChild = leftChild;
@@ -55,7 +55,7 @@ public class HashJoinExecutor extends Executor {
       } else {
         throw new RuntimeException("cannot find the column to construct tuple");
       }
-    } 
+    }
 
     return builder.build();
   }
@@ -82,7 +82,8 @@ public class HashJoinExecutor extends Executor {
     if (cache.isEmpty()) {
       Optional<TupleResult> maybeResult = rightChild.next();
       if (maybeResult.isPresent()) {
-        cache = probe(maybeResult.get().tuple(), rightChild.getOutputSchema(), plan.getRightJoinKey());
+        cache =
+            probe(maybeResult.get().tuple(), rightChild.getOutputSchema(), plan.getRightJoinKey());
       }
       if (cache.isEmpty()) {
         return Optional.empty();
@@ -101,9 +102,6 @@ public class HashJoinExecutor extends Executor {
 
   @Override
   public String toString() {
-    return "HashJoinExecutor{" +
-        "leftChild=" + leftChild +
-        ", rightChild=" + rightChild +
-        '}';
+    return "HashJoinExecutor{" + "leftChild=" + leftChild + ", rightChild=" + rightChild + '}';
   }
 }

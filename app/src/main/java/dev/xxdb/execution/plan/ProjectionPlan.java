@@ -20,9 +20,6 @@ public class ProjectionPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "ProjectionPlan{" +
-        "columns=" + columns +
-        ", child=" + leftChild +
-        '}';
+    return "ProjectionPlan{" + "columns=" + columns + ", child=" + leftChild + '}';
   }
 }

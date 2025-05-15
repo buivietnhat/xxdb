@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.statement;
 
-public class AndCondition implements Condition{
+public class AndCondition implements Condition {
   private final Statement left;
   private final Statement right;
 
@@ -24,9 +24,6 @@ public class AndCondition implements Condition{
 
   @Override
   public String toString() {
-    return "AndCondition{" +
-        "left=" + left +
-        ", right=" + right +
-        '}';
+    return "AndCondition{" + "left=" + left + ", right=" + right + '}';
   }
 }

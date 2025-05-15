@@ -29,9 +29,6 @@ public class Select implements RelationalAlgebra {
 
   @Override
   public String toString() {
-    return "Select{" +
-        "tableName='" + tableName + '\'' +
-        ", predicate=" + predicate +
-        '}';
+    return "Select{" + "tableName='" + tableName + '\'' + ", predicate=" + predicate + '}';
   }
 }

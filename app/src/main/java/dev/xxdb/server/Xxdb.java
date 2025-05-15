@@ -17,11 +17,10 @@ import dev.xxdb.parser.ast.statement.Statement;
 import dev.xxdb.storage.disk.DiskManager;
 import dev.xxdb.storage.file.HeapFile;
 import dev.xxdb.storage.page.SlottedPageRepository;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-
 import java.io.IOException;
 import java.util.List;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 
 public class Xxdb {
   private DiskManager diskManager;
@@ -31,6 +30,7 @@ public class Xxdb {
 
   public static class Builder {
     private final Xxdb xxdb = new Xxdb();
+
     public Xxdb buildAll() throws XxdbException {
       String filePath = "xxdb.db";
       DiskManager diskManager;
@@ -47,7 +47,8 @@ public class Xxdb {
       return filePath(filePath)
           .diskManager(diskManager)
           .executionEngine(new ExecutionEngine(executionContext))
-          .optimizer(optimizer).build();
+          .optimizer(optimizer)
+          .build();
     }
 
     public Builder filePath(String filePath) {
@@ -71,7 +72,8 @@ public class Xxdb {
     }
 
     public Xxdb build() throws XxdbException {
-      xxdb.check();;
+      xxdb.check();
+      ;
       return xxdb;
     }
   }
@@ -115,41 +117,46 @@ public class Xxdb {
       return sb.toString();
     }
     // Print header
-    String header = outputSchema.getColumns().stream()
-        .map(col -> col.name())
-        .collect(java.util.stream.Collectors.joining(" | "));
+    String header =
+        outputSchema.getColumns().stream()
+            .map(col -> col.name())
+            .collect(java.util.stream.Collectors.joining(" | "));
     sb.append(header).append("\n");
     // Print separator
-    String sep = outputSchema.getColumns().stream()
-        .map(col -> "-".repeat(col.name().length()))
-        .collect(java.util.stream.Collectors.joining("-+-"));
+    String sep =
+        outputSchema.getColumns().stream()
+            .map(col -> "-".repeat(col.name().length()))
+            .collect(java.util.stream.Collectors.joining("-+-"));
     sb.append(sep).append("\n");
     // Print each tuple using its print logic
     for (TupleResult result : results) {
-      String row = outputSchema.getColumns().stream()
-          .map(col -> {
-            var value = result.tuple().getValue(outputSchema, col.name());
-            if (value instanceof dev.xxdb.types.StringValue sv) {
-              try {
-                var vField = sv.getClass().getDeclaredField("value");
-                vField.setAccessible(true);
-                String padded = (String) vField.get(sv);
-                // Remove trailing nulls and spaces
-                int end = padded.length();
-                while (end > 0 && (padded.charAt(end - 1) == '\0' || padded.charAt(end - 1) == ' ')) {
-                  end--;
-                }
-                return padded.substring(0, end);
-              } catch (Exception e) {
-                return value.toString();
-              }
-            } else if (value instanceof dev.xxdb.types.IntValue iv) {
-              return Integer.toString(iv.value());
-            } else {
-              return value.toString();
-            }
-          })
-          .collect(java.util.stream.Collectors.joining(" | "));
+      String row =
+          outputSchema.getColumns().stream()
+              .map(
+                  col -> {
+                    var value = result.tuple().getValue(outputSchema, col.name());
+                    if (value instanceof dev.xxdb.types.StringValue sv) {
+                      try {
+                        var vField = sv.getClass().getDeclaredField("value");
+                        vField.setAccessible(true);
+                        String padded = (String) vField.get(sv);
+                        // Remove trailing nulls and spaces
+                        int end = padded.length();
+                        while (end > 0
+                            && (padded.charAt(end - 1) == '\0' || padded.charAt(end - 1) == ' ')) {
+                          end--;
+                        }
+                        return padded.substring(0, end);
+                      } catch (Exception e) {
+                        return value.toString();
+                      }
+                    } else if (value instanceof dev.xxdb.types.IntValue iv) {
+                      return Integer.toString(iv.value());
+                    } else {
+                      return value.toString();
+                    }
+                  })
+              .collect(java.util.stream.Collectors.joining(" | "));
       sb.append(row).append("\n");
     }
     return sb.toString();
@@ -157,6 +164,7 @@ public class Xxdb {
 
   /**
    * Execute the SQL query
+   *
    * @param query to run
    * @return String output of the query
    */
@@ -165,7 +173,7 @@ public class Xxdb {
     PhysicalPlan plan = optimizer.run(logicalPlan);
     List<TupleResult> results;
     try {
-       results = executionEngine.execute(plan);
+      results = executionEngine.execute(plan);
     } catch (ExecutionException e) {
       throw new XxdbException(e);
     }

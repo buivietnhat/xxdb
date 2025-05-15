@@ -3,7 +3,6 @@ package dev.xxdb.catalog;
 import dev.xxdb.storage.file.TableHeap;
 import dev.xxdb.storage.page.SlottedPageRepository;
 import dev.xxdb.types.Value;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +27,7 @@ public class Catalog {
 
   /**
    * Retrieve the schema information a table
+   *
    * @param tableName: name of the table
    * @return the schema
    */
@@ -40,6 +40,7 @@ public class Catalog {
 
   /**
    * Create a new table
+   *
    * @param tableName name of the table
    * @param columns column names in that table
    * @param types type definition for each column
@@ -62,6 +63,7 @@ public class Catalog {
 
   /**
    * Get the table heap corresponding to SQL Table
+   *
    * @param table name of the table
    */
   public Optional<TableHeap> getTable(String table) {

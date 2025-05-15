@@ -18,9 +18,6 @@ public class InsertPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "InsertPlan{" +
-        "tableName='" + tableName + '\'' +
-        ", leftChild: " + leftChild +
-        '}';
+    return "InsertPlan{" + "tableName='" + tableName + '\'' + ", leftChild: " + leftChild + '}';
   }
 }

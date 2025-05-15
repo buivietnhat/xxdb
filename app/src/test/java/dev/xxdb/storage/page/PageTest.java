@@ -49,7 +49,8 @@ public class PageTest {
       ByteBuffer getBackBuffer = ByteBuffer.wrap(usefulData);
       int pid = getBackBuffer.getInt(0);
       assertEquals(1, pid);
-      assertArrayEquals(charHello, Arrays.copyOfRange(usefulData, Page.PAGE_HEADER_SIZE, usefulData.length));
+      assertArrayEquals(
+          charHello, Arrays.copyOfRange(usefulData, Page.PAGE_HEADER_SIZE, usefulData.length));
     }
   }
 }

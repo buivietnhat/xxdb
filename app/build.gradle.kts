@@ -10,6 +10,8 @@ plugins {
   application
   antlr
   jacoco
+//  checkstyle
+  id("com.diffplug.spotless") version "6.25.0"
 }
 
 repositories {
@@ -53,6 +55,17 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         html.required.set(true)
         csv.required.set(true)
+    }
+}
+
+//checkstyle {
+//    toolVersion = "10.12.4" // or your preferred version
+//    configFile = file("$rootDir/app/config/checkstyle/checkstyle.xml")
+//}
+
+spotless {
+    java {
+        googleJavaFormat("1.17.0")
     }
 }
 

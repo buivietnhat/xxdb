@@ -18,8 +18,6 @@ public class SequentialScanPlan extends PhysicalPlan {
 
   @Override
   public String toString() {
-    return "SequentialScanPlan{" +
-        "table='" + table + '\'' +
-        '}';
+    return "SequentialScanPlan{" + "table='" + table + '\'' + '}';
   }
 }

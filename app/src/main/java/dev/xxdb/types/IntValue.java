@@ -50,6 +50,4 @@ public record IntValue(int value) implements Value {
     buffer.putInt(value);
     return buffer.array();
   }
-
-
 }

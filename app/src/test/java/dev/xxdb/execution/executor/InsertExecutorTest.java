@@ -1,5 +1,11 @@
 package dev.xxdb.execution.executor;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import dev.xxdb.catalog.Catalog;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.InsertPlan;
@@ -7,17 +13,10 @@ import dev.xxdb.storage.file.TableHeap;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class InsertExecutorTest {
   @Nested
@@ -44,10 +43,10 @@ class InsertExecutorTest {
       InsertExecutor insertExecutor = new InsertExecutor(mockCtx, plan, child);
       insertExecutor.init();
 
-      List<TupleResult> tupleResults = List.of(
-          new TupleResult(new Tuple("hello".getBytes()), RID.INVALID_RID),
-          new TupleResult(new Tuple("goodbye".getBytes()), RID.INVALID_RID)
-      );
+      List<TupleResult> tupleResults =
+          List.of(
+              new TupleResult(new Tuple("hello".getBytes()), RID.INVALID_RID),
+              new TupleResult(new Tuple("goodbye".getBytes()), RID.INVALID_RID));
 
       when(child.next())
           .thenReturn(Optional.of(tupleResults.get(0)))

@@ -29,9 +29,7 @@ public class TableHeap {
 
   // Implement Iterator interface for traversing all the tuple in this table
 
-  /**
-   *  Get an iterator which knows how to traverse through all the tuples
-   */
+  /** Get an iterator which knows how to traverse through all the tuples */
   public Iterator<TupleResult> getIterator() {
     return new TupleIterator();
   }
@@ -61,7 +59,8 @@ public class TableHeap {
         currentPageIndex += 1;
         if (currentPageIndex < pageIdList.size()) {
           try {
-            currentPageIterator = pageRepository.getPage(pageIdList.get(currentPageIndex)).get().getIterator();
+            currentPageIterator =
+                pageRepository.getPage(pageIdList.get(currentPageIndex)).get().getIterator();
           } catch (IOException e) {
             throw new RuntimeException(e);
           }
@@ -80,7 +79,6 @@ public class TableHeap {
       return null;
     }
   }
-
 
   /**
    * Construct new TableHeap
@@ -116,9 +114,8 @@ public class TableHeap {
    *
    * @param tuple: tuple data
    * @return record id of the added tuple
-   * @throws TupleException if the tuple size > (Page.PAGE_SIZE -
-   *                        PAGE_HEADER_SIZE) or cannot add
-   *                        the tuple
+   * @throws TupleException if the tuple size > (Page.PAGE_SIZE - PAGE_HEADER_SIZE) or cannot add
+   *     the tuple
    */
   public RID addTuple(final Tuple tuple) throws TupleException {
     if (tuple.getSize() >= (Page.PAGE_SIZE - Page.PAGE_HEADER_SIZE)) {
@@ -179,5 +176,4 @@ public class TableHeap {
       return false;
     }
   }
-
 }

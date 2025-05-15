@@ -3,7 +3,6 @@ package dev.xxdb.execution;
 import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.executor.*;
 import dev.xxdb.execution.plan.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

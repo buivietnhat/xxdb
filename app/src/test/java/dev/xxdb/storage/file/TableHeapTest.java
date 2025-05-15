@@ -1,23 +1,23 @@
 package dev.xxdb.storage.file;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import dev.xxdb.storage.disk.DiskManager;
 import dev.xxdb.storage.page.Page;
 import dev.xxdb.storage.page.SlottedPageRepository;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.storage.tuple.exception.TupleException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class TableHeapTest {
   @Test()
@@ -44,7 +44,7 @@ class TableHeapTest {
   void cleanup() throws IOException {
     diskManager.close();
     Files.deleteIfExists(Paths.get(FILE_PATH));
- }
+  }
 
   @Nested
   class GetTupleTest {
@@ -64,14 +64,11 @@ class TableHeapTest {
     void hasDataDoesNotHaveTuple() throws TupleException {
       List<RID> rids = new ArrayList<>();
       // add a bunch of dummy tuples
-      for(int i = 0; i < 100; i++) {
+      for (int i = 0; i < 100; i++) {
         rids.addLast(tableHeap.addTuple(new Tuple(new byte[1000])));
       }
 
-      int maxPageId = rids.stream()
-          .mapToInt(RID::pageId)
-          .max()
-          .getAsInt(); // trust me
+      int maxPageId = rids.stream().mapToInt(RID::pageId).max().getAsInt(); // trust me
 
       assertThrows(TupleException.class, () -> tableHeap.getTuple(new RID(maxPageId + 1, 0)));
     }
@@ -83,7 +80,7 @@ class TableHeapTest {
       List<Tuple> tuples = new ArrayList<>();
       Random random = new Random();
       // add a bunch of dummy tuples
-      for(int i = 0; i < 100; i++) {
+      for (int i = 0; i < 100; i++) {
         byte[] randomBytes = new byte[1000];
         random.nextBytes(randomBytes);
         Tuple tuple = new Tuple(randomBytes);
@@ -105,7 +102,8 @@ class TableHeapTest {
     // cover the tuple with size >= Page.PAGE_SIZE
     @Test
     void tupleWithValidSize() {
-      assertThrows(TupleException.class, () -> tableHeap.addTuple(new Tuple(new byte[Page.PAGE_SIZE])));
+      assertThrows(
+          TupleException.class, () -> tableHeap.addTuple(new Tuple(new byte[Page.PAGE_SIZE])));
     }
   }
 
@@ -118,7 +116,7 @@ class TableHeapTest {
     // cover this is a fresh table, doesn't have the tuple
     @Test
     void freshTable() {
-      assertFalse(tableHeap.deleteTuple(new RID(1,1)));
+      assertFalse(tableHeap.deleteTuple(new RID(1, 1)));
     }
 
     // cover this has data, has the tuple
@@ -128,7 +126,7 @@ class TableHeapTest {
       List<Tuple> tuples = new ArrayList<>();
       Random random = new Random();
       // add a bunch of dummy tuples
-      for(int i = 0; i < 100; i++) {
+      for (int i = 0; i < 100; i++) {
         byte[] randomBytes = new byte[1000];
         random.nextBytes(randomBytes);
         Tuple tuple = new Tuple(randomBytes);

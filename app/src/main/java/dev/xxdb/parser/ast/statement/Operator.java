@@ -1,4 +1,5 @@
 package dev.xxdb.parser.ast.statement;
+
 import dev.xxdb.types.Ops;
 
 public class Operator implements Statement {
@@ -27,8 +28,6 @@ public class Operator implements Statement {
 
   @Override
   public String toString() {
-    return "Operator{" +
-        "op=" + op +
-        '}';
+    return "Operator{" + "op=" + op + '}';
   }
 }

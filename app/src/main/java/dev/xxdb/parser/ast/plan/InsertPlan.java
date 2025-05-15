@@ -1,7 +1,6 @@
 package dev.xxdb.parser.ast.plan;
 
 import dev.xxdb.types.Value;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +60,14 @@ public class InsertPlan implements LogicalPlan {
 
   @Override
   public String toString() {
-    return "InsertPlan{" +
-        "tableName='" + tableName + '\'' +
-        ", columns=" + columns +
-        ", valueSets=" + valueSets +
-        '}';
+    return "InsertPlan{"
+        + "tableName='"
+        + tableName
+        + '\''
+        + ", columns="
+        + columns
+        + ", valueSets="
+        + valueSets
+        + '}';
   }
 }

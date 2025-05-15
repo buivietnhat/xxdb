@@ -30,11 +30,17 @@ public class SimplePredicate implements Predicate {
 
   @Override
   public String toString() {
-    return "SimplePredicate{" +
-        "table='" + table + '\'' +
-        ", column='" + column + '\'' +
-        ", value=" + value +
-        ", op=" + op +
-        '}';
+    return "SimplePredicate{"
+        + "table='"
+        + table
+        + '\''
+        + ", column='"
+        + column
+        + '\''
+        + ", value="
+        + value
+        + ", op="
+        + op
+        + '}';
   }
 }

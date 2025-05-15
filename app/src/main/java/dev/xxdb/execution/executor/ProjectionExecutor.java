@@ -4,8 +4,6 @@ import dev.xxdb.catalog.Schema;
 import dev.xxdb.execution.ExecutionException;
 import dev.xxdb.execution.plan.ProjectionPlan;
 import dev.xxdb.storage.tuple.Tuple;
-import dev.xxdb.types.Value;
-
 import java.util.Optional;
 
 public class ProjectionExecutor extends Executor {
@@ -47,8 +45,6 @@ public class ProjectionExecutor extends Executor {
 
   @Override
   public String toString() {
-    return "ProjectionExecutor{" +
-        "child=" + child +
-        '}';
+    return "ProjectionExecutor{" + "child=" + child + '}';
   }
 }

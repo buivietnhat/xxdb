@@ -18,8 +18,6 @@ public class Where implements Statement {
 
   @Override
   public String toString() {
-    return "Where{" +
-        "condition=" + condition +
-        '}';
+    return "Where{" + "condition=" + condition + '}';
   }
 }

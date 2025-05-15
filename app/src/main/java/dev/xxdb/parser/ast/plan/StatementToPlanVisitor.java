@@ -15,9 +15,10 @@ public class StatementToPlanVisitor implements StatementVisitor {
   }
 
   private SelectPlan.Builder selectBuilder;
+
   @Override
   public void visitInsertNode(Insert node) {
-    assert(plan == null);
+    assert (plan == null);
     plan = new InsertPlan();
     InsertPlan insertPlan = getInsertPlan();
     insertPlan.setTableName(node.getTableName());
@@ -33,8 +34,7 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitColumnDefinitionListNode(ColumnDefinitionList node) {
-    node.getColumnDefinitions()
-        .forEach(expr -> expr.accept(this));
+    node.getColumnDefinitions().forEach(expr -> expr.accept(this));
   }
 
   @Override
@@ -50,14 +50,12 @@ public class StatementToPlanVisitor implements StatementVisitor {
 
   @Override
   public void visitValueListNode(ValueList node) {
-    node.getValues().forEach(
-        expr -> expr.accept(this)
-    );
+    node.getValues().forEach(expr -> expr.accept(this));
   }
 
   @Override
   public void visitCreateTableNode(CreateTable node) {
-    assert(plan == null);
+    assert (plan == null);
     plan = new CreateTablePlan();
     CreateTablePlan createTablePlan = getCreateTablePlan();
     createTablePlan.setTableName(node.getTableName());
@@ -103,7 +101,6 @@ public class StatementToPlanVisitor implements StatementVisitor {
     if (node.getLimitClause().isPresent()) {
       node.getLimitClause().get().accept(this);
     }
-
   }
 
   @Override

@@ -20,13 +20,12 @@ import dev.xxdb.parser.ast.statement.Statement;
 import dev.xxdb.storage.tuple.RID;
 import dev.xxdb.storage.tuple.Tuple;
 import dev.xxdb.types.*;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.junit.jupiter.api.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.junit.jupiter.api.*;
 
 public class FilterExecutorTest {
 
@@ -45,7 +44,6 @@ public class FilterExecutorTest {
     Optimizer optimizer = new Optimizer(mock(Catalog.class));
     return optimizer.run(logicalPlan);
   }
-
 
   @Test
   public void testAssertionsEnabled() {
@@ -74,7 +72,8 @@ public class FilterExecutorTest {
 
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
 
-      Predicate equalPred = new SimplePredicate("FOO", "col1", new IntValue(10), Ops.EQUALS, mockCatalog);
+      Predicate equalPred =
+          new SimplePredicate("FOO", "col1", new IntValue(10), Ops.EQUALS, mockCatalog);
       FilterPlan plan = new FilterPlan(equalPred);
       Executor mockChild = mock(Executor.class);
 
@@ -85,11 +84,11 @@ public class FilterExecutorTest {
       IntValue eleven = new IntValue(11);
       IntValue twelve = new IntValue(12);
 
-      List<TupleResult> mockTupleResult = List.of(
-          new TupleResult(new Tuple(ten.getData()), RID.INVALID_RID),
-          new TupleResult(new Tuple(eleven.getData()), RID.INVALID_RID),
-          new TupleResult(new Tuple(twelve.getData()), RID.INVALID_RID)
-      );
+      List<TupleResult> mockTupleResult =
+          List.of(
+              new TupleResult(new Tuple(ten.getData()), RID.INVALID_RID),
+              new TupleResult(new Tuple(eleven.getData()), RID.INVALID_RID),
+              new TupleResult(new Tuple(twelve.getData()), RID.INVALID_RID));
 
       when(mockChild.next())
           .thenReturn(Optional.of(mockTupleResult.get(0)))
@@ -102,7 +101,7 @@ public class FilterExecutorTest {
       do {
         tupleResult = filterExecutor.next();
         tupleResult.ifPresent(result -> producedTuples.add(result.tuple()));
-      } while(tupleResult.isPresent());
+      } while (tupleResult.isPresent());
 
       assertEquals(1, producedTuples.size());
       assertEquals(mockTupleResult.get(0).tuple(), producedTuples.get(0));
@@ -121,8 +120,10 @@ public class FilterExecutorTest {
 
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
 
-      Predicate greaterThanPred = new SimplePredicate("FOO", "col1", new IntValue(10), Ops.GREATER_THAN, mockCatalog);
-      Predicate equalPred = new SimplePredicate("FOO", "col2", new StringValue("hello"), Ops.EQUALS, mockCatalog);
+      Predicate greaterThanPred =
+          new SimplePredicate("FOO", "col1", new IntValue(10), Ops.GREATER_THAN, mockCatalog);
+      Predicate equalPred =
+          new SimplePredicate("FOO", "col2", new StringValue("hello"), Ops.EQUALS, mockCatalog);
       AndPredicate andPredicate = new AndPredicate(greaterThanPred, equalPred);
       FilterPlan plan = new FilterPlan(andPredicate);
 
@@ -132,15 +133,27 @@ public class FilterExecutorTest {
       filterExecutor.init();
 
       Tuple.Builder tupleBuilder = new Tuple.Builder();
-      Tuple tuple1 = tupleBuilder.addIntegerColumn(new IntValue(10).getData()).addVarcharColumn(new StringValue("goodbye").getData()).build();
-      Tuple tuple2 = tupleBuilder.addIntegerColumn(new IntValue(11).getData()).addVarcharColumn(new StringValue("hello").getData()).build();
-      Tuple tuple3 = tupleBuilder.addIntegerColumn(new IntValue(12).getData()).addVarcharColumn(new StringValue("hello").getData()).build();
+      Tuple tuple1 =
+          tupleBuilder
+              .addIntegerColumn(new IntValue(10).getData())
+              .addVarcharColumn(new StringValue("goodbye").getData())
+              .build();
+      Tuple tuple2 =
+          tupleBuilder
+              .addIntegerColumn(new IntValue(11).getData())
+              .addVarcharColumn(new StringValue("hello").getData())
+              .build();
+      Tuple tuple3 =
+          tupleBuilder
+              .addIntegerColumn(new IntValue(12).getData())
+              .addVarcharColumn(new StringValue("hello").getData())
+              .build();
 
-      List<TupleResult> mockTupleResult = List.of(
-          new TupleResult(tuple1, RID.INVALID_RID),
-          new TupleResult(tuple2, RID.INVALID_RID),
-          new TupleResult(tuple3, RID.INVALID_RID)
-      );
+      List<TupleResult> mockTupleResult =
+          List.of(
+              new TupleResult(tuple1, RID.INVALID_RID),
+              new TupleResult(tuple2, RID.INVALID_RID),
+              new TupleResult(tuple3, RID.INVALID_RID));
 
       when(mockChild.next())
           .thenReturn(Optional.of(mockTupleResult.get(0)))
@@ -153,15 +166,13 @@ public class FilterExecutorTest {
       do {
         tupleResult = filterExecutor.next();
         tupleResult.ifPresent(result -> producedTuples.add(result.tuple()));
-      } while(tupleResult.isPresent());
+      } while (tupleResult.isPresent());
 
       assertEquals(2, producedTuples.size());
 
-      assertTrue(producedTuples.stream()
-          .anyMatch(t -> t.equals(tuple2)));
+      assertTrue(producedTuples.stream().anyMatch(t -> t.equals(tuple2)));
 
-      assertTrue(producedTuples.stream()
-          .anyMatch(t -> t.equals(tuple3)));
+      assertTrue(producedTuples.stream().anyMatch(t -> t.equals(tuple3)));
     }
   }
 }
