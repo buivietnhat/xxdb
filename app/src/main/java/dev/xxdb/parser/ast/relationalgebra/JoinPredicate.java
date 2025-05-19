@@ -1,18 +1,18 @@
 package dev.xxdb.parser.ast.relationalgebra;
 
-import dev.xxdb.types.Ops;
+import dev.xxdb.types.Op;
 
 public class JoinPredicate implements Predicate {
-  private Ops ops;
+  private Op op;
   private String leftColumn;
   private String rightColumn;
 
-  public Ops getOps() {
-    return ops;
+  public Op getOps() {
+    return op;
   }
 
-  public void setOps(Ops ops) {
-    this.ops = ops;
+  public void setOps(Op op) {
+    this.op = op;
   }
 
   public String getLeftColumn() {
@@ -33,8 +33,8 @@ public class JoinPredicate implements Predicate {
 
   public JoinPredicate() {}
 
-  public JoinPredicate(Ops ops, String leftColumn, String rightColumn) {
-    this.ops = ops;
+  public JoinPredicate(Op op, String leftColumn, String rightColumn) {
+    this.op = op;
     this.leftColumn = leftColumn;
     this.rightColumn = rightColumn;
   }
@@ -43,7 +43,7 @@ public class JoinPredicate implements Predicate {
   public String toString() {
     return "JoinPredicate{"
         + "ops="
-        + ops
+        + op
         + ", leftColumn='"
         + leftColumn
         + '\''

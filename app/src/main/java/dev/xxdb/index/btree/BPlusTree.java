@@ -1,20 +1,22 @@
 package dev.xxdb.index.btree;
 
+import dev.xxdb.types.Op;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class BPlusTree<K, V> {
+public class BPlusTree<K extends Comparable<K>, V> {
   private final BPlusTreeNodeAllocator<K, V> nodeAllocator;
   private final BPlusTreeInnerNode<K, V> root;
 
   private class TraversingContext {
     public List<BPlusTreeNode<K, V>> nodes = new ArrayList<>();
+
     public void addNode(BPlusTreeNode<K, V> node) {
       nodes.add(node);
     }
+
     BPlusTreeLeafNode<K, V> getLeafNode() {
-      return (BPlusTreeLeafNode<K,V>) nodes.getLast();
+      return (BPlusTreeLeafNode<K, V>) nodes.getLast();
     }
   }
 
@@ -33,15 +35,16 @@ public class BPlusTree<K, V> {
   }
 
   /**
-   * Find the value given the key
+   * Find list of value given the key
    *
    * @param key: to find
-   * @return Optional.empty() if the value not found, otherwise Optional.of(V)
+   * @param op: query option
+   * @return list of value satisfied the op condition
    */
-  public Optional<V> find(K key) {
+  public List<V> find(K key, Op op) {
     TraversingContext ctx = new TraversingContext();
     traverseToLeafNode(key, ctx);
-    return ctx.getLeafNode().find(key);
+    return ctx.getLeafNode().find(key, op);
   }
 
   /**
@@ -72,7 +75,6 @@ public class BPlusTree<K, V> {
 
     leaf.insert(key, value);
   }
-
 
   // traverse from the root the  target leaf node (to search, insert, delete the given key)
   private void traverseToLeafNode(K key, TraversingContext context) {

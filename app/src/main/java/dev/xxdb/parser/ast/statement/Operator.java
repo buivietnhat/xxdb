@@ -1,23 +1,23 @@
 package dev.xxdb.parser.ast.statement;
 
-import dev.xxdb.types.Ops;
+import dev.xxdb.types.Op;
 
 public class Operator implements Statement {
-  private final Ops op;
+  private final Op op;
 
   public Operator(String op) {
     switch (op) {
-      case ">" -> this.op = Ops.GREATER_THAN;
-      case "<" -> this.op = Ops.LESS_THAN;
-      case "=" -> this.op = Ops.EQUALS;
-      case ">=" -> this.op = Ops.GREATER_THAN_OR_EQUAL;
-      case "<=" -> this.op = Ops.LESS_THAN_OR_EQUAL;
-      case "!=" -> this.op = Ops.NOT_EQUALS;
+      case ">" -> this.op = Op.GREATER_THAN;
+      case "<" -> this.op = Op.LESS_THAN;
+      case "=" -> this.op = Op.EQUALS;
+      case ">=" -> this.op = Op.GREATER_THAN_OR_EQUAL;
+      case "<=" -> this.op = Op.LESS_THAN_OR_EQUAL;
+      case "!=" -> this.op = Op.NOT_EQUALS;
       default -> throw new IllegalArgumentException("Unknown operator: " + op);
     }
   }
 
-  public Ops getOp() {
+  public Op getOp() {
     return op;
   }
 

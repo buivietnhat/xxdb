@@ -1,18 +1,18 @@
 package dev.xxdb.parser.ast.relationalgebra;
 
-import dev.xxdb.types.Ops;
+import dev.xxdb.types.Op;
 import dev.xxdb.types.Value;
 
 public class ValuePredicate implements Predicate {
-  private Ops op;
+  private Op op;
   private String column;
   private Value value;
 
-  public Ops getOp() {
+  public Op getOp() {
     return op;
   }
 
-  public void setOp(Ops op) {
+  public void setOp(Op op) {
     this.op = op;
   }
 
@@ -44,7 +44,7 @@ public class ValuePredicate implements Predicate {
 
   public ValuePredicate() {}
 
-  public ValuePredicate(Ops op, String column, Value value) {
+  public ValuePredicate(Op op, String column, Value value) {
     this.op = op;
     this.column = column;
     this.value = value;

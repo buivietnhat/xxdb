@@ -17,7 +17,7 @@ public final class StringValue implements Value {
   }
 
   @Override
-  public boolean compareTo(Ops op, Value other) {
+  public boolean compareTo(Op op, Value other) {
     if (!(other instanceof StringValue)) {
       throw new RuntimeException("Cannot compare StringValue with different type");
     }
