@@ -1,7 +1,20 @@
 package dev.xxdb.index.btree;
 
-public interface BPlusTreeNodeAllocator<K extends Comparable<K>, V> {
-  BPlusTreeInnerNode<K, V> allocateInnerNode();
 
-  BPlusTreeLeafNode<K, V> allocateLeafNode();
+import java.util.List;
+
+public interface BPlusTreeNodeAllocator<K extends Comparable<K>, V> {
+  /**
+   * allocate new inner node
+   * @param m fanout factor
+   */
+  BPlusTreeInnerNode<K, V> allocateInnerNode(int m);
+
+  /**
+   * allocate new leaf node
+   * @param m fanout factor
+   */
+  BPlusTreeLeafNode<K, V> allocateLeafNode(int m);
+
+  BPlusTreeLeafNode<K, V> allocateLeafNode(int m, List<BPlusTreeLeafNode.Entry<K, V>> entries);
 }
