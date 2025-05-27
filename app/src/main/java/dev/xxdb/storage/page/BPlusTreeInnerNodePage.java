@@ -22,13 +22,18 @@ public class BPlusTreeInnerNodePage<K extends Comparable<K>, V> extends Page
   }
 
   @Override
+  public Entries<K, V> getEntries() {
+    throw new RuntimeException("unimplemented");
+  }
+
+  @Override
   public boolean isFull() {
     return false;
   }
 
-  @Override
-  public void split(
-      List<BPlusTreeNode<K, V>> bPlusTreeNodes,
-      int nodeIdx,
-      BPlusTreeNodeAllocator<K, V> allocator) {}
+//  @Override
+//  public void split(
+//      List<BPlusTreeNode<K, V>> bPlusTreeNodes,
+//      int nodeIdx,
+//      BPlusTreeNodeAllocator<K, V> allocator) {}
 }

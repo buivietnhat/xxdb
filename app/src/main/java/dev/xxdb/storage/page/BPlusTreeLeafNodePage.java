@@ -17,7 +17,17 @@ public class BPlusTreeLeafNodePage<K extends Comparable<K>, V> extends Page
 
   @Override
   public List<Entry<K, V>> getAllEntries() {
-    return List.of();
+    throw new RuntimeException("unimplemented");
+  }
+
+  @Override
+  public void setEntries(List<Entry<K, V>> entries) {
+    throw new RuntimeException("unimplemented");
+  }
+
+  @Override
+  public int getFanOut() {
+    return 0;
   }
 
   @Override
@@ -28,9 +38,9 @@ public class BPlusTreeLeafNodePage<K extends Comparable<K>, V> extends Page
     return false;
   }
 
-  @Override
-  public void split(
-      List<BPlusTreeNode<K, V>> bPlusTreeNodes,
-      int nodeIdx,
-      BPlusTreeNodeAllocator<K, V> allocator) {}
+//  @Override
+//  public void split(
+//      List<BPlusTreeNode<K, V>> bPlusTreeNodes,
+//      int nodeIdx,
+//      BPlusTreeNodeAllocator<K, V> allocator) {}
 }

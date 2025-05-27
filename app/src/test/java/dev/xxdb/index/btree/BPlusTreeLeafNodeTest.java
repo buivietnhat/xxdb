@@ -22,6 +22,16 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
   }
 
   @Override
+  public void setEntries(List<Entry<Integer, Integer>> entries) {
+
+  }
+
+  @Override
+  public int getFanOut() {
+    return 0;
+  }
+
+  @Override
   public void insert(Integer key, Integer value) {}
 
   @Override
@@ -29,11 +39,11 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
     return false;
   }
 
-  @Override
-  public void split(
-      List<BPlusTreeNode<Integer, Integer>> bPlusTreeNodes,
-      int nodeIdx,
-      BPlusTreeNodeAllocator<Integer, Integer> allocator) {}
+//  @Override
+//  public void split(
+//      List<BPlusTreeNode<Integer, Integer>> bPlusTreeNodes,
+//      int nodeIdx,
+//      BPlusTreeNodeAllocator<Integer, Integer> allocator) {}
 }
 
 class BPlusTreeLeafNodeTest {

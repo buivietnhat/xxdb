@@ -7,15 +7,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class DummyNodeAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
+import java.util.List;
 
+class DummyNodeAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
   @Override
-  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode() {
+  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(int m) {
     return null;
   }
 
   @Override
-  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode() {
+  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(int m) {
+    return null;
+  }
+
+  @Override
+  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(int m, List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries) {
     return null;
   }
 }
@@ -30,7 +36,7 @@ class BPlusTreeTest {
 
   @BeforeEach
   void setUp() {
-    tree = new BPlusTree<>(nodeAllocator);
+    tree = new BPlusTree<>(nodeAllocator, 3);
   }
 
   @Nested

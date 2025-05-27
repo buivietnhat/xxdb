@@ -62,6 +62,16 @@ public class BPlusTree<K extends Comparable<K>, V> {
     throw new RuntimeException("unimplemented");
   }
 
+  private void insertInnerNode(List<BPlusTreeNode<K, V>> nodes, int nodeIdx, K newKey, BPlusTreeNode<K, V> childPointer) {
+    BPlusTreeInnerNode<K, V> node = (BPlusTreeInnerNode<K, V>) nodes.get(nodeIdx);
+    if (node.isFull()) {
+      BPlusTreeInnerNode.SplitResult<K, V> split = node.split(nodeAllocator, m);
+      insertInnerNode(nodes, nodeIdx - 1, split.middleKey(), split.newNode());
+    }
+
+    node.insertWithRightChild(newKey, childPointer);
+  }
+
   /**
    * Add new key-value pair to this tree
    *
@@ -79,9 +89,9 @@ public class BPlusTree<K extends Comparable<K>, V> {
       K middleKey = splitResult.middleKey();
       BPlusTreeLeafNode<K, V> newLeaf = splitResult.newLeaf();
 
-      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodes.size() - 2);
-      Optional<BPlusTreeInnerNode<K, V>> maybeNewRoot = parent.insert(nodes, nodes.size() - 2, middleKey, newLeaf, nodeAllocator, m);
-      maybeNewRoot.ifPresent(newRoot -> this.root = newRoot);
+//      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodes.size() - 2);
+//      Optional<BPlusTreeInnerNode<K, V>> maybeNewRoot = parent.insert(nodes, nodes.size() - 2, middleKey, newLeaf, nodeAllocator, m);
+//      maybeNewRoot.ifPresent(newRoot -> this.root = newRoot);
     }
 
 //    leaf.insert(key, value);
