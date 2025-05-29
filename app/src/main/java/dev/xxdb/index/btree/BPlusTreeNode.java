@@ -8,16 +8,13 @@ public interface BPlusTreeNode<K extends Comparable<K>, V> {
 
   boolean isFull();
 
-//  /**
-//   * Split current node into two, each half of values of current node, update the parent pointer
-//   * appropriately
-//   *
-//   * @param nodes: list node parent pointer when traversing down from the root, root node is in the
-//   *     first position
-//   * @param nodeIdx: index of the current node in the nodes list
-//   * @param allocator: knows how to allocate new BTree nodes
-//   * @param m: fanout factor
-//   * @return optional a new root node
-//   */
-//  Optional<BPlusTreeInnerNode<K,V>> split(List<BPlusTreeNode<K, V>> nodes, int nodeIdx, BPlusTreeNodeAllocator<K, V> allocator, int m);
+  record SplitResult<K extends Comparable<K>, V>(K middleKey, BPlusTreeNode<K, V> newNode) {}
+
+  /**
+   * Split this node into two, the first half is stayed with this node, second half belongs to the new node
+   * @param allocator know how to allocate new node
+   * @param fanout fanout factor
+   * @return the new inner node and also the middle key
+   */
+  SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout);
 }

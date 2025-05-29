@@ -79,20 +79,20 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * @param value to add
    */
   public void insert(K key, V value) {
-    TraversingContext ctx = new TraversingContext();
-    traverseToLeafNode(key, ctx);
-    List<BPlusTreeNode<K, V>> nodes = ctx.nodes;
-    BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
-
-    if (leaf.isFull()) {
-      BPlusTreeLeafNode.SplitResult<K, V> splitResult = leaf.split(nodes, nodes.size() - 1, nodeAllocator, m);
-      K middleKey = splitResult.middleKey();
-      BPlusTreeLeafNode<K, V> newLeaf = splitResult.newLeaf();
-
-//      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodes.size() - 2);
-//      Optional<BPlusTreeInnerNode<K, V>> maybeNewRoot = parent.insert(nodes, nodes.size() - 2, middleKey, newLeaf, nodeAllocator, m);
-//      maybeNewRoot.ifPresent(newRoot -> this.root = newRoot);
-    }
+//    TraversingContext ctx = new TraversingContext();
+//    traverseToLeafNode(key, ctx);
+//    List<BPlusTreeNode<K, V>> nodes = ctx.nodes;
+//    BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
+//
+//    if (leaf.isFull()) {
+//      BPlusTreeLeafNode.SplitResult<K, V> splitResult = leaf.split( nodeAllocator, m);
+//      K middleKey = splitResult.middleKey();
+//      BPlusTreeLeafNode<K, V> newLeaf = splitResult.newNode();
+//
+////      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodes.size() - 2);
+////      Optional<BPlusTreeInnerNode<K, V>> maybeNewRoot = parent.insert(nodes, nodes.size() - 2, middleKey, newLeaf, nodeAllocator, m);
+////      maybeNewRoot.ifPresent(newRoot -> this.root = newRoot);
+//    }
 
 //    leaf.insert(key, value);
   }

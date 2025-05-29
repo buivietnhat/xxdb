@@ -27,6 +27,11 @@ public class BPlusTreeInnerNodePage<K extends Comparable<K>, V> extends Page
   }
 
   @Override
+  public void setEntries(Entries<K, V> entries) {
+    throw new RuntimeException("unimplemented");
+  }
+
+  @Override
   public boolean isFull() {
     return false;
   }

@@ -10,6 +10,8 @@ public interface BPlusTreeNodeAllocator<K extends Comparable<K>, V> {
    */
   BPlusTreeInnerNode<K, V> allocateInnerNode(int m);
 
+  BPlusTreeInnerNode<K, V> allocateInnerNode(int m, BPlusTreeInnerNode.Entries<K, V> entries);
+
   /**
    * allocate new leaf node
    * @param m fanout factor

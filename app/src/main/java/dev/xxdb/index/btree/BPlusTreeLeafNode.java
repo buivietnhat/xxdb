@@ -48,25 +48,9 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
 
   }
 
-  record SplitResult<K extends Comparable<K>, V>(K middleKey, BPlusTreeLeafNode<K, V> newLeaf) {}
 
-  /**
-   * Split current node into two, each half of values of current node, update the parent pointer
-   * appropriately
-   *
-   * @param nodes: list node parent pointer when traversing down from the root, root node is in the
-   *     first position
-   * @param nodeIdx: index of the current node in the nodes list
-   * @param allocator: knows how to allocate new BTree nodes
-   * @param fanout fanout factor
-   * @return the middle key, and new leaf node after split
-   */
-  default SplitResult<K, V> split(List<BPlusTreeNode<K, V>> nodes, int nodeIdx, BPlusTreeNodeAllocator<K, V> allocator, int fanout) {
-    // should have a parent, since it is a leaf node
-    assert nodeIdx > 0;
-
-    BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodeIdx - 1);
-
+  @Override
+  default SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout) {
     List<Entry<K, V>> entries = getAllEntries();
 
     int m = getFanOut();

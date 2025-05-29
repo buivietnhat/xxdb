@@ -3,17 +3,25 @@ package dev.xxdb.index.btree;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.xxdb.types.Op;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
-  private final List<Entry<Integer, Integer>> entries;
+  private List<Entry<Integer, Integer>> entries;
+  private int fanout = 3;
 
   public DummyLeafNode(List<Entry<Integer, Integer>> entries) {
     this.entries = entries;
+  }
+
+  public DummyLeafNode(List<Entry<Integer, Integer>> entries, int fanout) {
+    this.entries = entries;
+    this.fanout = fanout;
   }
 
   @Override
@@ -23,35 +31,59 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
 
   @Override
   public void setEntries(List<Entry<Integer, Integer>> entries) {
-
+    this.entries = entries;
   }
 
   @Override
   public int getFanOut() {
-    return 0;
+    return fanout;
   }
 
   @Override
-  public void insert(Integer key, Integer value) {}
+  public void insert(Integer key, Integer value) {
+  }
 
   @Override
   public boolean isFull() {
-    return false;
+    return entries.size() == fanout;
+  }
+}
+
+class DummyAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
+  @Override
+  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(int m) {
+    throw new RuntimeException("unimplemented");
   }
 
-//  @Override
-//  public void split(
-//      List<BPlusTreeNode<Integer, Integer>> bPlusTreeNodes,
-//      int nodeIdx,
-//      BPlusTreeNodeAllocator<Integer, Integer> allocator) {}
+  @Override
+  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(int m, BPlusTreeInnerNode.Entries<Integer, Integer> entries) {
+    return new DummyInnerNode(entries);
+  }
+
+  @Override
+  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(int m) {
+    return new DummyLeafNode(Collections.emptyList(), m);
+  }
+
+  @Override
+  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(int m, List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries) {
+    return new DummyLeafNode(entries, m);
+  }
 }
 
 class BPlusTreeLeafNodeTest {
+  private final DummyAllocator allocator = new DummyAllocator();
 
-  DummyLeafNode constructLeafNode(List<Integer> values) {
+  private DummyLeafNode constructLeafNode(List<Integer> values) {
     List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>();
     values.stream().map(v -> new BPlusTreeLeafNode.Entry<>(v, v)).forEach(entries::add);
     return new DummyLeafNode(entries);
+  }
+
+  private DummyLeafNode constructLeafNode(List<Integer> values, int fanout) {
+    List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>();
+    values.stream().map(v -> new BPlusTreeLeafNode.Entry<>(v, v)).forEach(entries::add);
+    return new DummyLeafNode(entries, fanout);
   }
 
   @Nested
@@ -118,6 +150,58 @@ class BPlusTreeLeafNodeTest {
       assertTrue(result.contains(11));
       assertTrue(result.contains(12));
       assertTrue(result.contains(23));
+    }
+  }
+
+  @Nested
+  class SplitTest {
+    // Testing strategy
+    //  + partition on fanout factor: even, odd
+
+    // cover fanout is even
+    @Test
+    void splitOnEvenFanout() {
+      int fanout = 4;
+      List<Integer> keys = List.of(1, 3, 4, 6);
+      DummyLeafNode leaf = constructLeafNode(keys, fanout);
+      BPlusTreeNode.SplitResult<Integer, Integer> split = leaf.split(allocator, fanout);
+
+      List<Integer> firstHalf = leaf.getAllEntries().stream()
+          .map(BPlusTreeLeafNode.Entry::key)
+          .toList();
+
+      List<Integer> secondHalf = ((DummyLeafNode) split.newNode()).getAllEntries().stream()
+          .map(BPlusTreeLeafNode.Entry::key)
+          .toList();
+
+      Integer middleKey = split.middleKey();
+
+      assertEquals(List.of(1, 3), firstHalf);
+      assertEquals(List.of(4, 6), secondHalf);
+      assertEquals(4, middleKey);
+    }
+
+    // cover fanout is odd
+    @Test
+    void splitOnOddFanout() {
+      int fanout = 5;
+      List<Integer> keys = List.of(1, 3, 5, 6, 10);
+      DummyLeafNode leaf = constructLeafNode(keys, fanout);
+      BPlusTreeNode.SplitResult<Integer, Integer> split = leaf.split(allocator, fanout);
+
+      List<Integer> firstHalf = leaf.getAllEntries().stream()
+          .map(BPlusTreeLeafNode.Entry::key)
+          .toList();
+
+      List<Integer> secondHalf = ((DummyLeafNode) split.newNode()).getAllEntries().stream()
+          .map(BPlusTreeLeafNode.Entry::key)
+          .toList();
+
+      Integer middleKey = split.middleKey();
+
+      assertEquals(List.of(1, 3), firstHalf);
+      assertEquals(List.of(5, 6, 10), secondHalf);
+      assertEquals(5, middleKey);
     }
   }
 }

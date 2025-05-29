@@ -1,10 +1,7 @@
 package dev.xxdb.index.btree;
 
-import dev.xxdb.types.Op;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTreeNode<K, V> {
   @Override
@@ -16,16 +13,22 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     return getEntries().findChild(key);
   }
 
-  record SplitResult<K extends Comparable<K>, V>(BPlusTreeInnerNode<K, V> newNode, K middleKey) {}
-
-  /**
-   * Split this inner node into two, the first half is stayed with this node, second half belongs to the new node
-   * @param allocator know how to allocate new node
-   * @param fanout fanout factor
-   * @return the new inner node and also the middle key
-   */
+  @Override
   default SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout) {
-    throw new RuntimeException("unimplemeted");
+    Entries<K, V> entries = getEntries();
+    int middleIdx = fanout / 2;
+    List<K> keys = entries.keys();
+    List<BPlusTreeNode<K, V>> children = entries.children();
+
+    List<K> firstHalfKeys = keys.subList(0, middleIdx);
+    List<BPlusTreeNode<K, V>> firstHalfChildren = children.subList(0, middleIdx + 1);
+    setEntries(new Entries<>(firstHalfKeys, firstHalfChildren));
+
+    List<K> secondHalfKeys = keys.subList(middleIdx + 1, keys.size());
+    List<BPlusTreeNode<K, V>> secondHalfChildren = children.subList(middleIdx + 1, children.size());
+    BPlusTreeInnerNode<K, V> newNode = allocator.allocateInnerNode(fanout, new Entries<>(secondHalfKeys, secondHalfChildren));
+
+    return new SplitResult<>(keys.get(middleIdx), newNode);
   }
 
   /**
@@ -73,6 +76,8 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   }
 
   Entries<K, V> getEntries();
+
+  void setEntries(Entries<K, V> entries);
 
 //  /**
 //   * Add a new key and left child pointer to this inner node, requires this node is not full
