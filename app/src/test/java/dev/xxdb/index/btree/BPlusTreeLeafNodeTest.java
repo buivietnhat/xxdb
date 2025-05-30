@@ -19,6 +19,10 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
     this.entries = entries;
   }
 
+  public DummyLeafNode(int fanout) {
+    this.fanout = fanout;
+  }
+
   public DummyLeafNode(List<Entry<Integer, Integer>> entries, int fanout) {
     this.entries = entries;
     this.fanout = fanout;

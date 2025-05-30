@@ -4,7 +4,6 @@ import dev.xxdb.types.Op;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BPlusTree<K extends Comparable<K>, V> {
   private final BPlusTreeNodeAllocator<K, V> nodeAllocator;
@@ -39,6 +38,12 @@ public class BPlusTree<K extends Comparable<K>, V> {
     this.m = m;
   }
 
+  public BPlusTree(int m, BPlusTreeInnerNode<K, V> root, BPlusTreeNodeAllocator<K, V> nodeAllocator) {
+    this.m = m;
+    this.root = root;
+    this.nodeAllocator = nodeAllocator;
+  }
+
   /**
    * Find list of value given the key
    *
@@ -62,14 +67,22 @@ public class BPlusTree<K extends Comparable<K>, V> {
     throw new RuntimeException("unimplemented");
   }
 
-  private void insertInnerNode(List<BPlusTreeNode<K, V>> nodes, int nodeIdx, K newKey, BPlusTreeNode<K, V> childPointer) {
-    BPlusTreeInnerNode<K, V> node = (BPlusTreeInnerNode<K, V>) nodes.get(nodeIdx);
-    if (node.isFull()) {
-      BPlusTreeInnerNode.SplitResult<K, V> split = node.split(nodeAllocator, m);
-      insertInnerNode(nodes, nodeIdx - 1, split.middleKey(), split.newNode());
+  private void insertInnerNode(TraversingContext ctx, int nodeIdx, K newKey, BPlusTreeNode<K, V> childPointer) {
+    BPlusTreeInnerNode<K, V> node = (BPlusTreeInnerNode<K, V>) ctx.nodes.get(nodeIdx);
+    if (!node.isFull()) {
+      node.insertWithRightChild(newKey, childPointer);
+      return;
     }
 
-    node.insertWithRightChild(newKey, childPointer);
+    // split
+    BPlusTreeInnerNode.SplitResult<K, V> split = node.split(nodeAllocator, m);
+    insertInnerNode(ctx, nodeIdx - 1, split.middleKey(), split.newNode());
+
+    if (newKey.compareTo(split.middleKey()) < 0) {
+      node.insertWithRightChild(newKey, childPointer);
+    } else {
+      ((BPlusTreeInnerNode<K, V>)split.newNode()).insertWithRightChild(newKey, childPointer);
+    }
   }
 
   /**
@@ -79,22 +92,26 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * @param value to add
    */
   public void insert(K key, V value) {
-//    TraversingContext ctx = new TraversingContext();
-//    traverseToLeafNode(key, ctx);
-//    List<BPlusTreeNode<K, V>> nodes = ctx.nodes;
-//    BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
-//
-//    if (leaf.isFull()) {
-//      BPlusTreeLeafNode.SplitResult<K, V> splitResult = leaf.split( nodeAllocator, m);
-//      K middleKey = splitResult.middleKey();
-//      BPlusTreeLeafNode<K, V> newLeaf = splitResult.newNode();
-//
-////      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) nodes.get(nodes.size() - 2);
-////      Optional<BPlusTreeInnerNode<K, V>> maybeNewRoot = parent.insert(nodes, nodes.size() - 2, middleKey, newLeaf, nodeAllocator, m);
-////      maybeNewRoot.ifPresent(newRoot -> this.root = newRoot);
-//    }
+    TraversingContext ctx = new TraversingContext();
+    traverseToLeafNode(key, ctx);
+    BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
+    if (!leaf.isFull()) {
+      leaf.insert(key, value);
+      return;
+    }
 
-//    leaf.insert(key, value);
+    // split
+    BPlusTreeLeafNode.SplitResult<K, V> splitResult = leaf.split(nodeAllocator, m);
+    K middleKey = splitResult.middleKey();
+    BPlusTreeLeafNode<K, V> newLeaf = (BPlusTreeLeafNode<K, V>) splitResult.newNode();
+
+    insertInnerNode(ctx, ctx.nodes.size() - 1, middleKey, newLeaf);
+
+    if (key.compareTo(middleKey) < 0) {
+      leaf.insert(key, value);
+    } else {
+      newLeaf.insert(key, value);
+    }
   }
 
   // traverse from the root the  target leaf node (to search, insert, delete the given key)

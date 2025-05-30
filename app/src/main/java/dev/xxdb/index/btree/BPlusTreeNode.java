@@ -12,9 +12,9 @@ public interface BPlusTreeNode<K extends Comparable<K>, V> {
 
   /**
    * Split this node into two, the first half is stayed with this node, second half belongs to the new node
-   * @param allocator know how to allocate new node
+   * @param allocator knows how to allocate new node
    * @param fanout fanout factor
-   * @return the new inner node and also the middle key
+   * @return the new inner node and the middle key
    */
   SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout);
 }

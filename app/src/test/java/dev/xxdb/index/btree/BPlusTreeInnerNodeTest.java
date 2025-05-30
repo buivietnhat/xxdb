@@ -21,6 +21,11 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
     this.max = max;
   }
 
+  public DummyInnerNode() {
+    this.min = 0;
+    this.max = 0;
+  }
+
   public DummyInnerNode(Entries<Integer, Integer> entries) {
     this.entries = entries;
     this.min = Collections.min(entries.keys());
@@ -67,7 +72,7 @@ class BPlusTreeInnerNodeTest {
   class EntriesTest {
     private final List<Integer> keys = new ArrayList<>(List.of(1, 3, 4, 8));
     private final List<BPlusTreeNode<Integer, Integer>> children = new ArrayList<>(List.of(
-        new DummyInnerNode(0, 0),
+        new DummyInnerNode(-3, -2),
         new DummyInnerNode(1, 2),
         new DummyInnerNode(3, 3),
         new DummyInnerNode(4, 5),
@@ -105,8 +110,8 @@ class BPlusTreeInnerNodeTest {
     void findChildKeyLessThanAll() {
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
       DummyInnerNode child = (DummyInnerNode) entries.findChild(-1);
-      assertEquals(0, child.getMin());
-      assertEquals(0, child.getMax());
+      assertEquals(-3, child.getMin());
+      assertEquals(-2, child.getMax());
     }
 
     // cover the key is greater than all keys in key list
@@ -122,11 +127,11 @@ class BPlusTreeInnerNodeTest {
     @Test
     void insertTestKeyLessThanAll() {
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
-      entries.insertWithRightChild(-2, new DummyInnerNode(-2, -1));
+      entries.insertWithRightChild(-1, new DummyInnerNode(-1, 0));
 
       DummyInnerNode child = (DummyInnerNode) entries.findChild(-3);
-      assertEquals(-2, child.getMin());
-      assertEquals(-1, child.getMax());
+      assertEquals(-3, child.getMin());
+      assertEquals(-2, child.getMax());
     }
 
     // cover the key is in middle range of the list

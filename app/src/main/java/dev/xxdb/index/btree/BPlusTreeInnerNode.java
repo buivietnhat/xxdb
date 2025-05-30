@@ -51,23 +51,19 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
       return children.get(findChildIdx(key));
     }
 
-//    public void insertWithLeftChild(K key, BPlusTreeNode<K, V> child) {
-//      int childIdx = findChildIdx(key);
-//      keys.add(childIdx, key);
-//      children.add(childIdx, child);
-//      checkRep();
-//    }
-
     public void insertWithRightChild(K key, BPlusTreeNode<K, V> child) {
       int index = Collections.binarySearch(keys, key);
       if (index >= 0) {
         children.add(index + 1, child);
       } else {
         index = -index - 1;
-        if (index < keys.size()) {
-          children.add(index, child);
-        } else {
+        // if the key to insert is at the first position, its right child must have keys > current left most child
+        // since the child pointer is a result of splitting that old left most child
+        // similarly, if the key to insert is at the end position, its right child key must > current right most child
+        if (index == 0 || index == keys.size()) {
           children.add(index + 1, child);
+        } else {
+          children.add(index, child);
         }
       }
       keys.add(index, key);
@@ -78,16 +74,6 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   Entries<K, V> getEntries();
 
   void setEntries(Entries<K, V> entries);
-
-//  /**
-//   * Add a new key and left child pointer to this inner node, requires this node is not full
-//   *
-//   * @param key:          new key to insert
-//   * @param childPointer: new child pointer to insert
-//   */
-//  default void insertWithLeftChild(K key, BPlusTreeNode<K, V> childPointer) {
-//    getEntries().insertWithLeftChild(key, childPointer);
-//  }
 
   /**
    * Add a new key and right child pointer to this inner node, requires this node is not full
