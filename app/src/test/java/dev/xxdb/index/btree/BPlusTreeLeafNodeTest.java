@@ -21,6 +21,7 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
 
   public DummyLeafNode(int fanout) {
     this.fanout = fanout;
+    this.entries = new ArrayList<>();
   }
 
   public DummyLeafNode(List<Entry<Integer, Integer>> entries, int fanout) {
@@ -41,10 +42,6 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
   @Override
   public int getFanOut() {
     return fanout;
-  }
-
-  @Override
-  public void insert(Integer key, Integer value) {
   }
 
   @Override
@@ -206,6 +203,45 @@ class BPlusTreeLeafNodeTest {
       assertEquals(List.of(1, 3), firstHalf);
       assertEquals(List.of(5, 6, 10), secondHalf);
       assertEquals(5, middleKey);
+    }
+  }
+
+  @Nested
+  class InsertTest {
+    // Testing strategy
+    // + partition on entry list: empty, has 1 entry, >1 entries
+
+    // cover entry list is empty
+    @Test
+    void empty() {
+      DummyLeafNode leaf = new DummyLeafNode(3);
+      leaf.insert(3, 4);
+      assertEquals(List.of(4), leaf.find(3, Op.EQUALS));
+    }
+
+    // cover entry list has one element
+    @Test
+    void hasOneEntry() {
+      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>(List.of(new BPlusTreeLeafNode.Entry<>(3, 4)));
+      DummyLeafNode leaf = new DummyLeafNode(entries, 3);
+      leaf.insert(1, 2);
+
+      assertEquals(List.of(2, 4), leaf.find(5, Op.LESS_THAN));
+    }
+
+    // cover entry list has many elements
+    @Test
+    void hasManyEntries() {
+      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>(List.of(
+          new BPlusTreeLeafNode.Entry<>(3, 4),
+          new BPlusTreeLeafNode.Entry<>(4, 5),
+          new BPlusTreeLeafNode.Entry<>(5, 6),
+          new BPlusTreeLeafNode.Entry<>(6, 7)
+      ));
+      DummyLeafNode leaf = new DummyLeafNode(entries, 5);
+      leaf.insert(7, 8);
+
+      assertEquals(List.of(8), leaf.find(7, Op.GREATER_THAN_OR_EQUAL));
     }
   }
 }

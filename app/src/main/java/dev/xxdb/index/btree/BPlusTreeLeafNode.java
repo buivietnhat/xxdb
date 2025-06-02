@@ -35,6 +35,23 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
     return getAllEntries().size() == getFanOut();
   }
 
+
+  @Override
+  default Optional<K> getMinKey() {
+    if (getAllEntries().isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(getAllEntries().getFirst().key);
+  }
+
+  @Override
+  default Optional<K> getMaxKey() {
+    if (getAllEntries().isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(getAllEntries().getLast().key);
+  }
+
   default List<V> find(K key, Op op) {
     List<Entry<K, V>> allEntries = getAllEntries();
     int index =
@@ -45,7 +62,15 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
 
   default void insert(K key, V value) {
     assert (!isFull());
+    List<Entry<K, V>> entries = getAllEntries();
+    int index =
+        Collections.binarySearch(
+            entries, new Entry<>(key, null), Comparator.comparing(Entry::key));
+    if (index < 0) {
+      index = -index - 1;
+    }
 
+    entries.add(index, new Entry<>(key, value));
   }
 
 

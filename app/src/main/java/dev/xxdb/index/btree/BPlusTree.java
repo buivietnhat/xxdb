@@ -4,6 +4,7 @@ import dev.xxdb.types.Op;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BPlusTree<K extends Comparable<K>, V> {
   private final BPlusTreeNodeAllocator<K, V> nodeAllocator;
@@ -92,9 +93,21 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * @param value to add
    */
   public void insert(K key, V value) {
+    if (root.getMaxKey().isEmpty()) {
+      // tree is empty
+      BPlusTreeLeafNode<K, V> leaf = nodeAllocator.allocateLeafNode(m);
+      leaf.insert(key, value);
+      root.insertWithRightChild(key, leaf);
+      return;
+    }
+
     TraversingContext ctx = new TraversingContext();
     traverseToLeafNode(key, ctx);
     BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
+    if (leaf == null) {
+      leaf = nodeAllocator.allocateLeafNode(m);
+    }
+
     if (!leaf.isFull()) {
       leaf.insert(key, value);
       return;
@@ -117,7 +130,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
   // traverse from the root the  target leaf node (to search, insert, delete the given key)
   private void traverseToLeafNode(K key, TraversingContext context) {
     BPlusTreeNode<K, V> node = root;
-    while (node.isInnerNode()) {
+    while (node != null && node.isInnerNode()) {
       context.addNode(node);
       node = root.find(key);
     }

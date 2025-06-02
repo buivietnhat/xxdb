@@ -1,7 +1,9 @@
 package dev.xxdb.index.btree;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTreeNode<K, V> {
   @Override
@@ -11,6 +13,22 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
 
   default BPlusTreeNode<K, V> find(K key) {
     return getEntries().findChild(key);
+  }
+
+  @Override
+  default Optional<K> getMinKey() {
+    if (getEntries().keys.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(getEntries().keys().getFirst());
+  }
+
+  @Override
+  default Optional<K> getMaxKey() {
+    if (getEntries() == null || getEntries().keys.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(getEntries().keys().getLast());
   }
 
   @Override
@@ -82,6 +100,16 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
    * @param childPointer: new child pointer to insert
    */
   default void insertWithRightChild(K key, BPlusTreeNode<K, V> childPointer) {
+    if (getEntries() == null) {
+      ArrayList<K> keys = new ArrayList<>(List.of(key));
+      ArrayList<BPlusTreeNode<K, V>> children = new ArrayList<>();
+      children.add(null);
+      children.add(childPointer);
+
+      setEntries(new Entries<>(keys, children));
+      return;
+    }
+
     getEntries().insertWithRightChild(key, childPointer);
   }
 }
