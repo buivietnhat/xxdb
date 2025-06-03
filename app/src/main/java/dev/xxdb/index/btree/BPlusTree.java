@@ -109,7 +109,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * @param value to add
    */
   public void insert(K key, V value) {
-    if (root.getMaxKey().isEmpty()) {
+    if (root.isEmpty()) {
       // tree is empty
       BPlusTreeLeafNode<K, V> leaf = nodeAllocator.allocateLeafNode(m);
       leaf.insert(key, value);

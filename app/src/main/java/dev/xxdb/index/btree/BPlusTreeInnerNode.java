@@ -98,6 +98,11 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     }
   }
 
+  @Override
+  default boolean isEmpty() {
+    return getEntries() == null || getEntries().keys.isEmpty();
+  }
+
   Entries<K, V> getEntries();
 
   void setEntries(Entries<K, V> entries);

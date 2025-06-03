@@ -7,6 +7,8 @@ public interface BPlusTreeNode<K extends Comparable<K>, V> {
 
   boolean isFull();
 
+  boolean isEmpty();
+
   /**
    * get the minimum key contained in this node
    *

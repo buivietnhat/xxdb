@@ -72,6 +72,11 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
   }
 
   @Override
+  default boolean isEmpty() {
+    return getAllEntries() == null || getAllEntries().isEmpty();
+  }
+
+  @Override
   default SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout) {
     List<Entry<K, V>> entries = getAllEntries();
 

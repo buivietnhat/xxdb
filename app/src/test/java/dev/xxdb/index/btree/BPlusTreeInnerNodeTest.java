@@ -44,6 +44,9 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
 
   @Override
   public Entries<Integer, Integer> getEntries() {
+    if (entries == null) {
+      return null;
+    }
     return new Entries<>(new ArrayList<>(entries.keys()), new ArrayList<>(entries.children()));
   }
 
