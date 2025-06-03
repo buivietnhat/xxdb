@@ -14,21 +14,24 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
   private final int min;
   private final int max;
   private Entries<Integer, Integer> entries;
+  int fanout = 3;
 
   public DummyInnerNode(int min, int max) {
     this.min = min;
     this.max = max;
   }
 
-  public DummyInnerNode() {
+  public DummyInnerNode(int fanout) {
     this.min = 0;
     this.max = 0;
+    this.fanout = fanout;
   }
 
-  public DummyInnerNode(Entries<Integer, Integer> entries) {
+  public DummyInnerNode(Entries<Integer, Integer> entries, int fanout) {
     this.entries = entries;
     this.min = Collections.min(entries.keys());
     this.max = Collections.max(entries.keys());
+    this.fanout = fanout;
   }
 
   public int getMin() {
@@ -41,7 +44,7 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
 
   @Override
   public Entries<Integer, Integer> getEntries() {
-    return entries;
+    return new Entries<>(new ArrayList<>(entries.keys()), new ArrayList<>(entries.children()));
   }
 
   @Override
@@ -51,7 +54,7 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
 
   @Override
   public boolean isFull() {
-    return false;
+    return entries.keys().size() == fanout;
   }
 
   @Override
@@ -177,7 +180,7 @@ class BPlusTreeInnerNodeTest {
           new ArrayList<>(List.of(node1, node2, node3, node4, node5));
 
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
-      DummyInnerNode innerNode = new DummyInnerNode(entries);
+      DummyInnerNode innerNode = new DummyInnerNode(entries, fanout);
       BPlusTreeNode.SplitResult<Integer, Integer> split =
           innerNode.split(new DummyAllocator(), fanout);
 
@@ -206,7 +209,7 @@ class BPlusTreeInnerNodeTest {
           new ArrayList<>(List.of(node1, node2, node3, node4, node5, node6));
 
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
-      DummyInnerNode innerNode = new DummyInnerNode(entries);
+      DummyInnerNode innerNode = new DummyInnerNode(entries, fanout);
       BPlusTreeNode.SplitResult<Integer, Integer> split =
           innerNode.split(new DummyAllocator(), fanout);
 

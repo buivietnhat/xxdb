@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 class DummyNodeAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
   @Override
   public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(int m) {
-    return new DummyInnerNode();
+    return new DummyInnerNode(m);
   }
 
   @Override
   public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(
       int m, BPlusTreeInnerNode.Entries<Integer, Integer> entries) {
-    return new DummyInnerNode(entries);
+    return new DummyInnerNode(entries, m);
   }
 
   @Override
@@ -80,7 +80,8 @@ class BPlusTreeTest {
       DummyInnerNode root =
           new DummyInnerNode(
               new BPlusTreeInnerNode.Entries<>(
-                  new ArrayList<>(List.of(4)), new ArrayList<>(List.of(leftChild, rightChild))));
+                  new ArrayList<>(List.of(4)), new ArrayList<>(List.of(leftChild, rightChild))),
+              3);
 
       BPlusTree<Integer, Integer> tree = new BPlusTree<>(3, root, new DummyAllocator());
       tree.insert(0, 0);
@@ -101,6 +102,129 @@ class BPlusTreeTest {
       assertEquals(
           List.of(5, 6),
           ((DummyLeafNode) children.get(2))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+    }
+
+    // cover split at leaf node and inner nodes
+    @Test
+    void splitAtLeafAndInnerNodes() {
+      int fanout = 4;
+      DummyLeafNode leaf1 = constructLeafNode(List.of(1, 3), fanout);
+      DummyLeafNode leaf2 = constructLeafNode(List.of(5, 7), fanout);
+      DummyLeafNode leaf3 = constructLeafNode(List.of(9, 11), fanout);
+      DummyLeafNode leaf4 = constructLeafNode(List.of(13, 14, 15, 17), fanout);
+      DummyLeafNode leaf5 = constructLeafNode(List.of(20, 21, 23), fanout);
+
+      DummyInnerNode inner =
+          new DummyInnerNode(
+              new BPlusTreeInnerNode.Entries<>(
+                  new ArrayList<>(List.of(5, 9, 13, 19)),
+                  new ArrayList<>(List.of(leaf1, leaf2, leaf3, leaf4, leaf5))),
+              fanout);
+
+      ArrayList<BPlusTreeNode<Integer, Integer>> rootChildren = new ArrayList<>();
+      rootChildren.add(inner);
+      rootChildren.add(null);
+      DummyInnerNode root =
+          new DummyInnerNode(
+              new BPlusTreeInnerNode.Entries<>(new ArrayList<>(List.of(24)), rootChildren), fanout);
+      BPlusTree<Integer, Integer> tree = new BPlusTree<>(fanout, root, new DummyAllocator());
+
+      tree.insert(16, 16);
+
+      BPlusTreeInnerNode<Integer, Integer> newRoot = tree.getRoot();
+      assertEquals(List.of(13, 24), newRoot.getEntries().keys());
+      assertEquals(3, newRoot.getEntries().children().size());
+
+      BPlusTreeInnerNode<Integer, Integer> firstRootChild =
+          (BPlusTreeInnerNode<Integer, Integer>) newRoot.getEntries().children().getFirst();
+      BPlusTreeInnerNode<Integer, Integer> secondRootChild =
+          (BPlusTreeInnerNode<Integer, Integer>) newRoot.getEntries().children().get(1);
+
+      assertEquals(List.of(5, 9), firstRootChild.getEntries().keys());
+      assertEquals(List.of(15, 19), secondRootChild.getEntries().keys());
+
+      assertEquals(
+          List.of(1, 3),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(0))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(5, 7),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(1))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(9, 11),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(2))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+
+      assertEquals(
+          List.of(13, 14),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(0))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(15, 16, 17),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(1))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(20, 21, 23),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(2))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+    }
+
+    // cover split at leaf node then propagate up and create a new root node
+    @Test
+    void splitUtilNewRoot() {
+      int fanout = 4;
+      DummyLeafNode leaf1 = constructLeafNode(List.of(1, 3), fanout);
+      DummyLeafNode leaf2 = constructLeafNode(List.of(5, 7), fanout);
+      DummyLeafNode leaf3 = constructLeafNode(List.of(9, 11), fanout);
+      DummyLeafNode leaf4 = constructLeafNode(List.of(13, 14, 15, 17), fanout);
+      DummyLeafNode leaf5 = constructLeafNode(List.of(20, 21, 23), fanout);
+      DummyInnerNode root =
+          new DummyInnerNode(
+              new BPlusTreeInnerNode.Entries<>(
+                  new ArrayList<>(List.of(5, 9, 13, 19)),
+                  new ArrayList<>(List.of(leaf1, leaf2, leaf3, leaf4, leaf5))),
+              fanout);
+      BPlusTree<Integer, Integer> tree = new BPlusTree<>(fanout, root, new DummyAllocator());
+      tree.insert(16, 16);
+
+      BPlusTreeInnerNode<Integer, Integer> newRoot = tree.getRoot();
+      assertEquals(List.of(13), newRoot.getEntries().keys());
+      assertEquals(2, newRoot.getEntries().children().size());
+
+      BPlusTreeInnerNode<Integer, Integer> firstRootChild =
+          (BPlusTreeInnerNode<Integer, Integer>) newRoot.getEntries().children().getFirst();
+      BPlusTreeInnerNode<Integer, Integer> secondRootChild =
+          (BPlusTreeInnerNode<Integer, Integer>) newRoot.getEntries().children().getLast();
+
+      assertEquals(List.of(5, 9), firstRootChild.getEntries().keys());
+      assertEquals(List.of(15, 19), secondRootChild.getEntries().keys());
+
+      assertEquals(
+          List.of(1, 3),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(0))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(5, 7),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(1))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(9, 11),
+          ((DummyLeafNode) firstRootChild.getEntries().children().get(2))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+
+      assertEquals(
+          List.of(13, 14),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(0))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(15, 16, 17),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(1))
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(
+          List.of(20, 21, 23),
+          ((DummyLeafNode) secondRootChild.getEntries().children().get(2))
               .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
     }
   }

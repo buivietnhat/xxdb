@@ -26,6 +26,10 @@ public class BPlusTree<K extends Comparable<K>, V> {
     assert root != null;
   }
 
+  public BPlusTreeInnerNode<K, V> getRoot() {
+    return root;
+  }
+
   /**
    * Construct the BPlusTree
    *
@@ -77,12 +81,24 @@ public class BPlusTree<K extends Comparable<K>, V> {
 
     // split
     BPlusTreeInnerNode.SplitResult<K, V> split = node.split(nodeAllocator, m);
-    insertInnerNode(ctx, nodeIdx - 1, split.middleKey(), split.newNode());
+    K middleKey = split.middleKey();
+    BPlusTreeNode<K, V> newNode = split.newNode();
+    if (nodeIdx > 0) {
+      // not a root node
+      insertInnerNode(ctx, nodeIdx - 1, middleKey, newNode);
+    } else {
+      // allocate a new root node
+      this.root =
+          nodeAllocator.allocateInnerNode(
+              m,
+              new BPlusTreeInnerNode.Entries<>(
+                  new ArrayList<>(List.of(middleKey)), new ArrayList<>(List.of(node, newNode))));
+    }
 
-    if (newKey.compareTo(split.middleKey()) < 0) {
+    if (newKey.compareTo(middleKey) < 0) {
       node.insertWithRightChild(newKey, childPointer);
     } else {
-      ((BPlusTreeInnerNode<K, V>) split.newNode()).insertWithRightChild(newKey, childPointer);
+      ((BPlusTreeInnerNode<K, V>) newNode).insertWithRightChild(newKey, childPointer);
     }
   }
 

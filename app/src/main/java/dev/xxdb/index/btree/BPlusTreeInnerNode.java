@@ -119,7 +119,9 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
       return;
     }
 
-    getEntries().insertWithRightChild(key, childPointer);
+    Entries<K, V> entries = getEntries();
+    entries.insertWithRightChild(key, childPointer);
+    setEntries(entries);
   }
 
   /**
@@ -131,6 +133,8 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
    * @param childPointer: pointer to the new child
    */
   default void updateChildPointer(K key, BPlusTreeNode<K, V> childPointer) {
-    getEntries().updateChildPointer(key, childPointer);
+    Entries<K, V> entries = getEntries();
+    entries.updateChildPointer(key, childPointer);
+    setEntries(entries);
   }
 }

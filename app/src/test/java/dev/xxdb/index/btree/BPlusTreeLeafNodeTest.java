@@ -57,7 +57,7 @@ class DummyAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
   @Override
   public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(
       int m, BPlusTreeInnerNode.Entries<Integer, Integer> entries) {
-    return new DummyInnerNode(entries);
+    return new DummyInnerNode(entries, m);
   }
 
   @Override
