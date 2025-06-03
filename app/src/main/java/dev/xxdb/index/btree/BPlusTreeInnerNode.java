@@ -69,6 +69,12 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
       return children.get(findChildIdx(key));
     }
 
+    public void updateChildPointer(K key, BPlusTreeNode<K, V> childpointer) {
+      int childIdx = findChildIdx(key);
+      assert children.get(childIdx) == null;
+      children.set(childIdx, childpointer);
+    }
+
     public void insertWithRightChild(K key, BPlusTreeNode<K, V> child) {
       int index = Collections.binarySearch(keys, key);
       if (index >= 0) {
@@ -111,5 +117,16 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     }
 
     getEntries().insertWithRightChild(key, childPointer);
+  }
+
+  /**
+   * Update the child pointer when traversing with the key
+   * For now given the key, when traversing with BTree logic, it lands at a null child (not yet allocated)
+   * So this API is used to update the child pointer
+   * @param key
+   * @param childPointer
+   */
+  default void updateChildPointer(K key, BPlusTreeNode<K, V> childPointer) {
+    getEntries().updateChildPointer(key, childPointer);
   }
 }

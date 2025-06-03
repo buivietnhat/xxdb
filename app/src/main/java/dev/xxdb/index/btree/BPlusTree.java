@@ -106,6 +106,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
     if (leaf == null) {
       leaf = nodeAllocator.allocateLeafNode(m);
+      ((BPlusTreeInnerNode<K,V>)ctx.nodes.get(ctx.nodes.size() - 2)).updateChildPointer(key, leaf);
     }
 
     if (!leaf.isFull()) {
@@ -132,7 +133,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     BPlusTreeNode<K, V> node = root;
     while (node != null && node.isInnerNode()) {
       context.addNode(node);
-      node = root.find(key);
+      node = ((BPlusTreeInnerNode<K,V>)node).find(key);
     }
     context.addNode(node);
   }
