@@ -1,11 +1,11 @@
 package dev.xxdb.index.btree;
 
-
 import java.util.List;
 
 public interface BPlusTreeNodeAllocator<K extends Comparable<K>, V> {
   /**
    * allocate new inner node
+   *
    * @param m fanout factor
    */
   BPlusTreeInnerNode<K, V> allocateInnerNode(int m);
@@ -14,6 +14,7 @@ public interface BPlusTreeNodeAllocator<K extends Comparable<K>, V> {
 
   /**
    * allocate new leaf node
+   *
    * @param m fanout factor
    */
   BPlusTreeLeafNode<K, V> allocateLeafNode(int m);

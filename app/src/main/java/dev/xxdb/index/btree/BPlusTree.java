@@ -1,10 +1,8 @@
 package dev.xxdb.index.btree;
 
 import dev.xxdb.types.Op;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BPlusTree<K extends Comparable<K>, V> {
   private final BPlusTreeNodeAllocator<K, V> nodeAllocator;
@@ -39,7 +37,8 @@ public class BPlusTree<K extends Comparable<K>, V> {
     this.m = m;
   }
 
-  public BPlusTree(int m, BPlusTreeInnerNode<K, V> root, BPlusTreeNodeAllocator<K, V> nodeAllocator) {
+  public BPlusTree(
+      int m, BPlusTreeInnerNode<K, V> root, BPlusTreeNodeAllocator<K, V> nodeAllocator) {
     this.m = m;
     this.root = root;
     this.nodeAllocator = nodeAllocator;
@@ -49,7 +48,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * Find list of value given the key
    *
    * @param key: to find
-   * @param op:  query option
+   * @param op: query option
    * @return list of value satisfied the op condition
    */
   public List<V> find(K key, Op op) {
@@ -68,7 +67,8 @@ public class BPlusTree<K extends Comparable<K>, V> {
     throw new RuntimeException("unimplemented");
   }
 
-  private void insertInnerNode(TraversingContext ctx, int nodeIdx, K newKey, BPlusTreeNode<K, V> childPointer) {
+  private void insertInnerNode(
+      TraversingContext ctx, int nodeIdx, K newKey, BPlusTreeNode<K, V> childPointer) {
     BPlusTreeInnerNode<K, V> node = (BPlusTreeInnerNode<K, V>) ctx.nodes.get(nodeIdx);
     if (!node.isFull()) {
       node.insertWithRightChild(newKey, childPointer);
@@ -82,14 +82,14 @@ public class BPlusTree<K extends Comparable<K>, V> {
     if (newKey.compareTo(split.middleKey()) < 0) {
       node.insertWithRightChild(newKey, childPointer);
     } else {
-      ((BPlusTreeInnerNode<K, V>)split.newNode()).insertWithRightChild(newKey, childPointer);
+      ((BPlusTreeInnerNode<K, V>) split.newNode()).insertWithRightChild(newKey, childPointer);
     }
   }
 
   /**
    * Add new key-value pair to this tree
    *
-   * @param key   to add
+   * @param key to add
    * @param value to add
    */
   public void insert(K key, V value) {
@@ -106,7 +106,8 @@ public class BPlusTree<K extends Comparable<K>, V> {
     BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
     if (leaf == null) {
       leaf = nodeAllocator.allocateLeafNode(m);
-      ((BPlusTreeInnerNode<K,V>)ctx.nodes.get(ctx.nodes.size() - 2)).updateChildPointer(key, leaf);
+      ((BPlusTreeInnerNode<K, V>) ctx.nodes.get(ctx.nodes.size() - 2))
+          .updateChildPointer(key, leaf);
     }
 
     if (!leaf.isFull()) {
@@ -119,7 +120,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     K middleKey = splitResult.middleKey();
     BPlusTreeLeafNode<K, V> newLeaf = (BPlusTreeLeafNode<K, V>) splitResult.newNode();
 
-    insertInnerNode(ctx, ctx.nodes.size() - 1, middleKey, newLeaf);
+    insertInnerNode(ctx, ctx.nodes.size() - 2, middleKey, newLeaf);
 
     if (key.compareTo(middleKey) < 0) {
       leaf.insert(key, value);
@@ -133,7 +134,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     BPlusTreeNode<K, V> node = root;
     while (node != null && node.isInnerNode()) {
       context.addNode(node);
-      node = ((BPlusTreeInnerNode<K,V>)node).find(key);
+      node = ((BPlusTreeInnerNode<K, V>) node).find(key);
     }
     context.addNode(node);
   }

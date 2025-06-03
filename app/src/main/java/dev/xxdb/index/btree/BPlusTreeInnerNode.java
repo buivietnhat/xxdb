@@ -44,7 +44,8 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
 
     List<K> secondHalfKeys = keys.subList(middleIdx + 1, keys.size());
     List<BPlusTreeNode<K, V>> secondHalfChildren = children.subList(middleIdx + 1, children.size());
-    BPlusTreeInnerNode<K, V> newNode = allocator.allocateInnerNode(fanout, new Entries<>(secondHalfKeys, secondHalfChildren));
+    BPlusTreeInnerNode<K, V> newNode =
+        allocator.allocateInnerNode(fanout, new Entries<>(secondHalfKeys, secondHalfChildren));
 
     return new SplitResult<>(keys.get(middleIdx), newNode);
   }
@@ -52,7 +53,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   /**
    * Represent this node's entries
    *
-   * @param keys     sorted in ascending order
+   * @param keys sorted in ascending order
    * @param children children pointer
    */
   record Entries<K extends Comparable<K>, V>(List<K> keys, List<BPlusTreeNode<K, V>> children) {
@@ -81,9 +82,11 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
         children.add(index + 1, child);
       } else {
         index = -index - 1;
-        // if the key to insert is at the first position, its right child must have keys > current left most child
+        // if the key to insert is at the first position, its right child must have keys > current
+        // left most child
         // since the child pointer is a result of splitting that old left most child
-        // similarly, if the key to insert is at the end position, its right child key must > current right most child
+        // similarly, if the key to insert is at the end position, its right child key must >
+        // current right most child
         if (index == 0 || index == keys.size()) {
           children.add(index + 1, child);
         } else {
@@ -102,7 +105,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   /**
    * Add a new key and right child pointer to this inner node, requires this node is not full
    *
-   * @param key:          new key to insert
+   * @param key: new key to insert
    * @param childPointer: new child pointer to insert
    */
   default void insertWithRightChild(K key, BPlusTreeNode<K, V> childPointer) {
@@ -120,11 +123,12 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   }
 
   /**
-   * Update the child pointer when traversing with the key
-   * For now given the key, when traversing with BTree logic, it lands at a null child (not yet allocated)
-   * So this API is used to update the child pointer
-   * @param key
-   * @param childPointer
+   * Update the child pointer when traversing with the key For now given the key, when traversing
+   * with BTree logic, it lands at a null child (not yet allocated) So this API is used to update
+   * the child pointer
+   *
+   * @param key: given key when traversing the tree
+   * @param childPointer: pointer to the new child
    */
   default void updateChildPointer(K key, BPlusTreeNode<K, V> childPointer) {
     getEntries().updateChildPointer(key, childPointer);

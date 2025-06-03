@@ -1,13 +1,10 @@
 package dev.xxdb.index.btree;
 
-import dev.xxdb.storage.page.BPlusTreeInnerNodePage;
 import dev.xxdb.types.Op;
-
 import java.util.*;
 
 public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTreeNode<K, V> {
-  record Entry<K, V>(K key, V value) {
-  }
+  record Entry<K, V>(K key, V value) {}
 
   /**
    * @return the pointer to all entries of this node
@@ -16,6 +13,7 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
 
   /**
    * Update the entries
+   *
    * @param entries: new entries to update
    */
   void setEntries(List<Entry<K, V>> entries);
@@ -34,7 +32,6 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
   default boolean isFull() {
     return getAllEntries().size() == getFanOut();
   }
-
 
   @Override
   default Optional<K> getMinKey() {
@@ -64,15 +61,15 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
     assert (!isFull());
     List<Entry<K, V>> entries = getAllEntries();
     int index =
-        Collections.binarySearch(
-            entries, new Entry<>(key, null), Comparator.comparing(Entry::key));
+        Collections.binarySearch(entries, new Entry<>(key, null), Comparator.comparing(Entry::key));
     if (index < 0) {
       index = -index - 1;
     }
 
     entries.add(index, new Entry<>(key, value));
-  }
 
+    setEntries(entries);
+  }
 
   @Override
   default SplitResult<K, V> split(BPlusTreeNodeAllocator<K, V> allocator, int fanout) {
@@ -87,7 +84,7 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
     // update new entries for this node
     setEntries(firstPart);
 
-    List<Entry<K,V>> secondPart = entries.subList(splitIdx, entries.size());
+    List<Entry<K, V>> secondPart = entries.subList(splitIdx, entries.size());
     BPlusTreeLeafNode<K, V> newLeaf = allocator.allocateLeafNode(fanout, secondPart);
 
     return new SplitResult<>(middleKey, newLeaf);
@@ -157,5 +154,4 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
     }
     return result;
   }
-
 }

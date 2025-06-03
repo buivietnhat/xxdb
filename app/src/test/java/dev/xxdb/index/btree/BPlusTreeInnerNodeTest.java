@@ -1,15 +1,14 @@
 package dev.xxdb.index.btree;
 
-import dev.xxdb.index.btree.BPlusTreeInnerNode.Entries;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+import dev.xxdb.index.btree.BPlusTreeInnerNode.Entries;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
   private final int min;
@@ -71,13 +70,15 @@ class BPlusTreeInnerNodeTest {
   @Nested
   class EntriesTest {
     private final List<Integer> keys = new ArrayList<>(List.of(1, 3, 4, 8));
-    private final List<BPlusTreeNode<Integer, Integer>> children = new ArrayList<>(List.of(
-        new DummyInnerNode(-3, -2),
-        new DummyInnerNode(1, 2),
-        new DummyInnerNode(3, 3),
-        new DummyInnerNode(4, 5),
-        new DummyInnerNode(8, 10)
-    ));
+    private final List<BPlusTreeNode<Integer, Integer>> children =
+        new ArrayList<>(
+            List.of(
+                new DummyInnerNode(-3, -2),
+                new DummyInnerNode(1, 2),
+                new DummyInnerNode(3, 3),
+                new DummyInnerNode(4, 5),
+                new DummyInnerNode(8, 10)));
+
     // Testing strategy
     // + findChild()
     //    + partition on appearance of the key on key-list: has the key, doesn't have the key
@@ -85,7 +86,6 @@ class BPlusTreeInnerNodeTest {
     //
     // + insertWithRightChild()
     //    + partition on key and key list: less than all, in middle, greater than all
-
 
     // cover the key list has the key to query
     @Test
@@ -173,20 +173,21 @@ class BPlusTreeInnerNodeTest {
       DummyInnerNode node3 = new DummyInnerNode(3, 3);
       DummyInnerNode node4 = new DummyInnerNode(4, 5);
       DummyInnerNode node5 = new DummyInnerNode(8, 10);
-      List<BPlusTreeNode<Integer, Integer>> children = new ArrayList<>(List.of(
-          node1, node2, node3, node4, node5
-      ));
+      List<BPlusTreeNode<Integer, Integer>> children =
+          new ArrayList<>(List.of(node1, node2, node3, node4, node5));
 
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
       DummyInnerNode innerNode = new DummyInnerNode(entries);
-      BPlusTreeNode.SplitResult<Integer, Integer> split = innerNode.split(new DummyAllocator(), fanout);
+      BPlusTreeNode.SplitResult<Integer, Integer> split =
+          innerNode.split(new DummyAllocator(), fanout);
 
       assertEquals(List.of(1, 3), innerNode.getEntries().keys());
-      assertEquals(List.of(8), ((DummyInnerNode)split.newNode()).getEntries().keys());
+      assertEquals(List.of(8), ((DummyInnerNode) split.newNode()).getEntries().keys());
       assertEquals(4, split.middleKey());
 
       assertEquals(List.of(node1, node2, node3), innerNode.getEntries().children());
-      assertEquals(List.of(node4, node5), ((DummyInnerNode)split.newNode()).getEntries().children());
+      assertEquals(
+          List.of(node4, node5), ((DummyInnerNode) split.newNode()).getEntries().children());
     }
 
     // cover fanout is odd
@@ -201,20 +202,21 @@ class BPlusTreeInnerNodeTest {
       DummyInnerNode node4 = new DummyInnerNode(4, 5);
       DummyInnerNode node5 = new DummyInnerNode(8, 10);
       DummyInnerNode node6 = new DummyInnerNode(12, 14);
-      List<BPlusTreeNode<Integer, Integer>> children = new ArrayList<>(List.of(
-          node1, node2, node3, node4, node5, node6
-      ));
+      List<BPlusTreeNode<Integer, Integer>> children =
+          new ArrayList<>(List.of(node1, node2, node3, node4, node5, node6));
 
       Entries<Integer, Integer> entries = new Entries<>(keys, children);
       DummyInnerNode innerNode = new DummyInnerNode(entries);
-      BPlusTreeNode.SplitResult<Integer, Integer> split = innerNode.split(new DummyAllocator(), fanout);
+      BPlusTreeNode.SplitResult<Integer, Integer> split =
+          innerNode.split(new DummyAllocator(), fanout);
 
       assertEquals(List.of(1, 3), innerNode.getEntries().keys());
-      assertEquals(List.of(8, 11), ((DummyInnerNode)split.newNode()).getEntries().keys());
+      assertEquals(List.of(8, 11), ((DummyInnerNode) split.newNode()).getEntries().keys());
       assertEquals(4, split.middleKey());
 
       assertEquals(List.of(node1, node2, node3), innerNode.getEntries().children());
-      assertEquals(List.of(node4, node5, node6), ((DummyInnerNode)split.newNode()).getEntries().children());
+      assertEquals(
+          List.of(node4, node5, node6), ((DummyInnerNode) split.newNode()).getEntries().children());
     }
   }
 }

@@ -3,11 +3,9 @@ package dev.xxdb.index.btree;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.xxdb.types.Op;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +29,7 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
 
   @Override
   public List<Entry<Integer, Integer>> getAllEntries() {
-    return entries;
+    return new ArrayList<>(entries);
   }
 
   @Override
@@ -57,7 +55,8 @@ class DummyAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
   }
 
   @Override
-  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(int m, BPlusTreeInnerNode.Entries<Integer, Integer> entries) {
+  public BPlusTreeInnerNode<Integer, Integer> allocateInnerNode(
+      int m, BPlusTreeInnerNode.Entries<Integer, Integer> entries) {
     return new DummyInnerNode(entries);
   }
 
@@ -67,7 +66,8 @@ class DummyAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
   }
 
   @Override
-  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(int m, List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries) {
+  public BPlusTreeLeafNode<Integer, Integer> allocateLeafNode(
+      int m, List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries) {
     return new DummyLeafNode(entries, m);
   }
 }
@@ -75,13 +75,13 @@ class DummyAllocator implements BPlusTreeNodeAllocator<Integer, Integer> {
 class BPlusTreeLeafNodeTest {
   private final DummyAllocator allocator = new DummyAllocator();
 
-  private DummyLeafNode constructLeafNode(List<Integer> values) {
+  DummyLeafNode constructLeafNode(List<Integer> values) {
     List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>();
     values.stream().map(v -> new BPlusTreeLeafNode.Entry<>(v, v)).forEach(entries::add);
     return new DummyLeafNode(entries);
   }
 
-  private DummyLeafNode constructLeafNode(List<Integer> values, int fanout) {
+  DummyLeafNode constructLeafNode(List<Integer> values, int fanout) {
     List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>();
     values.stream().map(v -> new BPlusTreeLeafNode.Entry<>(v, v)).forEach(entries::add);
     return new DummyLeafNode(entries, fanout);
@@ -167,13 +167,12 @@ class BPlusTreeLeafNodeTest {
       DummyLeafNode leaf = constructLeafNode(keys, fanout);
       BPlusTreeNode.SplitResult<Integer, Integer> split = leaf.split(allocator, fanout);
 
-      List<Integer> firstHalf = leaf.getAllEntries().stream()
-          .map(BPlusTreeLeafNode.Entry::key)
-          .toList();
+      List<Integer> firstHalf =
+          leaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList();
 
-      List<Integer> secondHalf = ((DummyLeafNode) split.newNode()).getAllEntries().stream()
-          .map(BPlusTreeLeafNode.Entry::key)
-          .toList();
+      List<Integer> secondHalf =
+          ((DummyLeafNode) split.newNode())
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList();
 
       Integer middleKey = split.middleKey();
 
@@ -190,13 +189,12 @@ class BPlusTreeLeafNodeTest {
       DummyLeafNode leaf = constructLeafNode(keys, fanout);
       BPlusTreeNode.SplitResult<Integer, Integer> split = leaf.split(allocator, fanout);
 
-      List<Integer> firstHalf = leaf.getAllEntries().stream()
-          .map(BPlusTreeLeafNode.Entry::key)
-          .toList();
+      List<Integer> firstHalf =
+          leaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList();
 
-      List<Integer> secondHalf = ((DummyLeafNode) split.newNode()).getAllEntries().stream()
-          .map(BPlusTreeLeafNode.Entry::key)
-          .toList();
+      List<Integer> secondHalf =
+          ((DummyLeafNode) split.newNode())
+              .getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList();
 
       Integer middleKey = split.middleKey();
 
@@ -222,7 +220,8 @@ class BPlusTreeLeafNodeTest {
     // cover entry list has one element
     @Test
     void hasOneEntry() {
-      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>(List.of(new BPlusTreeLeafNode.Entry<>(3, 4)));
+      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries =
+          new ArrayList<>(List.of(new BPlusTreeLeafNode.Entry<>(3, 4)));
       DummyLeafNode leaf = new DummyLeafNode(entries, 3);
       leaf.insert(1, 2);
 
@@ -232,12 +231,13 @@ class BPlusTreeLeafNodeTest {
     // cover entry list has many elements
     @Test
     void hasManyEntries() {
-      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries = new ArrayList<>(List.of(
-          new BPlusTreeLeafNode.Entry<>(3, 4),
-          new BPlusTreeLeafNode.Entry<>(4, 5),
-          new BPlusTreeLeafNode.Entry<>(5, 6),
-          new BPlusTreeLeafNode.Entry<>(6, 7)
-      ));
+      List<BPlusTreeLeafNode.Entry<Integer, Integer>> entries =
+          new ArrayList<>(
+              List.of(
+                  new BPlusTreeLeafNode.Entry<>(3, 4),
+                  new BPlusTreeLeafNode.Entry<>(4, 5),
+                  new BPlusTreeLeafNode.Entry<>(5, 6),
+                  new BPlusTreeLeafNode.Entry<>(6, 7)));
       DummyLeafNode leaf = new DummyLeafNode(entries, 5);
       leaf.insert(7, 8);
 
