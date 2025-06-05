@@ -1,8 +1,10 @@
 package dev.xxdb.index.btree;
 
 import dev.xxdb.types.Op;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BPlusTree<K extends Comparable<K>, V> {
   private final BPlusTreeNodeAllocator<K, V> nodeAllocator;
@@ -52,13 +54,27 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * Find list of value given the key
    *
    * @param key: to find
-   * @param op: query option
+   * @param op:  query option
    * @return list of value satisfied the op condition
    */
   public List<V> find(K key, Op op) {
     TraversingContext ctx = new TraversingContext();
     traverseToLeafNode(key, ctx);
     return ctx.getLeafNode().find(key, op);
+  }
+
+  private boolean canBorrowFrom(K key, BPlusTreeNode<K, V> sibling, BPlusTreeInnerNode<K, V> parent) {
+    boolean sameParent = parent.isMyChild(key, sibling);
+    return sameParent && sibling.canBorrow(m);
+  }
+
+  private void innerRightBorrow(BPlusTreeInnerNode<K, V> borrower, BPlusTreeInnerNode<K, V> rightSibling, BPlusTreeInnerNode<K, V> parent) {
+
+  }
+
+  // Leaf nodes borrow a key-value from a right sibling
+  private void leafRightBorrow(BPlusTreeLeafNode<K, V> borrower, BPlusTreeLeafNode<K, V> rightSibling, BPlusTreeInnerNode<K, V> parent) {
+//    borrower.insert(rightSibling.MinEntry());
   }
 
   /**
@@ -68,7 +84,28 @@ public class BPlusTree<K extends Comparable<K>, V> {
    * @return true if the key exists and delete successfully
    */
   public boolean delete(K key) {
-    throw new RuntimeException("unimplemented");
+    TraversingContext ctx = new TraversingContext();
+    traverseToLeafNode(key, ctx);
+    BPlusTreeLeafNode<K, V> leaf = ctx.getLeafNode();
+    boolean ok = leaf.delete(key);
+
+    if (!leaf.isAtleastHalfFull(m)) {
+      // this node is underfill
+      // first try to borrow from another sibling
+      BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) ctx.nodes.get(ctx.nodes.size() - 2);
+      Optional<BPlusTreeLeafNode<K, V>> rightSibling = leaf.getRightSibling();
+      Optional<BPlusTreeLeafNode<K, V>> leftSibling = leaf.getLeftSibling();
+      if (rightSibling.isPresent() && canBorrowFrom(key, rightSibling.get(), parent)) {
+
+      } else if (leftSibling.isPresent() && canBorrowFrom(key, leftSibling.get(), parent)) {
+
+      } else {
+        // can not borrow, merge
+      }
+
+    }
+
+    return ok;
   }
 
   private void insertInnerNode(
@@ -105,12 +142,11 @@ public class BPlusTree<K extends Comparable<K>, V> {
   /**
    * Add new key-value pair to this tree
    *
-   * @param key to add
+   * @param key   to add
    * @param value to add
    */
   public void insert(K key, V value) {
     if (root.isEmpty()) {
-      // tree is empty
       BPlusTreeLeafNode<K, V> leaf = nodeAllocator.allocateLeafNode(m);
       leaf.insert(key, value);
       root.insertWithRightChild(key, leaf);
@@ -145,7 +181,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     }
   }
 
-  // traverse from the root the  target leaf node (to search, insert, delete the given key)
+  // traverse from the root the target leaf node (to search, insert, delete the given key)
   private void traverseToLeafNode(K key, TraversingContext context) {
     BPlusTreeNode<K, V> node = root;
     while (node != null && node.isInnerNode()) {

@@ -3,10 +3,9 @@ package dev.xxdb.index.btree;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.xxdb.index.btree.BPlusTreeInnerNode.Entries;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +14,9 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
   private final int max;
   private Entries<Integer, Integer> entries;
   int fanout = 3;
+
+  private Optional<BPlusTreeInnerNode<Integer, Integer>> leftSibling = Optional.empty();
+  private Optional<BPlusTreeInnerNode<Integer, Integer>> rightSibling = Optional.empty();
 
   public DummyInnerNode(int min, int max) {
     this.min = min;
@@ -43,6 +45,26 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
   }
 
   @Override
+  public void setLeftSibling(BPlusTreeInnerNode<Integer, Integer> left) {
+    leftSibling = Optional.of(left);
+  }
+
+  @Override
+  public void setRightSibling(BPlusTreeInnerNode<Integer, Integer> right) {
+    rightSibling = Optional.of(right);
+  }
+
+  @Override
+  public Optional<BPlusTreeInnerNode<Integer, Integer>> getLeftSibling() {
+    return leftSibling;
+  }
+
+  @Override
+  public Optional<BPlusTreeInnerNode<Integer, Integer>> getRightSibling() {
+    return rightSibling;
+  }
+
+  @Override
   public Entries<Integer, Integer> getEntries() {
     if (entries == null) {
       return null;
@@ -58,6 +80,11 @@ class DummyInnerNode implements BPlusTreeInnerNode<Integer, Integer> {
   @Override
   public boolean isFull() {
     return entries.keys().size() == fanout;
+  }
+
+  @Override
+  public int size() {
+    return 0;
   }
 
   @Override

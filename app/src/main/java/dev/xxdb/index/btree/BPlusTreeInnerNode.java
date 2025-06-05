@@ -15,6 +15,68 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     return getEntries().findChild(key);
   }
 
+  void setLeftSibling(BPlusTreeInnerNode<K, V> left);
+
+  void setRightSibling(BPlusTreeInnerNode<K, V> right);
+
+  Optional<BPlusTreeInnerNode<K, V>> getLeftSibling();
+
+  Optional<BPlusTreeInnerNode<K, V>> getRightSibling();
+
+  /**
+   * Given the key when traversing, am I going to land at the childPointer?
+   *
+   * @param key          given key
+   * @param childPointer the child to verify
+   * @return true if that is the case
+   */
+  default boolean isMyChild(K key, BPlusTreeNode<K, V> childPointer) {
+    Entries<K, V> entries = getEntries();
+    return entries.children.get(entries.findChildIdx(key)) == childPointer;
+  }
+
+  /**
+   * Remove the first key-child pointer of this node
+   * @return the pair if exist
+   */
+  default Optional<Entry<K, V>> popMinEntry() {
+    Entries<K, V> entries = getEntries();
+    if (entries.keys().isEmpty()) {
+      return Optional.empty();
+    }
+
+    K firstKey = entries.keys().getFirst();
+    BPlusTreeNode<K, V> firstChildPointer = entries.children().getFirst();
+
+    entries.keys().removeFirst();
+    entries.children().removeFirst();
+
+    setEntries(entries);
+
+    return Optional.of(new Entry<>(firstKey, firstChildPointer));
+  }
+
+  /**
+   * Remove the last key-child pointer pair of this node
+   * @return the removed pair if exist
+   */
+  default Optional<Entry<K, V>> popMaxEntry() {
+    Entries<K, V> entries = getEntries();
+    if (entries.keys().isEmpty()) {
+      return Optional.empty();
+    }
+
+    K lastKey = entries.keys().getLast();
+    BPlusTreeNode<K, V> lastChildPointer = entries.children().getLast();
+
+    entries.keys().removeLast();
+    entries.children().removeLast();
+
+    setEntries(entries);
+
+    return Optional.of(new Entry<>(lastKey, lastChildPointer));
+  }
+
   @Override
   default Optional<K> getMinKey() {
     if (getEntries().keys.isEmpty()) {
@@ -50,10 +112,13 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     return new SplitResult<>(keys.get(middleIdx), newNode);
   }
 
+  record Entry<K extends Comparable<K>, V>(K keys, BPlusTreeNode<K, V> child) {
+  }
+
   /**
    * Represent this node's entries
    *
-   * @param keys sorted in ascending order
+   * @param keys     sorted in ascending order
    * @param children children pointer
    */
   record Entries<K extends Comparable<K>, V>(List<K> keys, List<BPlusTreeNode<K, V>> children) {
@@ -110,7 +175,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   /**
    * Add a new key and right child pointer to this inner node, requires this node is not full
    *
-   * @param key: new key to insert
+   * @param key:          new key to insert
    * @param childPointer: new child pointer to insert
    */
   default void insertWithRightChild(K key, BPlusTreeNode<K, V> childPointer) {
@@ -134,7 +199,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
    * with BTree logic, it lands at a null child (not yet allocated) So this API is used to update
    * the child pointer
    *
-   * @param key: given key when traversing the tree
+   * @param key:          given key when traversing the tree
    * @param childPointer: pointer to the new child
    */
   default void updateChildPointer(K key, BPlusTreeNode<K, V> childPointer) {

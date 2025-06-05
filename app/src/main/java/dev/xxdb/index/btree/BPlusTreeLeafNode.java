@@ -23,6 +23,14 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
    */
   int getFanOut();
 
+  void setLeftSibling(BPlusTreeLeafNode<K, V> left);
+
+  void setRightSibling(BPlusTreeLeafNode<K, V> right);
+
+  Optional<BPlusTreeLeafNode<K, V>> getLeftSibling();
+
+  Optional<BPlusTreeLeafNode<K, V>> getRightSibling();
+
   @Override
   default boolean isInnerNode() {
     return false;
@@ -31,6 +39,36 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
   @Override
   default boolean isFull() {
     return getAllEntries().size() == getFanOut();
+  }
+
+  /**
+   * Remove the first key-value pair of this node
+   * @return the pair deleted, if exist
+   */
+  default Optional<Entry<K, V>> popMinEntry() {
+    List<Entry<K, V>> entries = getAllEntries();
+    if (entries.isEmpty()) {
+      return Optional.empty();
+    }
+
+    Entry<K, V> entry = entries.getFirst();
+    entries.removeFirst();
+    setEntries(entries);
+
+    return Optional.of(entry);
+  }
+
+  default Optional<Entry<K, V>> popMaxEntry() {
+    List<Entry<K, V>> entries = getAllEntries();
+    if (entries.isEmpty()) {
+      return Optional.empty();
+    }
+
+    Entry<K, V> entry = entries.getLast();
+    entries.removeLast();
+    setEntries(entries);
+
+    return Optional.of(entry);
   }
 
   @Override
@@ -74,6 +112,13 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
   @Override
   default boolean isEmpty() {
     return getAllEntries() == null || getAllEntries().isEmpty();
+  }
+
+  default boolean delete(K key) {
+    List<Entry<K, V>> entries = getAllEntries();
+    boolean ok = entries.removeIf(entry -> entry.key() == key);
+    setEntries(entries);
+    return ok;
   }
 
   @Override

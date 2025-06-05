@@ -9,6 +9,26 @@ public interface BPlusTreeNode<K extends Comparable<K>, V> {
 
   boolean isEmpty();
 
+  int size();
+
+  default boolean isAtleastHalfFull(int fanout) {
+    int half = fanout / 2;
+    if (fanout % 2 == 0) {
+      return size() >= half;
+    }
+
+    return size() >= half + 1;
+  }
+
+  default boolean canBorrow(int fanout) {
+    int half = fanout / 2;
+    if (fanout % 2 == 0) {
+      return size() > half;
+    }
+
+    return size() > half + 1;
+  }
+
   /**
    * get the minimum key contained in this node
    *
