@@ -15,6 +15,25 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     return getEntries().findChild(key);
   }
 
+  void setLeftSibling(BPlusTreeInnerNode<K, V> left);
+
+  void setRightSibling(BPlusTreeInnerNode<K, V> right);
+
+  Optional<BPlusTreeInnerNode<K, V>> getLeftSibling();
+
+  Optional<BPlusTreeInnerNode<K, V>> getRightSibling();
+
+  /**
+   * Given the key when traversing, am I going to land at the childPointer?
+   * @param key given key
+   * @param childPointer the child to verify
+   * @return true if that is the case
+   */
+  default boolean isMyChild(K key, BPlusTreeNode<K, V> childPointer) {
+    Entries<K, V> entries = getEntries();
+    return entries.children.get(entries.findChildIdx(key)) == childPointer;
+  }
+
   @Override
   default Optional<K> getMinKey() {
     if (getEntries().keys.isEmpty()) {

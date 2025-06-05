@@ -6,12 +6,17 @@ import dev.xxdb.types.Op;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
   private List<Entry<Integer, Integer>> entries;
   private int fanout = 3;
+
+  private Optional<BPlusTreeLeafNode<Integer, Integer>> leftSibling = Optional.empty();
+  private Optional<BPlusTreeLeafNode<Integer, Integer>> rightSibling = Optional.empty();
 
   public DummyLeafNode(List<Entry<Integer, Integer>> entries) {
     this.entries = entries;
@@ -43,8 +48,33 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
   }
 
   @Override
+  public void setLeftSibling(BPlusTreeLeafNode<Integer, Integer> left) {
+    leftSibling = Optional.of(left);
+  }
+
+  @Override
+  public void setRightSibling(BPlusTreeLeafNode<Integer, Integer> right) {
+    rightSibling = Optional.of(right);
+  }
+
+  @Override
+  public Optional<BPlusTreeLeafNode<Integer, Integer>> getLeftSibling() {
+    return leftSibling;
+  }
+
+  @Override
+  public Optional<BPlusTreeLeafNode<Integer, Integer>> getRightSibling() {
+    return rightSibling;
+  }
+
+  @Override
   public boolean isFull() {
     return entries.size() == fanout;
+  }
+
+  @Override
+  public int size() {
+    return 0;
   }
 }
 
