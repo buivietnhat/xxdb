@@ -74,7 +74,7 @@ class DummyLeafNode implements BPlusTreeLeafNode<Integer, Integer> {
 
   @Override
   public int size() {
-    return 0;
+    return entries.size();
   }
 }
 

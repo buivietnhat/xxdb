@@ -280,22 +280,53 @@ class BPlusTreeTest {
 
     // cover key exists, trigger borrowing from a right sibling at leaf node, not merging
     @Test
-    void keyExistDoBorrowNotMerge() {
+    void keyExistDoRightBorrowNotMerge() {
       int fanout = 3;
       DummyLeafNode firstLeaf = constructLeafNode(List.of(1, 3), fanout);
       DummyLeafNode secondLeaf = constructLeafNode(List.of(5, 6), fanout);
       DummyLeafNode thirdLeaf = constructLeafNode(List.of(9, 10, 12), fanout);
       DummyInnerNode root = constructInnerNode(List.of(4, 9), List.of(firstLeaf, secondLeaf, thirdLeaf), fanout);
+
+      firstLeaf.setRightSibling(secondLeaf);
+      secondLeaf.setLeftSibling(firstLeaf);
+
+      secondLeaf.setRightSibling(thirdLeaf);
+      thirdLeaf.setLeftSibling(secondLeaf);
+
       tree = new BPlusTree<>(fanout, root, new DummyAllocator());
 
       assertTrue(tree.delete(6));
 
       assertEquals(List.of(4, 10), root.getEntries().keys());
-      assertEquals(List.of(1, 3), firstLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key));
-      assertEquals(List.of(5, 9), secondLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key));
-      assertEquals(List.of(12, 14), thirdLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key));
+      assertEquals(List.of(1, 3), firstLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(List.of(5, 9), secondLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(List.of(10, 12), thirdLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
     }
 
+    // cover key exists, trigger borrowing from a left sibling at leaf node, not merging
+    @Test
+    void keyExistDoLeftBorrowNotMerge() {
+      int fanout = 3;
+      DummyLeafNode firstLeaf = constructLeafNode(List.of(1, 3), fanout);
+      DummyLeafNode secondLeaf = constructLeafNode(List.of(5, 6, 9), fanout);
+      DummyLeafNode thirdLeaf = constructLeafNode(List.of(10, 12), fanout);
+
+      firstLeaf.setRightSibling(secondLeaf);
+      secondLeaf.setLeftSibling(firstLeaf);
+
+      secondLeaf.setRightSibling(thirdLeaf);
+      thirdLeaf.setLeftSibling(secondLeaf);
+
+      DummyInnerNode root = constructInnerNode(List.of(4, 10), List.of(firstLeaf, secondLeaf, thirdLeaf), fanout);
+      tree = new BPlusTree<>(fanout, root, new DummyAllocator());
+
+      assertTrue(tree.delete(10));
+
+      assertEquals(List.of(4, 9), root.getEntries().keys());
+      assertEquals(List.of(1, 3), firstLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(List.of(5, 6), secondLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+      assertEquals(List.of(9, 12), thirdLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
+    }
     // cover trigger merge on leaf nodes, cascading up to inner nodes
     @Test
     void mergeOnLeafAndInnerNodes() {

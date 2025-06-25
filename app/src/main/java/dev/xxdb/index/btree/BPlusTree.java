@@ -63,18 +63,13 @@ public class BPlusTree<K extends Comparable<K>, V> {
     return ctx.getLeafNode().find(key, op);
   }
 
-  private boolean canBorrowFrom(K key, BPlusTreeNode<K, V> sibling, BPlusTreeInnerNode<K, V> parent) {
-    boolean sameParent = parent.isMyChild(key, sibling);
+  private boolean canBorrowFrom(BPlusTreeNode<K, V> sibling, BPlusTreeInnerNode<K, V> parent) {
+    boolean sameParent = parent.isMyChild(sibling);
     return sameParent && sibling.canBorrow(m);
   }
 
   private void innerRightBorrow(BPlusTreeInnerNode<K, V> borrower, BPlusTreeInnerNode<K, V> rightSibling, BPlusTreeInnerNode<K, V> parent) {
 
-  }
-
-  // Leaf nodes borrow a key-value from a right sibling
-  private void leafRightBorrow(BPlusTreeLeafNode<K, V> borrower, BPlusTreeLeafNode<K, V> rightSibling, BPlusTreeInnerNode<K, V> parent) {
-//    borrower.insert(rightSibling.MinEntry());
   }
 
   /**
@@ -95,14 +90,18 @@ public class BPlusTree<K extends Comparable<K>, V> {
       BPlusTreeInnerNode<K, V> parent = (BPlusTreeInnerNode<K, V>) ctx.nodes.get(ctx.nodes.size() - 2);
       Optional<BPlusTreeLeafNode<K, V>> rightSibling = leaf.getRightSibling();
       Optional<BPlusTreeLeafNode<K, V>> leftSibling = leaf.getLeftSibling();
-      if (rightSibling.isPresent() && canBorrowFrom(key, rightSibling.get(), parent)) {
-
-      } else if (leftSibling.isPresent() && canBorrowFrom(key, leftSibling.get(), parent)) {
-
+      if (rightSibling.isPresent() && canBorrowFrom(rightSibling.get(), parent)) {
+        Optional<BPlusTreeLeafNode.Entry<K, V>> maybeBorrowEntry = rightSibling.get().popMinEntry();
+        // the borrowing entry must exist
+        leaf.insert(maybeBorrowEntry.get().key(), maybeBorrowEntry.get().value());
+        parent.updateKey(key, rightSibling.get().getMinKey().get());
+      } else if (leftSibling.isPresent() && canBorrowFrom(leftSibling.get(), parent)) {
+        Optional<BPlusTreeLeafNode.Entry<K, V>> maybeBorrowEntry = leftSibling.get().popMaxEntry();
+        leaf.insert(maybeBorrowEntry.get().key(), maybeBorrowEntry.get().value());
+        parent.updateKey(key, maybeBorrowEntry.get().key());
       } else {
         // can not borrow, merge
       }
-
     }
 
     return ok;

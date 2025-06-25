@@ -24,19 +24,19 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   Optional<BPlusTreeInnerNode<K, V>> getRightSibling();
 
   /**
-   * Given the key when traversing, am I going to land at the childPointer?
+   * Is the childPointer one of my entries?
    *
-   * @param key          given key
    * @param childPointer the child to verify
    * @return true if that is the case
    */
-  default boolean isMyChild(K key, BPlusTreeNode<K, V> childPointer) {
+  default boolean isMyChild(BPlusTreeNode<K, V> childPointer) {
     Entries<K, V> entries = getEntries();
-    return entries.children.get(entries.findChildIdx(key)) == childPointer;
+    return entries.children().contains(childPointer);
   }
 
   /**
    * Remove the first key-child pointer of this node
+   *
    * @return the pair if exist
    */
   default Optional<Entry<K, V>> popMinEntry() {
@@ -58,6 +58,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
 
   /**
    * Remove the last key-child pointer pair of this node
+   *
    * @return the removed pair if exist
    */
   default Optional<Entry<K, V>> popMaxEntry() {
@@ -91,6 +92,24 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
       return Optional.empty();
     }
     return Optional.of(getEntries().keys().getLast());
+  }
+
+  /**
+   * Given currentKey, when traversing it will land at a child associated with a key
+   * replace that key with the newKey
+   *
+   * @param currentKey the key to be traverse with
+   * @param newKey     new key to relace
+   */
+  default void updateKey(K currentKey, K newKey) {
+    Entries<K, V> entries = getEntries();
+    int keyIdx = entries.findChildIdx(currentKey);
+    if (currentKey.compareTo(newKey) < 0) {
+      entries.updateKey(keyIdx, newKey);
+    } else {
+      entries.updateKey(keyIdx - 1, newKey);
+    }
+    setEntries(entries);
   }
 
   @Override
@@ -139,6 +158,10 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
       int childIdx = findChildIdx(key);
       assert children.get(childIdx) == null;
       children.set(childIdx, childpointer);
+    }
+
+    public void updateKey(int index, K newKey) {
+      keys.set(index, newKey);
     }
 
     public void insertWithRightChild(K key, BPlusTreeNode<K, V> child) {
