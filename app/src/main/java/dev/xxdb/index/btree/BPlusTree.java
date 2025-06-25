@@ -118,7 +118,11 @@ public class BPlusTree<K extends Comparable<K>, V> {
     // split
     BPlusTreeInnerNode.SplitResult<K, V> split = node.split(nodeAllocator, m);
     K middleKey = split.middleKey();
-    BPlusTreeNode<K, V> newNode = split.newNode();
+    BPlusTreeInnerNode<K, V> newNode = (BPlusTreeInnerNode<K, V>)split.newNode();
+
+    node.setRightSibling(newNode);
+    newNode.setLeftSibling(node);
+
     if (nodeIdx > 0) {
       // not a root node
       insertInnerNode(ctx, nodeIdx - 1, middleKey, newNode);
@@ -134,7 +138,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
     if (newKey.compareTo(middleKey) < 0) {
       node.insertWithRightChild(newKey, childPointer);
     } else {
-      ((BPlusTreeInnerNode<K, V>) newNode).insertWithRightChild(newKey, childPointer);
+      newNode.insertWithRightChild(newKey, childPointer);
     }
   }
 
@@ -170,6 +174,9 @@ public class BPlusTree<K extends Comparable<K>, V> {
     BPlusTreeLeafNode.SplitResult<K, V> splitResult = leaf.split(nodeAllocator, m);
     K middleKey = splitResult.middleKey();
     BPlusTreeLeafNode<K, V> newLeaf = (BPlusTreeLeafNode<K, V>) splitResult.newNode();
+
+    leaf.setRightSibling(newLeaf);
+    newLeaf.setLeftSibling(leaf);
 
     insertInnerNode(ctx, ctx.nodes.size() - 2, middleKey, newLeaf);
 

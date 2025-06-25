@@ -327,6 +327,7 @@ class BPlusTreeTest {
       assertEquals(List.of(5, 6), secondLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
       assertEquals(List.of(9, 12), thirdLeaf.getAllEntries().stream().map(BPlusTreeLeafNode.Entry::key).toList());
     }
+
     // cover trigger merge on leaf nodes, cascading up to inner nodes
     @Test
     void mergeOnLeafAndInnerNodes() {
@@ -338,8 +339,26 @@ class BPlusTreeTest {
       DummyLeafNode leaf5 = constructLeafNode(List.of(19, 20), fanout);
       DummyLeafNode leaf6 = constructLeafNode(List.of(21, 23), fanout);
 
+      leaf1.setRightSibling(leaf2);
+      leaf2.setLeftSibling(leaf1);
+
+      leaf2.setRightSibling(leaf3);
+      leaf3.setLeftSibling(leaf2);
+
+      leaf3.setRightSibling(leaf4);
+      leaf4.setLeftSibling(leaf3);
+
+      leaf4.setRightSibling(leaf5);
+      leaf5.setLeftSibling(leaf4);
+
+      leaf5.setRightSibling(leaf6);
+      leaf6.setLeftSibling(leaf5);
+
       DummyInnerNode inner1 = constructInnerNode(List.of(5, 9), List.of(leaf1, leaf2, leaf3), fanout);
       DummyInnerNode inner2 = constructInnerNode(List.of(19, 21), List.of(leaf4, leaf5, leaf6), fanout);
+
+      inner1.setRightSibling(inner2);
+      inner2.setLeftSibling(inner1);
 
       DummyInnerNode root = constructInnerNode(List.of(13), List.of(inner1, inner2), fanout);
       tree = new BPlusTree<>(fanout, root, new DummyAllocator());
