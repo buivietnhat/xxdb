@@ -43,6 +43,7 @@ public interface BPlusTreeLeafNode<K extends Comparable<K>, V> extends BPlusTree
 
   /**
    * Remove the first key-value pair of this node
+   *
    * @return the pair deleted, if exist
    */
   default Optional<Entry<K, V>> popMinEntry() {

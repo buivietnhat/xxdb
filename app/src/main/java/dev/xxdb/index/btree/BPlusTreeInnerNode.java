@@ -95,11 +95,11 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   }
 
   /**
-   * Given currentKey, when traversing it will land at a child associated with a key
-   * replace that key with the newKey
+   * Given currentKey, when traversing it will land at a child associated with a key replace that
+   * key with the newKey
    *
    * @param currentKey the key to be traverse with
-   * @param newKey     new key to relace
+   * @param newKey new key to relace
    */
   default void updateKey(K currentKey, K newKey) {
     Entries<K, V> entries = getEntries();
@@ -131,13 +131,12 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
     return new SplitResult<>(keys.get(middleIdx), newNode);
   }
 
-  record Entry<K extends Comparable<K>, V>(K keys, BPlusTreeNode<K, V> child) {
-  }
+  record Entry<K extends Comparable<K>, V>(K keys, BPlusTreeNode<K, V> child) {}
 
   /**
    * Represent this node's entries
    *
-   * @param keys     sorted in ascending order
+   * @param keys sorted in ascending order
    * @param children children pointer
    */
   record Entries<K extends Comparable<K>, V>(List<K> keys, List<BPlusTreeNode<K, V>> children) {
@@ -198,7 +197,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
   /**
    * Add a new key and right child pointer to this inner node, requires this node is not full
    *
-   * @param key:          new key to insert
+   * @param key: new key to insert
    * @param childPointer: new child pointer to insert
    */
   default void insertWithRightChild(K key, BPlusTreeNode<K, V> childPointer) {
@@ -222,7 +221,7 @@ public interface BPlusTreeInnerNode<K extends Comparable<K>, V> extends BPlusTre
    * with BTree logic, it lands at a null child (not yet allocated) So this API is used to update
    * the child pointer
    *
-   * @param key:          given key when traversing the tree
+   * @param key: given key when traversing the tree
    * @param childPointer: pointer to the new child
    */
   default void updateChildPointer(K key, BPlusTreeNode<K, V> childPointer) {

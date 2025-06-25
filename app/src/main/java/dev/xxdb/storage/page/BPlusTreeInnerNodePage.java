@@ -1,9 +1,7 @@
 package dev.xxdb.storage.page;
 
 import dev.xxdb.index.btree.BPlusTreeInnerNode;
-import dev.xxdb.index.btree.BPlusTreeLeafNode;
 import dev.xxdb.index.btree.BPlusTreeNode;
-
 import java.util.Optional;
 
 public class BPlusTreeInnerNodePage<K extends Comparable<K>, V> extends Page
