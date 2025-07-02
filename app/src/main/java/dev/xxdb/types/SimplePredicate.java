@@ -8,10 +8,10 @@ public class SimplePredicate implements Predicate {
   private final String table;
   private final String column;
   private final Value value;
-  private final Ops op;
+  private final Op op;
   private final Schema schema;
 
-  public SimplePredicate(String table, String column, Value value, Ops op, Catalog catalog) {
+  public SimplePredicate(String table, String column, Value value, Op op, Catalog catalog) {
     this.table = table;
     if (column.contains(".")) {
       this.column = column;

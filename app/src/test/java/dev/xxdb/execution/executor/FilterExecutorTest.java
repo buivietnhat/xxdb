@@ -73,7 +73,7 @@ public class FilterExecutorTest {
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
 
       Predicate equalPred =
-          new SimplePredicate("FOO", "col1", new IntValue(10), Ops.EQUALS, mockCatalog);
+          new SimplePredicate("FOO", "col1", new IntValue(10), Op.EQUALS, mockCatalog);
       FilterPlan plan = new FilterPlan(equalPred);
       Executor mockChild = mock(Executor.class);
 
@@ -121,9 +121,9 @@ public class FilterExecutorTest {
       when(mockCatalog.getTableSchema(eq("FOO"))).thenReturn(Optional.of(schema));
 
       Predicate greaterThanPred =
-          new SimplePredicate("FOO", "col1", new IntValue(10), Ops.GREATER_THAN, mockCatalog);
+          new SimplePredicate("FOO", "col1", new IntValue(10), Op.GREATER_THAN, mockCatalog);
       Predicate equalPred =
-          new SimplePredicate("FOO", "col2", new StringValue("hello"), Ops.EQUALS, mockCatalog);
+          new SimplePredicate("FOO", "col2", new StringValue("hello"), Op.EQUALS, mockCatalog);
       AndPredicate andPredicate = new AndPredicate(greaterThanPred, equalPred);
       FilterPlan plan = new FilterPlan(andPredicate);
 

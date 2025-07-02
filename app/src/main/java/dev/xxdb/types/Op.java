@@ -1,6 +1,6 @@
 package dev.xxdb.types;
 
-public enum Ops {
+public enum Op {
   EQUALS,
   NOT_EQUALS,
   GREATER_THAN,

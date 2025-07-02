@@ -15,7 +15,7 @@ public sealed interface Value permits StringValue, IntValue {
    * @param other: who to compare
    * @return True if this Value is `op` than other
    */
-  boolean compareTo(Ops op, Value other);
+  boolean compareTo(Op op, Value other);
 
   /**
    * @return the Type ID of this Value

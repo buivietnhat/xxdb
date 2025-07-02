@@ -21,7 +21,7 @@ import dev.xxdb.parser.ast.relationalgebra.ValuePredicate;
 import dev.xxdb.parser.ast.statement.AntlrToStatementVisitor;
 import dev.xxdb.parser.ast.statement.Statement;
 import dev.xxdb.types.IntValue;
-import dev.xxdb.types.Ops;
+import dev.xxdb.types.Op;
 import dev.xxdb.types.PredicateType;
 import dev.xxdb.types.StringValue;
 import java.util.Collections;
@@ -46,7 +46,7 @@ class OptimizerTest {
     // cover selects len = 1, types len = 0
     @Test
     void simplePredicate() {
-      Predicate pred = new ValuePredicate(Ops.EQUALS, "FOO.col1", new IntValue(20));
+      Predicate pred = new ValuePredicate(Op.EQUALS, "FOO.col1", new IntValue(20));
       List<Select> selects = List.of(new Select(pred, "FOO"));
       when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));
       dev.xxdb.types.Predicate build = builder.build(selects, Collections.emptyList());
@@ -58,8 +58,8 @@ class OptimizerTest {
     // cover selects len = 2, types len = 1
     @Test
     void andPredicate() {
-      Predicate pred1 = new ValuePredicate(Ops.EQUALS, "col1", new IntValue(20));
-      Predicate pred2 = new ValuePredicate(Ops.GREATER_THAN, "col2", new StringValue("20"));
+      Predicate pred1 = new ValuePredicate(Op.EQUALS, "col1", new IntValue(20));
+      Predicate pred2 = new ValuePredicate(Op.GREATER_THAN, "col2", new StringValue("20"));
       List<Select> selects = List.of(new Select(pred1, "FOO"), new Select(pred2, "BAR"));
       List<PredicateType> types = List.of(PredicateType.AND);
       when(mockCatalog.getTableSchema(any())).thenReturn(Optional.of(mock(Schema.class)));

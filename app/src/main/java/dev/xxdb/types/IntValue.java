@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public record IntValue(int value) implements Value {
   @Override
-  public boolean compareTo(Ops op, Value other) {
+  public boolean compareTo(Op op, Value other) {
     if (!(other instanceof IntValue)) {
       throw new RuntimeException("Cannot compare InValue with different type");
     }

@@ -1,6 +1,6 @@
 package dev.xxdb.parser.ast.relationalgebra;
 
-import dev.xxdb.types.Ops;
+import dev.xxdb.types.Op;
 
 public class Join implements RelationalAlgebra {
   public static class Builder {
@@ -15,8 +15,8 @@ public class Join implements RelationalAlgebra {
       join.setRightTable(rightTable);
     }
 
-    public void setJoinOps(Ops ops) {
-      joinPredicate.setOps(ops);
+    public void setJoinOps(Op op) {
+      joinPredicate.setOps(op);
     }
 
     public void setPredicate(JoinPredicate predicate) {

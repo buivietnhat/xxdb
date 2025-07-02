@@ -23,8 +23,8 @@ public class SelectPlan implements LogicalPlan {
     private String leftTableName;
     public boolean buildingJoin = false;
 
-    public void setJoinOps(Ops ops) {
-      joinBuilder.setJoinOps(ops);
+    public void setJoinOps(Op op) {
+      joinBuilder.setJoinOps(op);
     }
 
     public void setLeftJoinColumn(String leftColumn) {
@@ -79,7 +79,7 @@ public class SelectPlan implements LogicalPlan {
       ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setColumn(columnName);
     }
 
-    public void setPredicateOp(Ops op) {
+    public void setPredicateOp(Op op) {
       ((ValuePredicate) plan.getCurrentFilter().getPredicate()).setOp(op);
     }
 
